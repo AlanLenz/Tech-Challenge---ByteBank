@@ -2,7 +2,7 @@ import MenuItem from "../MenuItem";
 
 const SideMenu = () => {
   return (
-    <div className="min-w-[180px] bg-white p-8">
+    <div className="min-w-[180px] bg-white p-8 rounded-lg">
       <ul>
         <MenuItem label="Início" href="#" isActive={true} />
         <MenuItem label="Transferências" href="#" isActive={false} />
