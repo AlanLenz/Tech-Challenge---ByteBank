@@ -17,9 +17,30 @@ const Hero = () => {
           <p className="text-white text-[32px] font-normal">R$ 2.500,00</p>
         </div>
       </div>
-      <Image className="absolute bottom-6 left-8" src="/IllustrationHero.png" alt="Illustration" title="Illustration" width={280} height={220} />
-      <Image className="absolute top-0 right-0" src="/PixelsHero1.png" alt="Pixels" title="Pixels" width={180} height={180} />
-      <Image className="absolute bottom-0 left-0" src="/PixelsHero2.png" alt="Pixels" title="Pixels" width={180} height={180} />
+      <Image
+        className="absolute bottom-6 left-8"
+        src="/IllustrationHero.png"
+        alt="Illustration"
+        title="Illustration"
+        width={280}
+        height={220}
+      />
+      <Image
+        className="absolute top-0 right-0"
+        src="/PixelsHero1.png"
+        alt="Pixels"
+        title="Pixels"
+        width={180}
+        height={180}
+      />
+      <Image
+        className="absolute bottom-0 left-0"
+        src="/PixelsHero2.png"
+        alt="Pixels"
+        title="Pixels"
+        width={180}
+        height={180}
+      />
     </div>
   );
 };

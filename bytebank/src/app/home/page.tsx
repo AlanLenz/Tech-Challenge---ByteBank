@@ -1,3 +1,4 @@
+import ExtractPreview from "@/components/ExtractPreview";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import SideMenu from "@/components/SideMenu";
@@ -13,7 +14,7 @@ export default function Home() {
             <Hero />
             <div className="w-[100%] bg-[#CBCBCB] rounded-lg p-8 h-[478px]" />
           </div>
-          <div className="max-w-[282px] w-[100%] bg-white rounded-lg" />
+          <ExtractPreview />
         </div>
       </div>
     </div>
