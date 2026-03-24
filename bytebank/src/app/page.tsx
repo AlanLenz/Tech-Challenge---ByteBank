@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Gift, Landmark, Star, Smartphone, Instagram, Youtube } from 'lucide-react';
 
-export default function Home() {
+export default function Welcome() {
   return (
     <div className="min-h-screen font-sans selection:bg-green-200">
       {/* Fundo com Gradiente Conforme a Imagem */}
