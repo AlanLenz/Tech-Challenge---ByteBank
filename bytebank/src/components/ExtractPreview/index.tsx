@@ -1,3 +1,4 @@
+import Link from "next/link";
 
 const ExtractPreview = () => {
 
@@ -36,7 +37,7 @@ const ExtractPreview = () => {
     <div className="max-w-[282px] w-[100%] bg-white rounded-lg p-6 self-start">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-black font-bold text-[26px]">Extrato</h2>
-        <a className="text-black font-semibold decoration-1 underline text-[14px] cursor-pointer">Ver mais!</a>
+        <Link href="/extract" className="text-black font-semibold decoration-1 underline text-[14px] cursor-pointer">Ver mais!</Link>
       </div>
       <ul className="space-y-4">
         {extractData.map((item) => (
