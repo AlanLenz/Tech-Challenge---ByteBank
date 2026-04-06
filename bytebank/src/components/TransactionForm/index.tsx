@@ -1,34 +1,43 @@
 'use client'
 
-import { useState } from "react"
-import { SelectInput } from "@/src/components/SelectInput"
-import { TextInput } from "@/src/components/TextInput"
-import { Button } from "@/src/components/Buttom"
+import { useState } from 'react'
+import SelectInput from './SelectInput'
+import TextInput from './TextInput'
+import Button from './Button'
+import Card from './Card'
 
-export function TransactionForm() {
-  const [type, setType] = useState("")
-  const [amount, setAmount] = useState("")
+export default function TransactionForm() {
+  const [type, setType] = useState('')
+  const [value, setValue] = useState('')
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+
+    console.log({
+      type,
+      value
+    })
+  }
 
   return (
-    <div className="p-4 bg-light rounded">
-      <h2 className="mb-3">Nova transação</h2>
+    <Card>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <h2 className="text-lg font-semibold">Nova transação</h2>
 
-      <SelectInput
-        value={type}
-        onChange={(e) => setType(e.target.value)}
-        options={[
-          { value: "deposit", label: "Depósito" },
-          { value: "transfer", label: "Transferência" }
-        ]}
-      />
+        <SelectInput
+          label="Tipo de transação"
+          value={type}
+          onChange={setType}/>
 
-      <TextInput
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        placeholder="00,00"
-      />
+        <TextInput
+          label="Valor"
+          value={value}
+          onChange={setValue}/>
 
-      <Button>Concluir transação</Button>
-    </div>
+        <Button type="submit">
+          Concluir transação
+        </Button>
+      </form>
+    </Card>
   )
 }
