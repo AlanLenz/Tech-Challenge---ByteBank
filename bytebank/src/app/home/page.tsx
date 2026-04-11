@@ -2,6 +2,7 @@ import ExtractPreview from "@/components/ExtractPreview";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import SideMenu from "@/components/SideMenu";
+import TransactionForm from "@/components/TransactionForm";
 
 export default function Home() {
   return (
@@ -12,7 +13,9 @@ export default function Home() {
           <SideMenu />
           <div className="w-[100%] flex flex-col gap-6">
             <Hero />
-            <div className="w-[100%] bg-[#CBCBCB] rounded-lg p-8 h-[478px]" />
+              <div className="w-[100%] bg-[#CBCBCB] rounded-lg p-8 h-[478px]">
+                <TransactionForm />
+              </div>          
           </div>
           <ExtractPreview />
         </div>
