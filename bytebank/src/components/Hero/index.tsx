@@ -1,7 +1,12 @@
+"use client";
+
+import { useState } from 'react';
 import Image from 'next/image';
-import { Eye } from 'lucide-react';
+import { Eye, EyeClosed } from 'lucide-react';
 
 const Hero = () => {
+  const [showValue, setShowValue] = useState(false);
+
   return (
     <div className="relative w-[100%] bg-[#004D61] rounded-lg p-8 h-[400px]">
       <p className="text-white text-[24px] font-semibold mb-4">Olá, Joana! :)</p>
@@ -10,11 +15,15 @@ const Hero = () => {
         <div className="w-[190px]">
           <div className="flex gap-6 items-center">
             <p className="text-white text-[20px] font-semibold">Saldo</p>
-            <Eye className="w-5 h-5 text-white cursor-pointer" />
+            {showValue ? (
+              <Eye className="w-5 h-5 text-white cursor-pointer" onClick={() => setShowValue(false)} />
+            ) : (
+              <EyeClosed className="w-5 h-5 text-white cursor-pointer" onClick={() => setShowValue(true)} />
+            )}
           </div>
           <div className="w-[100%] h-[1px] bg-white my-4" />
           <p className="text-white text-[14px] font-normal">Conta Corrente</p>
-          <p className="text-white text-[32px] font-normal">R$ 2.500,00</p>
+          <p className="text-white text-[32px] font-normal">{showValue ? 'R$ 2.500,00' : '****'}</p>
         </div>
       </div>
       <Image
