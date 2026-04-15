@@ -82,8 +82,8 @@ const TransferList = () => {
   };
 
   return (
-    <section className="w-full bg-white rounded-lg p-8 min-h-[478px]">
-      <div className="flex justify-between items-center border-b border-gray-200 pb-4 mb-6">
+    <section className="w-full bg-white rounded-lg p-4 sm:p-6 lg:p-8 min-h-[478px]">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 border-b border-gray-200 pb-4 mb-6">
         <div>
           <h2 className="text-black text-[28px] font-bold">Transferencias</h2>
           <p className="text-gray-500 text-[14px]">Gerencie, edite e exclua lancamentos do extrato.</p>
@@ -96,7 +96,7 @@ const TransferList = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <div className="bg-[#E4EDE3] rounded-md p-3">
           <p className="text-[12px] text-gray-600">Depositos</p>
           <p className="text-[18px] font-semibold text-[#1C7C30]">{formatCurrency(totals.deposits)}</p>
@@ -118,8 +118,8 @@ const TransferList = () => {
           return (
             <article key={item.id} className="border border-gray-200 rounded-lg p-4">
               {isEditing ? (
-                <div className="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
-                  <label className="md:col-span-2">
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3 items-end">
+                  <label className="lg:col-span-2">
                     <span className="text-[12px] text-gray-500">Descricao</span>
                     <input
                       value={draft.description}
@@ -168,7 +168,7 @@ const TransferList = () => {
                       className="text-black w-full border border-gray-300 rounded-md px-3 py-2 text-[14px]"
                     />
                   </label>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 md:col-span-2 lg:col-span-1">
                     <button
                       type="button"
                       onClick={() => saveEdit(item.id)}
@@ -188,8 +188,8 @@ const TransferList = () => {
                   </div>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-center">
-                  <div className="md:col-span-2">
+                <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_auto] lg:grid-cols-5 gap-3 items-center">
+                  <div className="lg:col-span-2">
                     <p className="text-black font-semibold text-[16px]">{item.description}</p>
                     <p className="text-[13px] text-gray-500">{item.type === "Deposit" ? "Deposito" : "Transferencia"}</p>
                   </div>
