@@ -1,6 +1,7 @@
 "use client";
 import Button from "../TransactionForm/Button";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type Props = {
   open: boolean;
   type: "success" | "error";

@@ -1,6 +1,5 @@
 "use client";
 
-import { useTransfers } from "@/hooks/useTransfers";
 import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
 
@@ -10,14 +9,25 @@ import Button from "./Button";
 import Card from "./Card";
 import FeedbackModal from "../FeedbackModal";
 
-export default function TransactionForm() {
-  const [type, setType] = useState("");
+type Transfer = {
+  id: string;
+  description: string;
+  amount: number;
+  date: string;
+  type: "Deposit" | "Transfer";
+};
+
+//eslint-disable-next-line @typescript-eslint/no-unused-vars
+type Props = {
+  onAddTransfer: (transfer: Transfer) => void;
+};
+
+export default function TransactionForm({ onAddTransfer }: Props) {
+  const [type, setType] = useState<"Deposit" | "Transfer" | "">("");
   const [value, setValue] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"success" | "error">("success");
   const [modalMessage, setModalMessage] = useState("");
-
-  const { addTransfer } = useTransfers();
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -27,12 +37,12 @@ export default function TransactionForm() {
         throw new Error("Preencha corretamente os campos");
       }
 
-      addTransfer({
+      onAddTransfer({
         id: uuidv4(),
         description: "Transação",
         amount: Number(value),
         date: new Date().toISOString(),
-        type: type as "Deposit" | "Transfer",
+        type: type,
       });
 
       setModalType("success");
@@ -63,8 +73,7 @@ export default function TransactionForm() {
         <SelectInput
           label="Tipo de transação"
           value={type}
-          onChange={setType}
-        />
+          onChange={(value) => setType(value as "Deposit" | "Transfer")}/>
 
         <TextInput
           label="Valor"

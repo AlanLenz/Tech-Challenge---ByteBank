@@ -1,21 +1,32 @@
 "use client";
 
 import { useState } from "react";
-import { Transfer } from "@/types/transfer";
+
+export type Transfer = {
+  id: string;
+  description: string;
+  amount: number;
+  date: string;
+  type: "Deposit" | "Transfer";
+};
 
 export function useTransfers() {
   const [transfers, setTransfers] = useState<Transfer[]>(() => {
-    if (typeof window === "undefined") return [];
-
-    const stored = localStorage.getItem("transfers");
-    return stored ? JSON.parse(stored) : [];
+    try {
+      const stored = localStorage.getItem("transfers");
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
   });
 
-  function addTransfer(transfer: Transfer) {
-    const updated = [...transfers, transfer];
-    setTransfers(updated);
-    localStorage.setItem("transfers", JSON.stringify(updated));
-  }
+  const onAddTransfer = (transfer: Transfer) => {
+    setTransfers((prev) => {
+      const updated = [...prev, transfer];
+      localStorage.setItem("transfers", JSON.stringify(updated));
+      return updated;
+    });
+  };
 
-  return { transfers, addTransfer };
+  return { transfers, onAddTransfer };
 }
