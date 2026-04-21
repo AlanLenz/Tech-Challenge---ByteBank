@@ -1,9 +1,16 @@
 "use client"
 
 import * as React from "react"
+import { useState } from "react" // Importação necessária para gerenciar estado
 import { cn } from "@/lib/utils"
 import { useRouter } from 'next/navigation'
 import { useMediaQuery } from "@custom-react-hooks/use-media-query"
+
+// Importações do Firebase
+import { signInWithEmailAndPassword } from "firebase/auth";
+// IMPORTANTE: Ajuste o caminho abaixo para onde o seu arquivo de configuração do Firebase está localizado
+import { auth } from "@/lib/firebase";
+
 import {
   Dialog,
   DialogContent,
@@ -39,7 +46,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
           <DialogHeader>
             <DialogTitle>Acesse sua conta</DialogTitle>
             <DialogDescription>
-              Insira seus dados abaixo para acessar o Bytebank.
+              Insira seus dados abaixo para acessar a Gestão Financeira.
             </DialogDescription>
           </DialogHeader>
           <LoginForm />
@@ -54,7 +61,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         <DrawerHeader className="text-left">
           <DrawerTitle>Acesse sua conta</DrawerTitle>
           <DrawerDescription>
-            Insira seus dados abaixo para acessar o Bytebank.
+            Insira seus dados abaixo para acessar a Gestão Financeira.
           </DrawerDescription>
         </DrawerHeader>
         <LoginForm className="px-4" />
@@ -75,27 +82,69 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
 function LoginForm({ className }: React.ComponentProps<"form">) {
   const router = useRouter();
-  const handleSubmit = (e: React.FormEvent) => {
+
+  // Estados para capturar os inputs e tratar carregamento/erros
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login validado!");
-    router.push('/home');
+    setError(""); // Limpa erros antigos ao tentar novamente
+    setIsLoading(true); // Desabilita o botão enquanto carrega
+
+    try {
+      // Chama a autenticação do Firebase
+      await signInWithEmailAndPassword(auth, email, password);
+
+      console.log("Login validado com Firebase!");
+      router.push('/home'); // Redireciona em caso de sucesso
+    } catch (err: any) {
+      console.error(err);
+      // Tratamento básico de erro (você pode customizar a mensagem baseada no err.code)
+      setError("Email ou senha inválidos. Tente novamente.");
+    } finally {
+      setIsLoading(false); // Reabilita o botão
+    }
   };
 
   return (
     <form className={cn("grid items-start gap-6", className)} onSubmit={handleSubmit}>
+
       <div className="grid gap-3">
         <Label htmlFor="email">Email</Label>
-        <Input type="email" id="email" placeholder="seu@email.com" />
+        <Input
+          type="email"
+          id="email"
+          placeholder="seu@email.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
       </div>
+
       <div className="grid gap-3">
         <Label htmlFor="password">Senha</Label>
-        <Input type="password" id="password" placeholder="••••••••" />
+        <Input
+          type="password"
+          id="password"
+          placeholder="••••••••"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
       </div>
+
+      {/* Exibe a mensagem de erro, se houver */}
+      {error && <p className="text-red-500 text-sm font-bold text-center">{error}</p>}
+
       <Button
         type="submit"
-        className="bg-[#47a138] text-black font-bold hover:bg-opacity-90 w-full"
-        onClick={() => router.push('/home')}>
-        Entrar
+        disabled={isLoading}
+        className="cursor-pointer bg-[#47a138] text-black font-bold hover:bg-opacity-90 w-full disabled:bg-gray-400 disabled:cursor-not-allowed transition-all"
+      >
+        {isLoading ? "Entrando..." : "Entrar"}
       </Button>
     </form>
   )
