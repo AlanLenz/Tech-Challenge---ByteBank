@@ -6,6 +6,7 @@ import ExtractPreview from "@/components/ExtractPreview";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import SideMenu from "@/components/SideMenu";
+import MobileMenu from "@/components/MobileMenu";
 import TransactionForm from "@/components/TransactionForm";
 
 export default function Home() {
@@ -17,19 +18,26 @@ export default function Home() {
         <Header />
 
         <div className="container mx-auto flex gap-6 p-6 items-stretch flex-1">
-          <SideMenu />
+          <div className="hidden md:flex md:flex-col">
+            <SideMenu />
 
+          </div>
           <div className="w-[100%] flex flex-col gap-6">
+            <div className="w-full">
+              <MobileMenu />
+            </div>
             <Hero />
 
             <div className="w-[100%] bg-[#CBCBCB] rounded-lg p-8 h-[478px]">
               <TransactionForm onAddTransfer={onAddTransfer} />
             </div>
           </div>
-
+          <div className="hidden md:flex md:flex-col">
+  
           <ExtractPreview transfers={transfers} />
+          </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

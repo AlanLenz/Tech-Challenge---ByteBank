@@ -19,7 +19,7 @@ const ExtractPreview = ({ transfers = [] }: Props) => {
   .sort((a, b) => new Date (b.date).getTime() - new Date(a.date).getTime())
   .slice(0, 5);
   return (
-    <div className="max-w-[282px] w-[100%] bg-white rounded-lg p-6 self-start">
+    <div className="w-[100%] bg-white rounded-lg p-6 self-start">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-black font-bold text-[26px]">Extrato</h2>
         <Link
