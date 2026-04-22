@@ -14,8 +14,8 @@ export default function SelectInput({ label, value, onChange }: Props) {
       onChange={(e) => onChange(e.target.value)}
       className="bg-white border border-gray-300 rounded-md p-3 outline-none focus:border-[#004D61]">
         <option value="">Selecione</option>
-        <option value="deposito">Depósito</option>
-        <option value="transferencia">Transferência</option>
+        <option value="Deposit">Depósito</option>
+        <option value="Transfer">Transferência</option>
       </select>
     </div>
   )

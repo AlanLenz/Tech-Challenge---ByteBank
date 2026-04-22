@@ -1,16 +1,40 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // Importamos o useEffect
 import Image from 'next/image';
 import { Eye, EyeClosed } from 'lucide-react';
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 const Hero = () => {
   const [showValue, setShowValue] = useState(false);
+  // Novo estado para guardar o nome do usuário
+  const [nomeUsuario, setNomeUsuario] = useState("Usuário"); 
+
+  const current = new Date().toLocaleDateString('en-GB');
+  const dia = new Date().toLocaleDateString('pt-BR', { weekday: 'long' });
+
+  // Efeito para buscar os dados do usuário no Firebase
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user && user.displayName) {
+        // Pega apenas o primeiro nome da pessoa para a saudação
+        const primeiroNome = user.displayName.split(' ')[0];
+        setNomeUsuario(primeiroNome);
+      } else {
+        setNomeUsuario("Usuário");
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <div className="relative w-[100%] bg-[#004D61] rounded-lg p-8 h-[400px]">
-      <p className="text-white text-[24px] font-semibold mb-4">Olá, Joana! :)</p>
-      <p className="text-white text-[14px] font-normal">Quinta-feira, 08/09/2024</p>
+      {/* Aqui substituímos 'Joana' pela variável dinâmica */}
+      <p className="text-white text-[24px] font-semibold mb-4">Olá, {nomeUsuario}! :)</p>
+      <p className="text-white text-[14px] font-normal capitalize">{dia}, {current}</p>
+      
       <div className="w-[100%] flex justify-end pr-20">
         <div className="w-[190px]">
           <div className="flex gap-6 items-center">
@@ -26,6 +50,7 @@ const Hero = () => {
           <p className="text-white text-[32px] font-normal">{showValue ? 'R$ 2.500,00' : '****'}</p>
         </div>
       </div>
+      
       <Image
         className="absolute bottom-6 left-8"
         src="/IllustrationHero.png"

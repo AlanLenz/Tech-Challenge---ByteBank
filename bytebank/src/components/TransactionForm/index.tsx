@@ -1,22 +1,68 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import SelectInput from './SelectInput'
-import TextInput from './TextInput'
-import Button from './Button'
-import Card from './Card'
+import { v4 as uuidv4 } from "uuid";
+import { useState } from "react";
 
-export default function TransactionForm() {
-  const [type, setType] = useState('')
-  const [value, setValue] = useState('')
+import SelectInput from "./SelectInput";
+import TextInput from "./TextInput";
+import Button from "./Button";
+import Card from "./Card";
+import FeedbackModal from "../FeedbackModal";
+
+type Transfer = {
+  id: string;
+  description: string;
+  amount: number;
+  date: string;
+  type: "Deposit" | "Transfer";
+};
+
+//eslint-disable-next-line @typescript-eslint/no-unused-vars
+type Props = {
+  onAddTransfer: (transfer: Transfer) => void;
+};
+
+export default function TransactionForm({ onAddTransfer }: Props) {
+  const [type, setType] = useState<"Deposit" | "Transfer" | "">("");
+  const [value, setValue] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<"success" | "error">("success");
+  const [modalMessage, setModalMessage] = useState("");
 
   function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+    e.preventDefault();
 
-    console.log({
-      type,
-      value
-    })
+    try {
+      if (!type || !value || isNaN(Number(value))) {
+        throw new Error("Preencha corretamente os campos");
+      }
+
+      onAddTransfer({
+        id: uuidv4(),
+        description: "Transação",
+        amount: Number(value),
+        date: new Date().toISOString(),
+        type: type,
+      });
+
+      setModalType("success");
+      setModalMessage("Transação realizada com sucesso!");
+      setModalOpen(true);
+
+      setType("");
+      setValue("");
+
+    } catch (error: unknown) {
+      setModalType("error");
+
+      if (error instanceof Error) {
+        setModalMessage(error.message);
+      } else {
+        setModalMessage("Erro inesperado");
+      }
+
+      setModalOpen(true);
+    }
   }
 
   return (
@@ -27,17 +73,25 @@ export default function TransactionForm() {
         <SelectInput
           label="Tipo de transação"
           value={type}
-          onChange={setType}/>
+          onChange={(value) => setType(value as "Deposit" | "Transfer")}/>
 
         <TextInput
           label="Valor"
           value={value}
-          onChange={setValue}/>
+          onChange={setValue}
+        />
 
         <Button type="submit">
           Concluir transação
         </Button>
+
+        <FeedbackModal
+          open={modalOpen}
+          type={modalType}
+          message={modalMessage}
+          onClose={() => setModalOpen(false)}
+        />
       </form>
     </Card>
-  )
+  );
 }

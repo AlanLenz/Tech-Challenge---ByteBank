@@ -1,7 +1,14 @@
 import Header from "@/components/Header";
+import FooterCustom from '@/components/Footer';
 import SideMenu from "@/components/SideMenu";
 import TransferList from "@/components/TransferList";
 import MobileMenu from "@/components/MobileMenu";
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Extrato | Fluxo - Gestão Financeira',
+  description: '...',
+}
 
 export default function Extract() {
   return (
@@ -18,6 +25,7 @@ export default function Extract() {
           </div>
         </div>
       </div>
+      <FooterCustom/>
     </div>
   );
 }
