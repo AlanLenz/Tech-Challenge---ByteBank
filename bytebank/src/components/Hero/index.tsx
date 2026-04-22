@@ -5,8 +5,10 @@ import Image from 'next/image';
 import { Eye, EyeClosed } from 'lucide-react';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import { useThemeColors } from "@/hooks/useThemeColors";
 
 const Hero = () => {
+  const { primary, white } = useThemeColors();
   const [showValue, setShowValue] = useState(false);
   // Novo estado para guardar o nome do usuário
   const [nomeUsuario, setNomeUsuario] = useState("Usuário"); 
@@ -30,7 +32,7 @@ const Hero = () => {
   }, []);
 
   return (
-    <div className="relative w-[100%] bg-[#004D61] rounded-lg p-8 h-[400px]">
+    <div className="relative w-[100%] rounded-lg p-8 h-[400px]" style={{ backgroundColor: primary }}>
       {/* Aqui substituímos 'Joana' pela variável dinâmica */}
       <p className="text-white text-[24px] font-semibold mb-4">Olá, {nomeUsuario}! :)</p>
       <p className="text-white text-[14px] font-normal capitalize">{dia}, {current}</p>

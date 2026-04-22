@@ -1,3 +1,6 @@
+"use client";
+
+import { useThemeColors } from "@/hooks/useThemeColors";
 
 interface MenuItemProps {
   label: string;
@@ -7,12 +10,14 @@ interface MenuItemProps {
 }
 
 const MenuItem = ({ label, href, isActive, hasDivider = true }: MenuItemProps) => {
+  const { primary } = useThemeColors();
+
   return (
     <li className="text-center">
-      <a href={href} className={`text-[#004D61] font-${isActive ? "bold" : "normal"} text-[16px]`}>
+      <a href={href} className={`text-[16px] ${isActive ? "font-bold" : "font-normal"}`} style={{ color: primary }}>
         {label}
       </a>
-      {hasDivider && <div className="w-full h-[1px] bg-[#004D61] my-4" />}
+      {hasDivider && <div className="w-full h-[1px] my-4" style={{ backgroundColor: primary }} />}
     </li>
   );
 };

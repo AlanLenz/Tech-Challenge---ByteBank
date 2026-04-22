@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useThemeColors } from "@/hooks/useThemeColors";
 
 type Transfer = {
   id: string;
@@ -15,6 +16,8 @@ type Props = {
 };
 
 const ExtractPreview = ({ transfers = [] }: Props) => {
+  const { deposit, transfer, textMuted, black } = useThemeColors();
+
   const lastTransfers = [...transfers]
   .sort((a, b) => new Date (b.date).getTime() - new Date(a.date).getTime())
   .slice(0, 5);
@@ -36,23 +39,20 @@ const ExtractPreview = ({ transfers = [] }: Props) => {
             
            
             <div className="flex justify-between items-center">
-              <p className="text-black text-[16px]">
+              <p className="text-[16px]" style={{ color: black }}>
                 {item.type === "Deposit"
                   ? "Depósito"
                   : "Transferência"}
               </p>
 
-              <p className="text-gray-500 text-[12px]">
+              <p className="text-[12px]" style={{ color: textMuted }}>
                 {new Date(item.date).toLocaleDateString("pt-BR")}
               </p>
             </div>
 
             <p
-              className={`text-[14px] font-semibold ${
-                item.type === "Deposit"
-                  ? "text-green-500"
-                  : "text-red-500"
-              }`}
+              className="text-[14px] font-semibold"
+              style={{ color: item.type === "Deposit" ? deposit : transfer }}
             >
               R$ {item.amount}
             </p>

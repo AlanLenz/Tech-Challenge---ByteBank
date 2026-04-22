@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransfers } from "@/hooks/useTransfers";
+import { useThemeColors } from "@/hooks/useThemeColors";
 
 import ExtractPreview from "@/components/ExtractPreview";
 import Header from "@/components/Header";
@@ -11,10 +12,11 @@ import TransactionForm from "@/components/TransactionForm";
 
 export default function Home() {
   const { transfers, onAddTransfer } = useTransfers();
+  const { backgroundPage, backgroundCard } = useThemeColors();
 
   return (
     <div className="min-h-screen font-sans">
-      <div className="bg-[#E4EDE3] flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen" style={{ backgroundColor: backgroundPage }}>
         <Header />
 
         <div className="container mx-auto flex gap-6 p-6 items-stretch flex-1">
@@ -28,7 +30,7 @@ export default function Home() {
             </div>
             <Hero />
 
-            <div className="w-[100%] bg-[#CBCBCB] rounded-lg p-8 h-[478px]">
+            <div className="w-[100%] rounded-lg p-8 h-[478px]" style={{ backgroundColor: backgroundCard }}>
               <TransactionForm onAddTransfer={onAddTransfer} />
             </div>
           </div>
