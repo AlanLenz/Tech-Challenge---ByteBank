@@ -15,12 +15,14 @@ import {
 } from "@/components/ui/drawer"
 
 // --- Importações do Firebase ---
-import { auth } from "@/lib/firebase"; // Ajuste o caminho se necessário
+import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
+import { useThemeColors } from "@/hooks/useThemeColors";
 
 export default function Header() {
   const router = useRouter();
   const isDesktop = useMediaQuery("(min-width: 768px)")
+  const { primary, highlight } = useThemeColors();
   
   // Estados dos modais
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -60,8 +62,8 @@ export default function Header() {
               <Image src="/logo.png" alt="Logomarca" width={150} height={83}/>
             </div>
             <div className="hidden md:flex gap-6">
-              <a href="#sobre" className="text-[#004D61] font-bold hover:text-[#47a138] transition">Sobre</a>
-              <a href="#servicos" className="text-[#004D61] font-bold hover:text-[#47a138] transition">Serviços</a>
+              <a href="#sobre" className="font-bold transition" style={{ color: primary }}>Sobre</a>
+              <a href="#servicos" className="font-bold transition" style={{ color: primary }}>Serviços</a>
             </div>
           </div>
 
@@ -86,10 +88,10 @@ export default function Header() {
             ) : (
                // Se NÃO logado: Mostra botões de Cadastro e Login
                <>
-                 <button onClick={() => setIsRegisterModalOpen(true)} className="cursor-pointer bg-[#47a138] text-black font-bold px-6 py-2 rounded hover:bg-[#004D61] hover:text-white hover:bg-opacity-90 transition">
+                 <button onClick={() => setIsRegisterModalOpen(true)} style={{ backgroundColor: primary, color: highlight }} className="cursor-pointer font-bold px-6 py-2 rounded hover:bg-opacity-90 transition">
                    Abrir minha conta
                  </button>
-                 <button onClick={() => setIsLoginModalOpen(true)} className="cursor-pointer border-2 border-[#004D61] text-[#004D61] font-bold px-6 py-2 rounded hover:bg-[#47a138] hover:border-[#47a138] hover:text-white transition">
+                 <button onClick={() => setIsLoginModalOpen(true)} className="cursor-pointer font-bold px-6 py-2 rounded border-2 hover:bg-[#47a138] hover:text-white transition" style={{ borderColor: primary, color: primary }}>
                    Já tenho conta
                  </button>
                </>

@@ -10,6 +10,7 @@ export const colors = {
   backgroundPage: "#E4EDE3",
   backgroundCard: "#CBCBCB",
   backgroundTransfer: "#F7ECEC",
+  gradientMid: "#00767c",
 } as const;
 
 export type ThemeColors = typeof colors;
