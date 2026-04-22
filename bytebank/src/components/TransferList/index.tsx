@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Pencil, Trash2, Check, X } from "lucide-react";
 import type { Transfer, TransferType } from "@/types/transfer";
 import { formatDate, formatCurrency } from "@/utils/format";
+import { useThemeColors } from "@/hooks/useThemeColors";
 
 const initialTransfers: Transfer[] = [
   { id: "1", description: "Compra no Supermercado", amount: 150, date: "2025-08-18", type: "Deposit" },
@@ -15,6 +16,7 @@ const initialTransfers: Transfer[] = [
 ];
 
 const TransferList = () => {
+  const { deposit, transfer, highlight, backgroundPage, backgroundTransfer, black, textMuted, white, primary } = useThemeColors();
   const [transfers, setTransfers] = useState<Transfer[]>(initialTransfers);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState<Omit<Transfer, "id">>({
@@ -85,29 +87,29 @@ const TransferList = () => {
     <section className="w-full bg-white rounded-lg p-4 sm:p-6 lg:p-8 min-h-[478px]">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 border-b border-gray-200 pb-4 mb-6">
         <div>
-          <h2 className="text-black text-[28px] font-bold">Transferencias</h2>
-          <p className="text-gray-500 text-[14px]">Gerencie, edite e exclua lancamentos do extrato.</p>
+          <h2 className="text-[28px] font-bold" style={{ color: black }}>Transferencias</h2>
+          <p className="text-[14px]" style={{ color: textMuted }}>Gerencie, edite e exclua lancamentos do extrato.</p>
         </div>
         <div className="text-right">
-          <p className="text-[13px] text-gray-500">Saldo liquido</p>
-          <p className="text-[20px] font-semibold text-black">
+          <p className="text-[13px]" style={{ color: textMuted }}>Saldo liquido</p>
+          <p className="text-[20px] font-semibold" style={{ color: black }}>
             {formatCurrency(totals.deposits - totals.transfers)}
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <div className="bg-[#E4EDE3] rounded-md p-3">
+        <div className="rounded-md p-3" style={{ backgroundColor: backgroundPage }}>
           <p className="text-[12px] text-gray-600">Depositos</p>
-          <p className="text-[18px] font-semibold text-[#1C7C30]">{formatCurrency(totals.deposits)}</p>
+          <p className="text-[18px] font-semibold" style={{ color: deposit }}>{formatCurrency(totals.deposits)}</p>
         </div>
-        <div className="bg-[#F7ECEC] rounded-md p-3">
+        <div className="rounded-md p-3" style={{ backgroundColor: backgroundTransfer }}>
           <p className="text-[12px] text-gray-600">Transferencias</p>
-          <p className="text-[18px] font-semibold text-[#B42318]">{formatCurrency(totals.transfers)}</p>
+          <p className="text-[18px] font-semibold" style={{ color: transfer }}>{formatCurrency(totals.transfers)}</p>
         </div>
-        <div className="bg-[#EEF2FF] rounded-md p-3">
+        <div className="rounded-md p-3" style={{ backgroundColor: highlight }}>
           <p className="text-[12px] text-gray-600">Registros</p>
-          <p className="text-[18px] font-semibold text-black">{transfers.length}</p>
+          <p className="text-[18px] font-semibold" style={{ color: black }}>{transfers.length}</p>
         </div>
       </div>
 
@@ -172,7 +174,8 @@ const TransferList = () => {
                     <button
                       type="button"
                       onClick={() => saveEdit(item.id)}
-                      className="cursor-pointer inline-flex items-center justify-center gap-1 px-3 py-2 rounded-md bg-[#47A138] text-white text-[13px] font-semibold"
+                      className="cursor-pointer inline-flex items-center justify-center gap-1 px-3 py-2 rounded-md text-[13px] font-semibold"
+                      style={{ backgroundColor: primary, color: white }}
                     >
                       <Check className="w-4 h-4" />
                       Salvar
@@ -194,7 +197,7 @@ const TransferList = () => {
                     <p className="text-[13px] text-gray-500">{item.type === "Deposit" ? "Deposito" : "Transferencia"}</p>
                   </div>
                   <p className="text-[14px] text-gray-600">{formatDate(item.date)}</p>
-                  <p className={`text-[15px] font-semibold ${item.type === "Deposit" ? "text-[#1C7C30]" : "text-[#B42318]"}`}>
+                  <p className="text-[15px] font-semibold" style={{ color: item.type === "Deposit" ? deposit : transfer }}>
                     {item.type === "Transfer" ? "- " : ""}
                     {formatCurrency(item.amount)}
                   </p>
@@ -210,7 +213,8 @@ const TransferList = () => {
                     <button
                       type="button"
                       onClick={() => deleteTransfer(item.id)}
-                      className="cursor-pointer inline-flex items-center gap-1 px-3 py-2 rounded-md bg-[#B42318] text-white text-[13px]"
+                      className="cursor-pointer inline-flex items-center gap-1 px-3 py-2 rounded-md text-[13px]"
+                      style={{ backgroundColor: transfer, color: white }}
                     >
                       <Trash2 className="w-4 h-4" />
                       Excluir

@@ -1,6 +1,7 @@
 "use client";
 import Image from 'next/image';
 import { Instagram, Youtube } from 'lucide-react';
+import { useThemeColors } from "@/hooks/useThemeColors";
 
 interface FeatureProps {
     icon: React.ReactNode;
@@ -9,8 +10,10 @@ interface FeatureProps {
 }
 
 const FooterCustom = () => {
+    const { primary } = useThemeColors();
+
     return (
-        <footer className="bg-[#004D61] text-white py-16">
+        <footer className="text-white py-16" style={{ backgroundColor: primary }}>
             <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12">
                 <div>
                     <h4 className="font-bold mb-4">Serviços</h4>

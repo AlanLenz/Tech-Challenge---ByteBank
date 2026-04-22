@@ -1,4 +1,4 @@
-const colors = {
+export const colors = {
   primary: "#004D61",
   secondary: "#00474b",
   deposit: "#1C7C30",
@@ -9,6 +9,7 @@ const colors = {
   black: "#000000",
   backgroundPage: "#E4EDE3",
   backgroundCard: "#CBCBCB",
+  backgroundTransfer: "#F7ECEC",
 } as const;
 
 export type ThemeColors = typeof colors;
