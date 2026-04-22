@@ -6,17 +6,17 @@ import type { Transfer, TransferType } from "@/types/transfer";
 import { formatDate, formatCurrency } from "@/utils/format";
 
 const initialTransfers: Transfer[] = [
-  { id: 1, description: "Compra no Supermercado", amount: 150, date: "2025-08-18", type: "Deposit" },
-  { id: 2, description: "Consulta Medica", amount: 100, date: "2025-10-21", type: "Deposit" },
-  { id: 3, description: "Pix para Maria", amount: 50, date: "2025-11-02", type: "Deposit" },
-  { id: 4, description: "Restaurante", amount: 500, date: "2025-11-21", type: "Transfer" },
-  { id: 5, description: "Pagamento de Assinatura", amount: 69.9, date: "2025-12-03", type: "Transfer" },
-  { id: 6, description: "Reembolso", amount: 120, date: "2025-12-12", type: "Deposit" },
+  { id: "1", description: "Compra no Supermercado", amount: 150, date: "2025-08-18", type: "Deposit" },
+  { id: "2", description: "Consulta Medica", amount: 100, date: "2025-10-21", type: "Deposit" },
+  { id: "3", description: "Pix para Maria", amount: 50, date: "2025-11-02", type: "Deposit" },
+  { id: "4", description: "Restaurante", amount: 500, date: "2025-11-21", type: "Transfer" },
+  { id: "5", description: "Pagamento de Assinatura", amount: 69.9, date: "2025-12-03", type: "Transfer" },
+  { id: "6", description: "Reembolso", amount: 120, date: "2025-12-12", type: "Deposit" },
 ];
 
 const TransferList = () => {
   const [transfers, setTransfers] = useState<Transfer[]>(initialTransfers);
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState<Omit<Transfer, "id">>({
     description: "",
     amount: 0,
@@ -52,7 +52,7 @@ const TransferList = () => {
     setEditingId(null);
   };
 
-  const saveEdit = (id: number) => {
+  const saveEdit = (id: string) => {
     if (!draft.description.trim() || !draft.date || draft.amount <= 0) {
       return;
     }
@@ -74,7 +74,7 @@ const TransferList = () => {
     setEditingId(null);
   };
 
-  const deleteTransfer = (id: number) => {
+  const deleteTransfer = (id: string) => {
     setTransfers((current) => current.filter((item) => item.id !== id));
     if (editingId === id) {
       setEditingId(null);
