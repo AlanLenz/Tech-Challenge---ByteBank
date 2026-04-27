@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import SelectInput from "./SelectInput";
 import TextInput from "./TextInput";
-import Button from "./Button";
+import Button from "../Button";
 import Card from "./Card";
 import FeedbackModal from "../FeedbackModal";
 
@@ -17,7 +17,6 @@ type Transfer = {
   type: "Deposit" | "Transfer";
 };
 
-//eslint-disable-next-line @typescript-eslint/no-unused-vars
 type Props = {
   onAddTransfer: (transfer: Transfer) => void;
 };
@@ -81,7 +80,7 @@ export default function TransactionForm({ onAddTransfer }: Props) {
           onChange={setValue}
         />
 
-        <Button type="submit">
+        <Button type="submit" size="lg">
           Concluir transação
         </Button>
 

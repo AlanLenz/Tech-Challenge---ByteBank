@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import Button from './Button';
+import Button from '../Button';
 
 const meta: Meta<typeof Button> = {
-  title: 'Components/TransactionForm/Button',
+  title: 'Components/Button',
   component: Button,
   parameters: {
     layout: 'centered',
