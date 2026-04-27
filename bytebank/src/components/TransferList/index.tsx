@@ -1,10 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Pencil, Trash2, Check, X } from "lucide-react";
-import type { Transfer, TransferType } from "@/types/transfer";
-import { formatDate, formatCurrency } from "@/utils/format";
+import type { Transfer } from "@/types/transfer";
+import { formatCurrency } from "@/utils/format";
 import { useThemeColors } from "@/hooks/useThemeColors";
+import TransferItem from "@/components/TransferItem";
+import SummaryCard from "@/components/SummaryCard";
 
 const initialTransfers: Transfer[] = [
   { id: "1", description: "Compra no Supermercado", amount: 150, date: "2025-08-18", type: "Deposit" },
@@ -16,7 +17,7 @@ const initialTransfers: Transfer[] = [
 ];
 
 const TransferList = () => {
-  const { deposit, transfer, highlight, backgroundPage, backgroundTransfer, black, textMuted, white, primary } = useThemeColors();
+  const { black, textMuted } = useThemeColors();
   const [transfers, setTransfers] = useState<Transfer[]>(initialTransfers);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [draft, setDraft] = useState<Omit<Transfer, "id">>({
@@ -99,132 +100,32 @@ const TransferList = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-        <div className="rounded-md p-3" style={{ backgroundColor: backgroundPage }}>
-          <p className="text-[12px] text-gray-600">Depositos</p>
-          <p className="text-[18px] font-semibold" style={{ color: deposit }}>{formatCurrency(totals.deposits)}</p>
-        </div>
-        <div className="rounded-md p-3" style={{ backgroundColor: backgroundTransfer }}>
-          <p className="text-[12px] text-gray-600">Transferencias</p>
-          <p className="text-[18px] font-semibold" style={{ color: transfer }}>{formatCurrency(totals.transfers)}</p>
-        </div>
-        <div className="rounded-md p-3" style={{ backgroundColor: highlight }}>
-          <p className="text-[12px] text-gray-600">Registros</p>
-          <p className="text-[18px] font-semibold" style={{ color: black }}>{transfers.length}</p>
-        </div>
+        <SummaryCard variant="deposit" label="Depositos" value={formatCurrency(totals.deposits)} />
+        <SummaryCard variant="transfer" label="Transferencias" value={formatCurrency(totals.transfers)} />
+        <SummaryCard variant="records" label="Registros" value={transfers.length} />
       </div>
 
       <div className="space-y-3">
-        {transfers.map((item) => {
-          const isEditing = editingId === item.id;
-
-          return (
-            <article key={item.id} className="border border-gray-200 rounded-lg p-4">
-              {isEditing ? (
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3 items-end">
-                  <label className="lg:col-span-2">
-                    <span className="text-[12px] text-gray-500">Descricao</span>
-                    <input
-                      value={draft.description}
-                      onChange={(event) => setDraft((prev) => ({ ...prev, description: event.target.value }))}
-                      className="text-black w-full border border-gray-300 rounded-md px-3 py-2 text-[14px]"
-                    />
-                  </label>
-                  <label>
-                    <span className="text-[12px] text-gray-500">Data</span>
-                    <input
-                      type="date"
-                      value={draft.date}
-                      onChange={(event) => setDraft((prev) => ({ ...prev, date: event.target.value }))}
-                      className="text-black cursor-pointer w-full border border-gray-300 rounded-md px-3 py-2 text-[14px]"
-                    />
-                  </label>
-                  <label>
-                    <span className="text-[12px] text-gray-500">Tipo</span>
-                    <select
-                      value={draft.type}
-                      onChange={(event) =>
-                        setDraft((prev) => ({
-                          ...prev,
-                          type: event.target.value as TransferType,
-                        }))
-                      }
-                      className="text-black cursor-pointer w-full border border-gray-300 rounded-md px-3 py-2 text-[14px]"
-                    >
-                      <option value="Deposit">Deposito</option>
-                      <option value="Transfer">Transferencia</option>
-                    </select>
-                  </label>
-                  <label>
-                    <span className="text-[12px] text-gray-500">Valor</span>
-                    <input
-                      type="number"
-                      min={0}
-                      step={0.01}
-                      value={draft.amount}
-                      onChange={(event) =>
-                        setDraft((prev) => ({
-                          ...prev,
-                          amount: Number(event.target.value),
-                        }))
-                      }
-                      className="text-black w-full border border-gray-300 rounded-md px-3 py-2 text-[14px]"
-                    />
-                  </label>
-                  <div className="flex gap-2 md:col-span-2 lg:col-span-1">
-                    <button
-                      type="button"
-                      onClick={() => saveEdit(item.id)}
-                      className="cursor-pointer inline-flex items-center justify-center gap-1 px-3 py-2 rounded-md text-[13px] font-semibold"
-                      style={{ backgroundColor: primary, color: white }}
-                    >
-                      <Check className="w-4 h-4" />
-                      Salvar
-                    </button>
-                    <button
-                      type="button"
-                      onClick={cancelEdit}
-                      className="text-black cursor-pointer inline-flex items-center justify-center gap-1 px-3 py-2 rounded-md border border-black text-[13px]"
-                    >
-                      <X className="w-4 h-4" />
-                      Cancelar
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_auto] lg:grid-cols-5 gap-3 items-center">
-                  <div className="lg:col-span-2">
-                    <p className="text-black font-semibold text-[16px]">{item.description}</p>
-                    <p className="text-[13px] text-gray-500">{item.type === "Deposit" ? "Deposito" : "Transferencia"}</p>
-                  </div>
-                  <p className="text-[14px] text-gray-600">{formatDate(item.date)}</p>
-                  <p className="text-[15px] font-semibold" style={{ color: item.type === "Deposit" ? deposit : transfer }}>
-                    {item.type === "Transfer" ? "- " : ""}
-                    {formatCurrency(item.amount)}
-                  </p>
-                  <div className="flex md:justify-end gap-2">
-                    <button
-                      type="button"
-                      onClick={() => startEdit(item)}
-                      className="cursor-pointer text-black inline-flex items-center gap-1 px-3 py-2 rounded-md border border-black text-[13px]"
-                    >
-                      <Pencil className="w-4 h-4" />
-                      Editar
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => deleteTransfer(item.id)}
-                      className="cursor-pointer inline-flex items-center gap-1 px-3 py-2 rounded-md text-[13px]"
-                      style={{ backgroundColor: transfer, color: white }}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      Excluir
-                    </button>
-                  </div>
-                </div>
-              )}
-            </article>
-          );
-        })}
+        {transfers.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 gap-2">
+            <p className="text-[16px] font-semibold" style={{ color: black }}>Nenhum lançamento encontrado</p>
+            <p className="text-[14px]" style={{ color: textMuted }}>Suas transações aparecerão aqui assim que forem registradas.</p>
+          </div>
+        ) : (
+          transfers.map((item) => (
+            <TransferItem
+              key={item.id}
+              item={item}
+              isEditing={editingId === item.id}
+              draft={draft}
+              onDraftChange={setDraft}
+              onSave={saveEdit}
+              onCancel={cancelEdit}
+              onEdit={startEdit}
+              onDelete={deleteTransfer}
+            />
+          ))
+        )}
       </div>
     </section>
   );

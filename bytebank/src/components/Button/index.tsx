@@ -16,6 +16,7 @@ const buttonVariants = cva(
         outline: "",
         destructive: "",
         ghost: "",
+        neutral: "",
       },
       size: {
         sm: "px-3 py-1.5 text-[13px]",
@@ -53,9 +54,14 @@ const variantStyles: Record<string, React.CSSProperties> = {
     backgroundColor: "transparent",
     color: colors.primary,
   },
+  neutral: {
+    backgroundColor: "transparent",
+    border: `1px solid ${colors.black}`,
+    color: colors.black,
+  },
 };
 
-export type ButtonVariant = "primary" | "secondary" | "outline" | "destructive" | "ghost";
+export type ButtonVariant = "primary" | "secondary" | "outline" | "destructive" | "ghost" | "neutral";
 export type ButtonSize = "sm" | "md" | "lg";
 
 export interface ButtonProps
