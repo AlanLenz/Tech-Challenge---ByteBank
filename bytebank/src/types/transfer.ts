@@ -1,7 +1,7 @@
 export type TransferType = "Deposit" | "Transfer";
 
 export type Transfer = {
-  id: string; 
+  id: string | number; 
   description: string;
   amount: number;
   date: string;
