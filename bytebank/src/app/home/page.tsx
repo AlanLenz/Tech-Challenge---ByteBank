@@ -36,7 +36,9 @@ export default function Home() {
           </div>
           <div className="hidden md:flex md:flex-col">
   
-          <ExtractPreview transfers={transfers} />
+          {transfers.length > 0 && (
+            <ExtractPreview transfers={transfers} />
+          )}
           </div>
         </div>
       </div>

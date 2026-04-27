@@ -23,7 +23,7 @@ const ExtractPreview = ({ transfers = [] }: Props) => {
   .slice(0, 5);
   return (
     <div className="w-[100%] bg-white rounded-lg p-6 self-start">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-6 gap-2">
         <h2 className="text-black font-bold text-[26px]">Extrato</h2>
         <Link
           href="/extract"
@@ -36,27 +36,22 @@ const ExtractPreview = ({ transfers = [] }: Props) => {
       {lastTransfers.map((item) => (
         <li key={item.id} className="flex flex-col">
           <div className="border-b border-gray-300 pb-2">
-            
-           
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center gap-4">
               <p className="text-[16px]" style={{ color: black }}>
                 {item.type === "Deposit"
                   ? "Depósito"
                   : "Transferência"}
               </p>
-
               <p className="text-[12px]" style={{ color: textMuted }}>
                 {new Date(item.date).toLocaleDateString("pt-BR")}
               </p>
             </div>
-
             <p
               className="text-[14px] font-semibold"
               style={{ color: item.type === "Deposit" ? deposit : transfer }}
             >
               R$ {item.amount}
             </p>
-
           </div>
         </li>
       ))}
