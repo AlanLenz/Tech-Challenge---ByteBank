@@ -20,7 +20,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useThemeColors } from "@/hooks/useThemeColors";
 
-const Header = () => {
+interface HeaderProps {
+  displayName?: string;
+}
+
+const Header = ({ displayName }: HeaderProps = {}) => {
   const { primary } = useThemeColors();
   const router = useRouter();
 
@@ -39,6 +43,8 @@ const Header = () => {
 
     return () => unsubscribe();
   }, [router]);
+
+  const resolvedName = displayName ?? user?.displayName ?? "Usuário";
 
   const handleLogout = async () => {
     try {
@@ -63,7 +69,7 @@ const Header = () => {
             <>
               <div className="flex items-center gap-3">
                 <p className="font-semibold text-[13px] hidden sm:block">
-                  {user?.displayName || "Usuário"}
+                  {resolvedName}
                 </p>
                 <UserCircle className="w-6 h-6" />
               </div>
