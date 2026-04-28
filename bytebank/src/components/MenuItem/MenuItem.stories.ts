@@ -11,6 +11,7 @@ const meta: Meta<typeof MenuItem> = {
   argTypes: {
     isActive: { control: 'boolean' },
     hasDivider: { control: 'boolean' },
+    href: { table: { disable: true } },
   },
 };
 
@@ -20,7 +21,6 @@ type Story = StoryObj<typeof meta>;
 export const Active: Story = {
   args: {
     label: 'Início',
-    href: '#',
     isActive: true,
     hasDivider: true,
   },
@@ -29,7 +29,6 @@ export const Active: Story = {
 export const Inactive: Story = {
   args: {
     label: 'Transferências',
-    href: '#',
     isActive: false,
     hasDivider: true,
   },
@@ -38,7 +37,6 @@ export const Inactive: Story = {
 export const WithoutDivider: Story = {
   args: {
     label: 'Outros serviços',
-    href: '#',
     isActive: false,
     hasDivider: false,
   },
