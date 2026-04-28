@@ -91,7 +91,7 @@ src/
 ```
 ## Capturas
 
-![App Screenshot](https://dummyimage.com/468x300?text=App+Screenshot+Here)
+![Home](../Tech-Challenge---ByteBank/bytebank/assets/Home.png)
 
 
 ## Autores
