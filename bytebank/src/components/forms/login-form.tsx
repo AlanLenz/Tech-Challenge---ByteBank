@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/dialog"
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
   DrawerFooter,
@@ -29,7 +28,7 @@ import {
 } from "@/components/ui/drawer"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
+import Button from "@/components/Button"
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -66,14 +65,9 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
         </DrawerHeader>
         <LoginForm className="px-4" />
         <DrawerFooter className="pt-2">
-          <DrawerClose asChild>
-            <button
-              onClick={onClose}
-              className="w-full border border-gray-300 font-bold text-gray-700 px-4 py-2 rounded hover:bg-gray-100 transition"
-            >
-              Cancelar
-            </button>
-          </DrawerClose>
+          <Button variant="neutral" size="sm" onClick={onClose}>
+            Cancelar
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
@@ -139,12 +133,8 @@ function LoginForm({ className }: React.ComponentProps<"form">) {
       {/* Exibe a mensagem de erro, se houver */}
       {error && <p className="text-red-500 text-sm font-bold text-center">{error}</p>}
 
-      <Button
-        type="submit"
-        disabled={isLoading}
-        className="cursor-pointer bg-[#47a138] text-black font-bold hover:bg-opacity-90 w-full disabled:bg-gray-400 disabled:cursor-not-allowed transition-all"
-      >
-        {isLoading ? "Entrando..." : "Entrar"}
+      <Button type="submit" variant="primary" size="sm" loading={isLoading}>
+        Entrar
       </Button>
     </form>
   )

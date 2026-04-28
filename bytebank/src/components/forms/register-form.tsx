@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/dialog"
 import {
     Drawer,
-    DrawerClose,
     DrawerContent,
     DrawerDescription,
     DrawerFooter,
@@ -34,7 +33,7 @@ import {
 } from "@/components/ui/field"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import Button from "@/components/Button"
 
 interface RegisterModalProps {
     isOpen: boolean;
@@ -71,13 +70,9 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                 </DrawerHeader>
                 <RegisterForm className="px-4" />
                 <DrawerFooter className="pt-2">
-                    <DrawerClose asChild>
-                        <button
-                            onClick={onClose}
-                            className="w-full border border-gray-300 font-bold text-gray-700 px-4 py-2 rounded hover:bg-gray-100 transition">
-                            Cancelar
-                        </button>
-                    </DrawerClose>
+                    <Button variant="neutral" size="sm" onClick={onClose}>
+                        Cancelar
+                    </Button>
                 </DrawerFooter>
             </DrawerContent>
         </Drawer>
@@ -189,11 +184,8 @@ function RegisterForm({ className }: React.ComponentProps<"form">) {
             {/* Exibe mensagem de erro se houver */}
             {error && <p className="text-red-500 text-sm font-bold text-center">{error}</p>}
 
-            <Button
-                type="submit"
-                disabled={!aceitouTermos || isLoading}
-                className="cursor-pointer bg-[#47a138] text-black font-bold hover:bg-opacity-90 w-full disabled:bg-gray-400 disabled:cursor-not-allowed transition-all">
-                {isLoading ? "Criando conta..." : "Criar conta"}
+            <Button type="submit" variant="primary" size="sm" loading={isLoading} disabled={!aceitouTermos}>
+                Criar conta
             </Button>
         </form>
     )

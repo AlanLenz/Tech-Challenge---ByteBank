@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'; // Adicionado useEffect
 import { useRouter } from 'next/navigation'; // Adicionado useRouter para redirecionar no logout
 import RegisterModal from '../forms/register-form';
 import LoginModal from '../forms/login-form';
-import { Button } from "@/components/ui/button";
+import Button from "@/components/Button";
 import Image from 'next/image';
 import {
   Drawer,
@@ -20,7 +20,7 @@ import { useThemeColors } from "@/hooks/useThemeColors";
 
 export default function Header({className}: {className?: string}) {
   const router = useRouter();
-  const { primary, highlight } = useThemeColors();
+  const { primary } = useThemeColors();
   
   // Estados dos modais
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -76,22 +76,19 @@ export default function Header({className}: {className?: string}) {
                  <span className="text-white font-medium hidden lg:block">
                    Olá, {user.displayName || "Usuário"}
                  </span>
-                 <button 
-                   onClick={handleLogout} 
-                   className="cursor-pointer border-2 border-red-500 text-red-500 font-bold px-6 py-2 rounded hover:bg-red-500 hover:text-white transition"
-                 >
+                 <Button variant="destructive" onClick={handleLogout}>
                    Sair
-                 </button>
+                 </Button>
                </div>
             ) : (
                // Se NÃO logado: Mostra botões de Cadastro e Login
                <>
-                 <button onClick={() => setIsRegisterModalOpen(true)} style={{ backgroundColor: primary, color: highlight }} className="cursor-pointer font-bold px-6 py-2 rounded hover:bg-opacity-90 transition">
+                 <Button variant="primary" onClick={() => setIsRegisterModalOpen(true)}>
                    Abrir minha conta
-                 </button>
-                 <button onClick={() => setIsLoginModalOpen(true)} className="cursor-pointer font-bold px-6 py-2 rounded border-2 hover:bg-[#47a138] hover:text-white transition" style={{ borderColor: primary, color: primary }}>
+                 </Button>
+                 <Button variant="secondary" onClick={() => setIsLoginModalOpen(true)}>
                    Já tenho conta
-                 </button>
+                 </Button>
                </>
             )}
           </div>
@@ -128,12 +125,12 @@ export default function Header({className}: {className?: string}) {
                   ) : user ? (
                      <>
                        <p className="text-center font-bold mb-4">Olá, {user.displayName || "Usuário"}</p>
-                       <Button onClick={handleLogout} variant="destructive">Sair da conta</Button>
+                       <Button onClick={handleLogout} variant="destructive" size="lg">Sair da conta</Button>
                      </>
                   ) : (
                      <>
-                       <Button onClick={() => setIsRegisterModalOpen(true)}>Abrir minha conta</Button>
-                       <Button onClick={() => setIsLoginModalOpen(true)} variant="outline">Já tenho conta</Button>
+                       <Button onClick={() => setIsRegisterModalOpen(true)} variant="primary" size="lg">Abrir minha conta</Button>
+                       <Button onClick={() => setIsLoginModalOpen(true)} variant="secondary" size="lg">Já tenho conta</Button>
                      </>
                   )}
                 </DrawerHeader>
