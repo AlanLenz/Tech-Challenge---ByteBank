@@ -4,7 +4,7 @@ type Props = {
   onChange: (value: string) => void
 }
 
-export default function TextInput({ label, value, onChange }: Props) {
+export default function ValueInput({ label, value, onChange }: Props) {
   return (
     <div className="flex flex-col gap-2">
       <label className="text-sm">{label}</label>
@@ -13,7 +13,7 @@ export default function TextInput({ label, value, onChange }: Props) {
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="Descreva aqui"
+        placeholder="00,00"
         className="bg-white border border-gray-300 rounded-md p-3 outline-none focus:border-[#004D61]"/>
     </div>
   )

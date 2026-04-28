@@ -185,3 +185,17 @@
     display: none;
   }
 }
+
+@media (max-width: 768px) {
+  .mobile-hidden {
+    display: none;
+  }
+  .mobile-balance {
+    justify-content: initial;
+    margin-top: 50px;
+  }
+}
+
+.text-wrap-mode-nowrap {
+  text-wrap-mode: nowrap;
+}
