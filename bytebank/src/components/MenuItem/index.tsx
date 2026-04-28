@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useThemeColors } from "@/hooks/useThemeColors";
 
 interface MenuItemProps {
@@ -14,9 +15,9 @@ const MenuItem = ({ label, href, isActive, hasDivider = true }: MenuItemProps) =
 
   return (
     <li className="text-center">
-      <a href={href} className={`text-[16px] ${isActive ? "font-bold" : "font-normal"}`} style={{ color: primary }}>
+      <Link href={href} className={`text-[16px] ${isActive ? "font-bold" : "font-normal"}`} style={{ color: primary }}>
         {label}
-      </a>
+      </Link>
       {hasDivider && <div className="w-full h-[1px] my-4" style={{ backgroundColor: primary }} />}
     </li>
   );
