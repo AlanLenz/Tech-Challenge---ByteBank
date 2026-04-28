@@ -8,6 +8,11 @@ const meta: Meta<typeof SummaryCard> = {
     layout: 'padded',
   },
   tags: ['autodocs'],
+  args: {
+    variant: 'deposit',
+    label: 'Depositos',
+    value: 'R$ 420,00',
+  },
   argTypes: {
     variant: {
       control: 'select',

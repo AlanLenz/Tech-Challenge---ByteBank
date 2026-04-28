@@ -7,7 +7,7 @@ type SummaryCardVariant = "deposit" | "transfer" | "records";
 interface SummaryCardProps {
   label: string;
   value: string | number;
-  variant: SummaryCardVariant;
+  variant?: SummaryCardVariant;
 }
 
 const variantStyles: Record<
@@ -19,7 +19,7 @@ const variantStyles: Record<
   records: { bgKey: "highlight", colorKey: "black" },
 };
 
-const SummaryCard = ({ label, value, variant }: SummaryCardProps) => {
+const SummaryCard = ({ label, value, variant = 'deposit' }: SummaryCardProps) => {
   const colors = useThemeColors();
   const { bgKey, colorKey } = variantStyles[variant];
 
