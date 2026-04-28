@@ -13,6 +13,9 @@ const meta: Meta<typeof MenuItem> = {
     hasDivider: { control: 'boolean' },
     href: { table: { disable: true } },
   },
+  args: {
+    href: '/',
+  },
 };
 
 export default meta;

@@ -16,13 +16,13 @@ type Props = {
 };
 
 const ExtractPreview = ({ transfers = [] }: Props) => {
-  const { deposit, transfer, textMuted, black } = useThemeColors();
+  const { deposit, transfer, textMuted, black, white } = useThemeColors();
 
   const lastTransfers = [...transfers]
   .sort((a, b) => new Date (b.date).getTime() - new Date(a.date).getTime())
   .slice(0, 5);
   return (
-    <div className="w-[100%] bg-white rounded-lg p-6 self-start">
+    <div className="w-full rounded-lg p-6 self-start" style={{ backgroundColor: white }}>
       <div className="flex justify-between items-center mb-6 gap-2">
         <h2 className="text-black font-bold text-[26px]">Extrato</h2>
         <Link

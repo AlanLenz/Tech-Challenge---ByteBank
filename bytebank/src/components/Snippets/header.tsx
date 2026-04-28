@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'; // Adicionado useEffect
 import { useRouter } from 'next/navigation'; // Adicionado useRouter para redirecionar no logout
-import { useMediaQuery } from "@custom-react-hooks/use-media-query"
 import RegisterModal from '../forms/register-form';
 import LoginModal from '../forms/login-form';
 import { Button } from "@/components/ui/button";
@@ -19,9 +18,8 @@ import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
 import { useThemeColors } from "@/hooks/useThemeColors";
 
-export default function Header() {
+export default function Header({className}: {className?: string}) {
   const router = useRouter();
-  const isDesktop = useMediaQuery("(min-width: 768px)")
   const { primary, highlight } = useThemeColors();
   
   // Estados dos modais
@@ -53,9 +51,9 @@ export default function Header() {
     }
   };
 
-  if (isDesktop) {
-    return (
-      <header>
+  return (
+    <header className={className}>
+      <div className='hidden md:block'>
         <nav className="container mx-auto flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-20">
             <div className="flex items-center gap-2">
@@ -100,12 +98,9 @@ export default function Header() {
         </nav>
         <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
         <RegisterModal isOpen={isRegisterModalOpen} onClose={() => setIsRegisterModalOpen(false)} />
-      </header>
-    )
-  } else {
-    // VERSÃO MOBILE
-    return (
-      <header>
+      </div>
+    
+      <div className='md:hidden'>
         <nav className="container mx-auto flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2">
@@ -148,7 +143,7 @@ export default function Header() {
         </nav>
         <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
         <RegisterModal isOpen={isRegisterModalOpen} onClose={() => setIsRegisterModalOpen(false)} />
-      </header>
-    )
-  }
+      </div>
+    </header>
+  )
 }

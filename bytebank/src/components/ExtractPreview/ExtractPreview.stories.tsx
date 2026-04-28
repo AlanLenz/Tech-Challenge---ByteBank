@@ -12,14 +12,16 @@ const sampleTransfers = [
 const meta: Meta<typeof ExtractPreview> = {
   title: 'Components/ExtractPreview',
   component: ExtractPreview,
-  parameters: {
-    layout: 'padded',
-    backgrounds: {
-      default: 'brand',
-      values: [{ name: 'brand', value: '#E4EDE3' }],
-    },
-  },
   tags: ['autodocs'],
+  decorators: [
+    (Story) => (
+      <div className='bg-zinc-300 flex items-center justify-center'>
+        <div className='p-4 w-1/3'>
+          <Story />
+        </div>
+      </div>
+    ),
+  ],
 };
 
 export default meta;
