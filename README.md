@@ -92,6 +92,8 @@ src/
 ## Capturas
 
 ![Home](../Tech-Challenge---ByteBank/bytebank/assets/Home.png)
+![Landing Page](../Tech-Challenge---ByteBank/bytebank/assets/Home.png)
+![Extrato](../Tech-Challenge---ByteBank/bytebank/assets/Home.png)
 
 
 ## Autores
@@ -101,6 +103,6 @@ src/
 - [@victorgodoi](https://github.com/victorgodoi)
 
 
-## License
+## Licença
 
 Projeto desenvolvido para fins educacionais.
