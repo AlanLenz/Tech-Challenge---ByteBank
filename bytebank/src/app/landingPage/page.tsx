@@ -35,7 +35,7 @@ export default function BytebankTailwind() {
                     </div>
                     <div className="md:w-1/2 flex justify-center mt-12 md:mt-0">
                         <div className="relative w-full aspect-video backdrop-blur-sm flex items-center justify-center">
-                            <Image src="/ilustracao-lp.png" alt="Logomarca" className='rounded-lg ' width={660} height={251} />
+                            <Image src="/ilustracao-lp.png" alt="Logomarca" className="rounded-lg" width={660} height={251} />
                         </div>
                     </div>
                 </section>

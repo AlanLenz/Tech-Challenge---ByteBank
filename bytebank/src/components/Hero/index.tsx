@@ -7,21 +7,28 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useThemeColors } from "@/hooks/useThemeColors";
 
-interface HeroProps {
-  displayName?: string;
-  balance?: string;
+// Importamos a sua função de formatação de moeda para manter o padrão
+import { formatCurrency } from "@/utils/format";
+
+// Definimos o tipo básico que precisamos para o cálculo
+interface Transfer {
+  amount: number;
+  type: "Deposit" | "Transfer";
 }
 
-const Hero = ({ displayName, balance = 'R$ 2.500,00' }: HeroProps = {}) => {
-  const { primary, white } = useThemeColors();
+const Hero = () => {
   const [showValue, setShowValue] = useState(false);
-  const [nomeUsuario, setNomeUsuario] = useState("Usuário"); 
+  const [nomeUsuario, setNomeUsuario] = useState("Usuário");
+  const { primary, white } = useThemeColors();
+
+  // Novo estado para guardar o valor do saldo calculado
+  const [saldo, setSaldo] = useState<number>(0);
 
   const current = new Date().toLocaleDateString('en-GB');
   const dia = new Date().toLocaleDateString('pt-BR', { weekday: 'long' });
 
+  // 1. Efeito para buscar os dados do usuário no Firebase (Mantido)
   useEffect(() => {
-    if (displayName !== undefined) return;
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user && user.displayName) {
         const primeiroNome = user.displayName.split(' ')[0];
@@ -32,16 +39,42 @@ const Hero = ({ displayName, balance = 'R$ 2.500,00' }: HeroProps = {}) => {
     });
 
     return () => unsubscribe();
-  }, [displayName]);
+  }, []);
 
-  const resolvedName = displayName ?? nomeUsuario;
+  // 2. Novo Efeito para buscar as transferências e calcular o saldo
+  useEffect(() => {
+    const fetchSaldo = async () => {
+      try {
+        // Busca o mesmo arquivo JSON usado na lista
+        const response = await fetch('http://localhost:4000/transfers');
+        if (!response.ok) throw new Error('Erro ao buscar dados');
+
+        const data: Transfer[] = await response.json();
+
+        // Faz o cálculo: soma os depósitos e subtrai as transferências
+        const saldoCalculado = data.reduce((acc, item) => {
+          if (item.type === "Deposit") {
+            return acc + item.amount;
+          } else {
+            return acc - item.amount;
+          }
+        }, 0);
+
+        setSaldo(saldoCalculado);
+      } catch (error) {
+        console.error("Erro ao calcular saldo:", error);
+      }
+    };
+
+    fetchSaldo();
+  }, []);
 
   return (
-    <div className="relative w-[100%] rounded-lg p-8 h-[400px]" style={{ backgroundColor: primary }}>
-      <p className="text-[24px] font-semibold mb-4" style={{ color: white }}>Olá, {resolvedName}! :)</p>
+    <div className="relative w-[100%]  rounded-lg p-8 h-[400px]" style={{ backgroundColor: primary }}>
+      <p className="text-[24px] font-semibold mb-4" style={{ color: white }}>Olá, {nomeUsuario}! :)</p>
       <p className="text-[14px] font-normal capitalize" style={{ color: white }}>{dia}, {current}</p>
-      
-      <div className="w-[100%] flex justify-end pr-20">
+
+      <div className="w-[100%] flex justify-end pr-20 mobile-balance">
         <div className="w-[190px]">
           <div className="flex gap-6 items-center">
             <p className="text-[20px] font-semibold" style={{ color: white }}>Saldo</p>
@@ -51,14 +84,18 @@ const Hero = ({ displayName, balance = 'R$ 2.500,00' }: HeroProps = {}) => {
               <EyeClosed className="w-5 h-5 cursor-pointer" style={{ color: white }} onClick={() => setShowValue(true)} />
             )}
           </div>
-          <div className="w-[100%] h-[1px] my-4" style={{ backgroundColor: white }} />
+          <div className="w-[100%] h-[1px] bg-white my-4" style={{ backgroundColor: white }}/>
           <p className="text-[14px] font-normal" style={{ color: white }}>Conta Corrente</p>
-          <p className="text-[32px] font-normal" style={{ color: white }}>{showValue ? balance : '****'}</p>
+
+          {/* Aqui exibimos o saldo dinâmico usando a sua função de formatação */}
+          <p className="text-[32px] font-normal" style={{ color: white }}>
+            {showValue ? formatCurrency(saldo) : '****'}
+          </p>
         </div>
       </div>
-      
+
       <Image
-        className="absolute bottom-6 left-8"
+        className="absolute bottom-6 left-8 mobile-hidden"
         src="/IllustrationHero.png"
         alt="Illustration"
         title="Illustration"

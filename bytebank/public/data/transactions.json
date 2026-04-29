@@ -1,0 +1,68 @@
+{
+  "transfers": [
+    {
+      "id": "1",
+      "description": "Compra no Supermercado",
+      "amount": 120,
+      "date": "2025-08-18",
+      "type": "Deposit"
+    },
+    {
+      "id": "2",
+      "description": "Consulta Medica",
+      "amount": 100,
+      "date": "2025-10-21",
+      "type": "Deposit"
+    },
+    {
+      "id": "3",
+      "description": "Pix para Maria",
+      "amount": 50,
+      "date": "2025-11-02",
+      "type": "Deposit"
+    },
+    {
+      "id": "4",
+      "description": "Restaurante",
+      "amount": 500,
+      "date": "2025-11-21",
+      "type": "Transfer"
+    },
+    {
+      "id": "5",
+      "description": "Pagamento de Assinatura",
+      "amount": 49.9,
+      "date": "2025-12-03",
+      "type": "Transfer"
+    },
+    {
+      "id": "6",
+      "description": "Reembolso",
+      "amount": 120,
+      "date": "2025-12-12",
+      "type": "Deposit"
+    },
+    {
+      "id": "DuO8U2OWs_g",
+      "description": "teste",
+      "amount": 1000,
+      "date": "2026-04-26",
+      "type": "Deposit"
+    },
+    {
+      "id": "K0hzS1OfgLY",
+      "description": "teste",
+      "amount": 150,
+      "date": "2026-04-26",
+      "type": "Transfer"
+    },
+    {
+      "id": "DQGmZkK49R8",
+      "description": "teste 2",
+      "amount": 1500,
+      "date": "2026-04-27",
+      "type": "Deposit"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
