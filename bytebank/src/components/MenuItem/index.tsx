@@ -1,17 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useThemeColors } from "@/hooks/useThemeColors";
 
 interface MenuItemProps {
   label: string;
   href: string;
-  isActive: boolean;
   hasDivider?: boolean;
 }
 
-const MenuItem = ({ label, href, isActive, hasDivider = true }: MenuItemProps) => {
+const MenuItem = ({ label, href, hasDivider = true }: MenuItemProps) => {
   const { primary } = useThemeColors();
+  const pathname = usePathname();
+  const isActive = pathname === href;
 
   return (
     <li className="text-center">
