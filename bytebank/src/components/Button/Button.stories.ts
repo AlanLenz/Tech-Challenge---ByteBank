@@ -17,10 +17,6 @@ const meta: Meta<typeof Button> = {
       control: 'select',
       options: ['sm', 'md', 'lg'],
     },
-    type: {
-      control: 'select',
-      options: ['button', 'submit'],
-    },
     loading: {
       control: 'boolean',
     },
