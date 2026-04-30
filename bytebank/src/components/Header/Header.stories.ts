@@ -2,13 +2,9 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { fn } from 'storybook/test';
 import Header from './index';
 
-type HeaderStoryArgs = {
-  displayName?: string;
-};
-
-const meta: Meta<HeaderStoryArgs> = {
+const meta: Meta<typeof Header> = {
   title: 'Components/Header',
-  component: Header as React.ComponentType<HeaderStoryArgs>,
+  component: Header,
   parameters: {
     layout: 'fullscreen',
     nextjs: {
@@ -21,19 +17,9 @@ const meta: Meta<HeaderStoryArgs> = {
     },
   },
   tags: ['autodocs'],
-  argTypes: {
-    displayName: {
-      control: 'text',
-      description: 'Nome do usuário exibido no header',
-    },
-  },
 };
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {
-    displayName: 'Usuário',
-  },
-};
+export const Default: Story = {};

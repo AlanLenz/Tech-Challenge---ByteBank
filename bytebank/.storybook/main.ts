@@ -1,4 +1,5 @@
 import type { StorybookConfig } from '@storybook/nextjs-vite';
+import path from 'path';
 
 const config: StorybookConfig = {
   "stories": [
@@ -15,6 +16,16 @@ const config: StorybookConfig = {
   "framework": "@storybook/nextjs-vite",
   "staticDirs": [
     "..\\public"
-  ]
+  ],
+  viteFinal: async (config) => {
+    config.resolve = config.resolve ?? {};
+    config.resolve.alias = {
+      ...(typeof config.resolve.alias === 'object' && !Array.isArray(config.resolve.alias)
+        ? config.resolve.alias
+        : {}),
+      'firebase/auth': path.resolve(__dirname, '../src/__mocks__/firebase-auth.ts'),
+    };
+    return config;
+  },
 };
 export default config;
