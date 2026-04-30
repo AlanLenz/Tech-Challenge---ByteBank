@@ -4,7 +4,6 @@ import * as React from "react"
 import { useState } from "react" // Importação necessária para gerenciar estado
 import { cn } from "@/lib/utils"
 import { useRouter } from 'next/navigation'
-import { useMediaQuery } from "@custom-react-hooks/use-media-query"
 
 // Importações do Firebase
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -36,45 +35,45 @@ interface LoginModalProps {
 }
 
 export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
-  const isDesktop = useMediaQuery("(min-width: 768px)")
-
-  if (isDesktop) {
-    return (
-      <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Acesse sua conta</DialogTitle>
-            <DialogDescription>
-              Insira seus dados abaixo para acessar a Gestão Financeira.
-            </DialogDescription>
-          </DialogHeader>
-          <LoginForm />
-        </DialogContent>
-      </Dialog>
-    )
-  }
-
   return (
-    <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DrawerContent>
-        <DrawerHeader className="text-left">
-          <DrawerTitle>Acesse sua conta</DrawerTitle>
-          <DrawerDescription>
-            Insira seus dados abaixo para acessar a Gestão Financeira.
-          </DrawerDescription>
-        </DrawerHeader>
-        <LoginForm className="px-4" />
-        <DrawerFooter className="pt-2">
-          <Button variant="neutral" size="sm" onClick={onClose}>
-            Cancelar
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+    <>
+      <div className="hidden md:block">
+        <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Acesse sua conta</DialogTitle>
+              <DialogDescription>
+                Insira seus dados abaixo para acessar a Gestão Financeira.
+              </DialogDescription>
+            </DialogHeader>
+            <LoginForm />
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      <div className="md:hidden">
+        <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
+          <DrawerContent>
+            <DrawerHeader className="text-left">
+              <DrawerTitle>Acesse sua conta</DrawerTitle>
+              <DrawerDescription>
+                Insira seus dados abaixo para acessar a Gestão Financeira.
+              </DrawerDescription>
+            </DrawerHeader>
+            <LoginForm className="px-4" />
+            <DrawerFooter className="pt-2">
+              <Button variant="neutral" size="sm" onClick={onClose}>
+                Cancelar
+              </Button>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      </div>
+    </>
   )
 }
 
-function LoginForm({ className }: React.ComponentProps<"form">) {
+export function LoginForm({ className }: React.ComponentProps<"form">) {
   const router = useRouter();
 
   // Estados para capturar os inputs e tratar carregamento/erros
