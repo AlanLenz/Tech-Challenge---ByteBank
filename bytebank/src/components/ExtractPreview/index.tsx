@@ -38,7 +38,7 @@ const ExtractPreview = () => {
   }, []); // Array de dependências vazio garante que rode apenas uma vez
 
   return (
-    <section className="w-full rounded-lg p-4 sm:p-4 lg:p-4 min-h-[478px] flex flex-col justify-between" style={{ backgroundColor: white }}>
+    <section className="w-full rounded-lg p-4 sm:p-4 lg:p-4 min-h-[450px] flex flex-col justify-between gap-4" style={{ backgroundColor: white }}>
       <div>
         <h2 className="text-[24px] font-bold whitespace-nowrap mb-6" style={{ color: black }}>Últimas transações</h2>
         {isLoading ? (
@@ -50,7 +50,7 @@ const ExtractPreview = () => {
             <p className="font-medium" style={{ color: textMuted }}>Nenhum lançamento encontrado.</p>
           </div>
         ) : (
-          <div className="space-y-3 mb-6 flex flex-col gap-4">
+          <div className="space-y-3 flex flex-col gap-4">
             {lastTransfers.map((item) => {
               return (
                 <div key={item.id}>
@@ -72,7 +72,7 @@ const ExtractPreview = () => {
           </div>
         )}
       </div>
-      <div className="text-end w-full py-2">
+      <div className="text-end w-full">
         <Link
           href="/extract"
           style={{ color: black }}
