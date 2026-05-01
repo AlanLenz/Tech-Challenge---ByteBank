@@ -59,20 +59,28 @@ A aplicação segue o princípio de separação de responsabilidades, dividindo 
 ## Instalação
 
 **Clonar repositório**
-- git clone https://github.com/AlanLenz/Tech-Challenge---ByteBank.git
-
+```bash
+git clone https://github.com/AlanLenz/Tech-Challenge---ByteBank.git
+```
 **Entrar na pasta**
-- cd bytebank
-
+```bash
+cd bytebank
+```
 **Instalar dependências**
-- npm install
-
+```bash
+npm install
+```
 ## Execução
 
 **Rodar API local**
 ```bash
 npx json-server --watch public/data/transactions.json --port 4000
+```
 
+**Rodar o projeto**
+```bash
+npm run dev
+```
 ## Estrutura do projeto
 
 ```bash
@@ -107,10 +115,22 @@ src/
 ```
 ## Capturas
 
+**Landing Page**
+![Landing page](./bytebank/assets/LandingPage.png)
+
+**Home**
 ![Home](./bytebank/assets/Home.png)
 
-![Landing Page](../Tech-Challenge---ByteBank/bytebank/assets/Home.png)
-![Extrato](../Tech-Challenge---ByteBank/bytebank/assets/Home.png)
+**Extrato**
+![Extrato](./bytebank/assets/Extrato.png)
+
+**Cadastro**
+![Cadastro](./bytebank/assets/Cadastro.png)
+
+**Acessar**
+![Acessar](./bytebank/assets/Acessar.png)
+
+
 
 
 ## Autores
