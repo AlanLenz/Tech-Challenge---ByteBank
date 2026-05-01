@@ -1,4 +1,3 @@
-
 # Fluxo - Gestão Financeira (ByteBank)
 
 Aplicação web para gerenciamento de transações financeiras, permitindo depósitos, transferências e visualização de extrato.
@@ -11,17 +10,20 @@ O Fluxo é uma aplicação desenvolvida com foco em simular operações bancári
 - Gerenciamento de estado com hooks
 - Persistência de dados no cliente
 - Organização escalável de projeto
+
 ## Funcionalidades
 
 ### Criar transações:
 - Depósito
 - Transferência
 - Atualização automática do saldo
+
 ### Visualização de extrato:
 - Resumo
 - Lista completa de transações
 - Persistência de dados com localStorage
 - Interface responsiva
+
 ## Tecnologias
 
 **Frontend:**
@@ -36,6 +38,14 @@ O Fluxo é uma aplicação desenvolvida com foco em simular operações bancári
 **Persistência de dados:**
 - localStorage
 
+**UI Library:**
+- shadcn/ui
+
+**Autenticação:**
+- Firebase
+
+**Backend simulado:**
+- JSON Server (API fake local baseada em arquivo JSON)
 
 ## Arquitetura
 
@@ -45,6 +55,7 @@ A aplicação segue o princípio de separação de responsabilidades, dividindo 
 - Hooks → Regras de negócio (transações, saldo)
 - Types → Tipagem centralizada
 - Utils/Lib → Funções auxiliares
+
 ## Instalação
 
 **Clonar repositório**
@@ -56,8 +67,13 @@ A aplicação segue o princípio de separação de responsabilidades, dividindo 
 **Instalar dependências**
 - npm install
 
-**Rodar o projeto**
-- npm run dev## 📁 Estrutura do projeto
+## Execução
+
+**Rodar API local**
+```bash
+npx json-server --watch public/data/transactions.json --port 4000
+
+## Estrutura do projeto
 
 ```bash
 src/
