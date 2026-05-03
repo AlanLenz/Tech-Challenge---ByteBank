@@ -33,6 +33,7 @@ import {
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import Button from "@/components/Button"
+import useMediaQuery from "@/utils/useMediaQuery";
 
 interface RegisterModalProps {
     isOpen: boolean;
@@ -40,41 +41,41 @@ interface RegisterModalProps {
 }
 
 export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
-    return (
-        <>
-            <div className="hidden md:block">
-                <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-                    <DialogContent className="sm:max-w-[425px]">
-                        <DialogHeader>
-                            <DialogTitle>Crie sua conta</DialogTitle>
-                            <DialogDescription>
-                                Insira seus dados abaixo para acessar a Gestão Financeira.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <RegisterForm />
-                    </DialogContent>
-                </Dialog>
-            </div>
+    const isDesktop = useMediaQuery("(min-width: 768px)")
 
-            <div className="md:hidden">
-                <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
-                    <DrawerContent>
-                        <DrawerHeader className="text-left">
-                            <DrawerTitle>Crie sua conta</DrawerTitle>
-                            <DrawerDescription>
-                                Preencha os campos abaixo para criar sua conta no Fluxo.
-                            </DrawerDescription>
-                        </DrawerHeader>
-                        <RegisterForm className="px-4" />
-                        <DrawerFooter className="pt-2">
-                            <Button variant="neutral" size="sm" onClick={onClose}>
-                                Cancelar
-                            </Button>
-                        </DrawerFooter>
-                    </DrawerContent>
-                </Drawer>
-            </div>
-        </>
+    if (isDesktop) {
+        return (
+            <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Crie sua conta</DialogTitle>
+                        <DialogDescription>
+                            Insira seus dados abaixo para acessar a Gestão Financeira.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <RegisterForm />
+                </DialogContent>
+            </Dialog>
+        )
+    }
+
+    return (
+        <Drawer open={isOpen} onOpenChange={(open) => !open && onClose()}>
+            <DrawerContent>
+                <DrawerHeader className="text-left">
+                    <DrawerTitle>Crie sua conta</DrawerTitle>
+                    <DrawerDescription>
+                        Preencha os campos abaixo para criar sua conta no Fluxo.
+                    </DrawerDescription>
+                </DrawerHeader>
+                <RegisterForm className="px-4" />
+                <DrawerFooter className="pt-2">
+                    <Button variant="neutral" size="sm" onClick={onClose}>
+                        Cancelar
+                    </Button>
+                </DrawerFooter>
+            </DrawerContent>
+        </Drawer>
     )
 }
 
