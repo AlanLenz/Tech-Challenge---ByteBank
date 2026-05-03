@@ -8,12 +8,13 @@ interface MenuItemProps {
   label: string;
   href: string;
   hasDivider?: boolean;
+  isActive?: boolean;
 }
 
-const MenuItem = ({ label, href, hasDivider = true }: MenuItemProps) => {
+const MenuItem = ({ label, href, hasDivider = true, isActive: isActiveProp }: MenuItemProps) => {
   const { primary } = useThemeColors();
   const pathname = usePathname();
-  const isActive = pathname === href;
+  const isActive = isActiveProp !== undefined ? isActiveProp : pathname === href;
 
   return (
     <li className="text-center">
