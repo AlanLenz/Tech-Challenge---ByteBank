@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useThemeColors } from "@/hooks/useThemeColors";
 
 const ExtractPreview = () => {
-  const { deposit, transfer, textMuted, black, white } = useThemeColors();
+  const { green, red, gray, black, white } = useThemeColors();
   const [transfers, setTransfers] = useState<Transfer[]>([]);
   const lastTransfers = [...transfers]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -43,11 +43,11 @@ const ExtractPreview = () => {
         <h2 className="text-[24px] font-bold whitespace-nowrap mb-6" style={{ color: black }}>Últimas transações</h2>
         {isLoading ? (
           <div className="flex justify-center items-center py-10">
-            <p className="font-medium" style={{ color: textMuted }}>Carregando dados...</p>
+            <p className="font-medium" style={{ color: gray }}>Carregando dados...</p>
           </div>
         ) : transfers.length === 0 ? (
           <div className="flex justify-center items-center py-10">
-            <p className="font-medium" style={{ color: textMuted }}>Nenhum lançamento encontrado.</p>
+            <p className="font-medium" style={{ color: gray }}>Nenhum lançamento encontrado.</p>
           </div>
         ) : (
           <div className="space-y-3 flex flex-col gap-4">
@@ -56,16 +56,16 @@ const ExtractPreview = () => {
                 <div key={item.id}>
                   <div className="w-full flex gap-2 justify-between items-center">
                     <p className="font-semibold text-[16px]" style={{ color: black }}>{item.description}</p>
-                    <p className="text-[13px]" style={{ color: textMuted }}>{item.type === "Deposit" ? "Depósito" : "Transferência"}</p>
+                    <p className="text-[13px]" style={{ color: gray }}>{item.type === "Deposit" ? "Depósito" : "Transferência"}</p>
                   </div>
                   <div className="w-full flex gap-2 justify-between items-center">
-                    <p className="text-[14px]" style={{ color: textMuted }}>{formatDate(item.date)}</p>
-                    <p className="text-[15px] font-semibold text-wrap-mode-nowrap" style={{ color: item.type === "Deposit" ? deposit : transfer }}>
+                    <p className="text-[14px]" style={{ color: gray }}>{formatDate(item.date)}</p>
+                    <p className="text-[15px] font-semibold text-wrap-mode-nowrap" style={{ color: item.type === "Deposit" ? green : red }}>
                       {item.type === "Transfer" ? "- " : ""}
                       {formatCurrency(item.amount)}
                     </p>
                   </div>
-                  <div className="w-full border-t mt-2" style={{ borderColor: textMuted }}/>
+                  <div className="w-full border-t mt-2" style={{ borderColor: gray }}/>
                 </div>
               );
             })}
