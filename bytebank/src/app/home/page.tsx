@@ -19,7 +19,7 @@ type Transfer = {
 };
 
 export default function Home() {
-  const { backgroundPage, backgroundCard } = useThemeColors();
+  const { bgGreen, bgGray } = useThemeColors();
   const [transfers, setTransfers] = useState<Transfer[]>([]);
 
   // 1. Carrega os dados do JSON apenas UMA VEZ na inicialização
@@ -51,7 +51,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen font-sans">
-      <div className="flex flex-col min-h-screen" style={{ backgroundColor: backgroundPage }}>
+      <div className="flex flex-col min-h-screen" style={{ backgroundColor: bgGreen }}>
         <Header />
         <div className="container mx-auto flex gap-6 p-6 items-stretch flex-1">
           <div className="hidden md:flex md:flex-col">
@@ -62,7 +62,7 @@ export default function Home() {
               <MobileMenu />
             </div>
             <Hero />
-            <div className="w-[100%] rounded-lg p-8" style={{ backgroundColor: backgroundCard }}>
+            <div className="w-[100%] rounded-lg p-8" style={{ backgroundColor: bgGray }}>
               <TransactionForm onAddTransfer={handleAddTransfer} />
             </div>
             <div className="w-full md:hidden">

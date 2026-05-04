@@ -32,7 +32,7 @@ const TransferItem = ({
   onEdit,
   onDelete,
 }: TransferItemProps) => {
-  const { deposit, transfer } = useThemeColors();
+  const { green, red } = useThemeColors();
   const [amountStr, setAmountStr] = useState(String(draft.amount).replace(".", ","));
 
   useEffect(() => {
@@ -98,7 +98,7 @@ const TransferItem = ({
           <p className="text-[14px] text-gray-600">{formatDate(item.date)}</p>
           <p
             className="text-[15px] font-semibold"
-            style={{ color: item.type === "Deposit" ? deposit : transfer }}
+            style={{ color: item.type === "Deposit" ? green : red }}
           >
             {item.type === "Transfer" ? "- " : ""}
             {formatCurrency(item.amount)}

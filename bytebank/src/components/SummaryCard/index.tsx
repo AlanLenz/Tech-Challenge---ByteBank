@@ -14,9 +14,9 @@ const variantStyles: Record<
   SummaryCardVariant,
   { bgKey: keyof ReturnType<typeof useThemeColors>; colorKey: keyof ReturnType<typeof useThemeColors> }
 > = {
-  deposit: { bgKey: "backgroundPage", colorKey: "deposit" },
-  transfer: { bgKey: "backgroundTransfer", colorKey: "transfer" },
-  records: { bgKey: "highlight", colorKey: "black" },
+  deposit: { bgKey: "bgGreen", colorKey: "green" },
+  transfer: { bgKey: "bgRed", colorKey: "red" },
+  records: { bgKey: "lightBlue", colorKey: "black" },
 };
 
 const SummaryCard = ({ label, value, variant = 'deposit' }: SummaryCardProps) => {

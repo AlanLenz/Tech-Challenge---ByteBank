@@ -1,16 +1,16 @@
 export const colors = {
   primary: "#004D61",
   secondary: "#00474b",
-  deposit: "#1C7C30",
-  transfer: "#B42318",
-  highlight: "#EEF2FF",
-  textMuted: "#6B7280",
+  green: "#1C7C30",
+  red: "#B42318",
+  lightBlue: "#EEF2FF",
+  gray: "#6B7280",
   white: "#FFFFFF",
   black: "#000000",
-  backgroundPage: "#E4EDE3",
-  backgroundCard: "#CBCBCB",
-  backgroundTransfer: "#F7ECEC",
-  gradientMid: "#00767c",
+  bgGreen: "#E4EDE3",
+  bgGray: "#CBCBCB",
+  bgRed: "#F7ECEC",
+  teal: "#00767c",
 } as const;
 
 export type ThemeColors = typeof colors;

@@ -20,11 +20,11 @@ export const metadata: Metadata = {
 
 export default function BytebankTailwind() {
     // const router = useRouter();
-    const { highlight, primary } = useThemeColors();
+    const { lightBlue, primary } = useThemeColors();
 
     return (
         <div className="min-h-screen font-sans selection:bg-green-200">
-            <div style={{ background: `linear-gradient(to bottom, white, ${primary}, ${highlight})` }}>
+            <div style={{ background: `linear-gradient(to bottom, white, ${primary}, ${lightBlue})` }}>
                 <HeaderCustom></HeaderCustom>
                 <section id="sobre" className="container mx-auto px-6 py-20 flex flex-col md:flex-row items-center">
                     <div className="md:w-1/2">
@@ -46,22 +46,22 @@ export default function BytebankTailwind() {
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
                     <Feature
-                        icon={<Gift className="w-12 h-12" style={{ color: highlight }} />}
+                        icon={<Gift className="w-12 h-12" style={{ color: lightBlue }} />}}
                         title="Conta e cartão gratuitos"
                         desc="Isso mesmo, nossa conta é digital, sem custo fixo e mais que isso: sem tarifa de manutenção."
                     />
                     <Feature
-                        icon={<Landmark className="w-12 h-12" style={{ color: highlight }} />}
+                        icon={<Landmark className="w-12 h-12" style={{ color: lightBlue }} />}}
                         title="Saques sem custo"
                         desc="Você pode sacar gratuitamente 4x por mês de qualquer Banco 24h."
                     />
                     <Feature
-                        icon={<Star className="w-12 h-12" style={{ color: highlight }} />}
+                        icon={<Star className="w-12 h-12" style={{ color: lightBlue }} />}}
                         title="Programa de pontos"
                         desc="Você pode acumular pontos com suas compras no crédito sem pagar mensalidade!"
                     />
                     <Feature
-                        icon={<Smartphone className="w-12 h-12" style={{ color: highlight }} />}
+                        icon={<Smartphone className="w-12 h-12" style={{ color: lightBlue }} />}}
                         title="Seguro Dispositivos"
                         desc="Seus dispositivos móveis protegidos por uma mensalidade simbólica."
                     />

@@ -47,7 +47,7 @@ const variantStyles: Record<string, React.CSSProperties> = {
     color: colors.primary,
   },
   destructive: {
-    backgroundColor: colors.transfer,
+    backgroundColor: colors.red,
     color: colors.white,
   },
   ghost: {
