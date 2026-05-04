@@ -5,16 +5,20 @@ import type { Transfer, TransferType } from "@/types/transfer";
 import { formatDate, formatCurrency } from "@/utils/format";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import Button from "@/components/Button";
+import InputText from "@/components/InputText";
+import InputDate from "@/components/InputDate";
+import InputSelect from "@/components/InputSelect";
+import InputNumber from "@/components/InputNumber";
 
 interface TransferItemProps {
   item: Transfer;
   isEditing: boolean;
   draft: Omit<Transfer, "id">;
   onDraftChange: (draft: Omit<Transfer, "id">) => void;
-  onSave: (id: string) => void;
+  onSave: (id: string | number) => void;
   onCancel: () => void;
   onEdit: (item: Transfer) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string | number) => void;
 }
 
 const TransferItem = ({
@@ -33,45 +37,34 @@ const TransferItem = ({
     <article className="border border-gray-200 rounded-lg p-4">
       {isEditing ? (
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3 items-end">
-          <label className="lg:col-span-2">
-            <span className="text-[12px] text-gray-500">Descricao</span>
-            <input
-              value={draft.description}
-              onChange={(e) => onDraftChange({ ...draft, description: e.target.value })}
-              className="text-black w-full border border-gray-300 rounded-md px-3 py-2 text-[14px]"
-            />
-          </label>
-          <label>
-            <span className="text-[12px] text-gray-500">Data</span>
-            <input
-              type="date"
-              value={draft.date}
-              onChange={(e) => onDraftChange({ ...draft, date: e.target.value })}
-              className="text-black cursor-pointer w-full border border-gray-300 rounded-md px-3 py-2 text-[14px]"
-            />
-          </label>
-          <label>
-            <span className="text-[12px] text-gray-500">Tipo</span>
-            <select
-              value={draft.type}
-              onChange={(e) => onDraftChange({ ...draft, type: e.target.value as TransferType })}
-              className="text-black cursor-pointer w-full border border-gray-300 rounded-md px-3 py-2 text-[14px]"
-            >
-              <option value="Deposit">Deposito</option>
-              <option value="Transfer">Transferencia</option>
-            </select>
-          </label>
-          <label>
-            <span className="text-[12px] text-gray-500">Valor</span>
-            <input
-              type="number"
-              min={0}
-              step={0.01}
-              value={draft.amount}
-              onChange={(e) => onDraftChange({ ...draft, amount: Number(e.target.value) })}
-              className="text-black w-full border border-gray-300 rounded-md px-3 py-2 text-[14px]"
-            />
-          </label>
+          <InputText
+            label="Descrição"
+            value={draft.description}
+            onChange={(val) => onDraftChange({ ...draft, description: val })}
+            className="lg:col-span-2"
+          />
+          <InputDate
+            label="Data"
+            value={draft.date}
+            onChange={(val) => onDraftChange({ ...draft, date: val })}
+          />
+          <InputSelect
+            label="Tipo"
+            value={draft.type}
+            onChange={(val) => onDraftChange({ ...draft, type: val as TransferType })}
+            options={[
+              { value: 'Deposit', label: 'Depósito' },
+              { value: 'Transfer', label: 'Transferência' },
+            ]}
+            size="lg"
+          />
+          <InputNumber
+            label="Valor"
+            value={String(draft.amount)}
+            onChange={(val) => onDraftChange({ ...draft, amount: Number(val) })}
+            min={0}
+            step={0.01}
+          />
           <div className="flex gap-2 col-span-full">
             <Button variant="primary" size="sm" onClick={() => onSave(item.id)}>
               <Check className="w-4 h-4" />

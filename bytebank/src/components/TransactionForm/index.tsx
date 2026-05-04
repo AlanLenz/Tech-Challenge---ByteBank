@@ -3,7 +3,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
 // Assumindo que você tem esses componentes importados corretamente
-import SelectInput from "./SelectInput";
+import InputSelect from "@/components/InputSelect";
 import InputText from "@/components/InputText";
 import InputNumber from "@/components/InputNumber";
 import Button from "../Button";
@@ -86,10 +86,16 @@ export default function TransactionForm({ onAddTransfer }: Props) {
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <h2 className="text-lg font-semibold">Nova transação</h2>
 
-        <SelectInput
+        <InputSelect
           label="Tipo de transação"
           value={type}
           onChange={(value) => setType(value as "Deposit" | "Transfer")}
+          options={[
+            { value: 'Deposit', label: 'Depósito' },
+            { value: 'Transfer', label: 'Transferência' },
+          ]}
+          bgColor={white}
+          size="lg"
         />
 
         <InputText

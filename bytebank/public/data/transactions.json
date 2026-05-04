@@ -4,7 +4,7 @@
       "id": "1",
       "description": "Compra no Supermercado teste",
       "amount": 120,
-      "date": "2025-08-18",
+      "date": "2005-07-26",
       "type": "Deposit"
     },
     {
@@ -83,6 +83,13 @@
       "amount": 3000,
       "date": "2026-05-04",
       "type": "Transfer"
+    },
+    {
+      "id": "i7oLCf1dKNA",
+      "description": "abc",
+      "amount": 900,
+      "date": "2026-05-04",
+      "type": "Deposit"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
