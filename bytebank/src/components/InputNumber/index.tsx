@@ -6,6 +6,7 @@ type InputNumberProps = {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  onBlur?: () => void;
   id?: string;
   placeholder?: string;
   min?: number;
@@ -22,6 +23,7 @@ export default function InputNumber({
   label,
   value,
   onChange,
+  onBlur,
   id,
   placeholder = "0,00",
   min,
@@ -35,8 +37,10 @@ export default function InputNumber({
 }: InputNumberProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value;
-    if (/^[0-9]*[,.]?[0-9]*$/.test(raw) || raw === "") {
-      onChange(raw);
+    // Allow digits with optional comma or dot as decimal separator, max 2 decimal digits
+    if (/^[0-9]*[,.]?[0-9]{0,2}$/.test(raw) || raw === "") {
+      // Normalize dot to comma for display
+      onChange(raw.replace(".", ","));
     }
   };
 
@@ -52,6 +56,7 @@ export default function InputNumber({
         id={id}
         value={value}
         onChange={handleChange}
+        onBlur={onBlur}
         placeholder={placeholder}
         required={required}
         disabled={disabled}

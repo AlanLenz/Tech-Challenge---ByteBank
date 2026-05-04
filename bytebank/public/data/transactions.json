@@ -3,8 +3,8 @@
     {
       "id": "1",
       "description": "Compra no Supermercado teste",
-      "amount": 120,
-      "date": "2005-07-26",
+      "amount": 12.5,
+      "date": "2026-07-26",
       "type": "Deposit"
     },
     {
@@ -64,32 +64,18 @@
       "type": "Deposit"
     },
     {
-      "id": "cdvqxqjN1k4",
-      "description": "teste",
-      "amount": 20,
+      "id": "F3dbpqn-InM",
+      "description": "teste valor",
+      "amount": 32,
       "date": "2026-05-04",
       "type": "Deposit"
     },
     {
-      "id": "26WdMvb06es",
-      "description": "Teste depois",
-      "amount": 15,
+      "id": "Klgci_jeYEU",
+      "description": "teste mensagem de erro",
+      "amount": 500,
       "date": "2026-05-04",
       "type": "Transfer"
-    },
-    {
-      "id": "pbcSwT8-AqU",
-      "description": "Transferência",
-      "amount": 3000,
-      "date": "2026-05-04",
-      "type": "Transfer"
-    },
-    {
-      "id": "i7oLCf1dKNA",
-      "description": "abc",
-      "amount": 900,
-      "date": "2026-05-04",
-      "type": "Deposit"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Check, Pencil, Trash2, X } from "lucide-react";
 import type { Transfer, TransferType } from "@/types/transfer";
 import { formatDate, formatCurrency } from "@/utils/format";
@@ -32,6 +33,14 @@ const TransferItem = ({
   onDelete,
 }: TransferItemProps) => {
   const { deposit, transfer } = useThemeColors();
+  const [amountStr, setAmountStr] = useState(String(draft.amount).replace(".", ","));
+
+  useEffect(() => {
+    if (isEditing) {
+      setAmountStr(String(draft.amount).replace(".", ","));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isEditing]);
 
   return (
     <article className="border border-gray-200 rounded-lg p-4">
@@ -60,10 +69,12 @@ const TransferItem = ({
           />
           <InputNumber
             label="Valor"
-            value={String(draft.amount)}
-            onChange={(val) => onDraftChange({ ...draft, amount: Number(val) })}
+            value={amountStr}
+            onChange={(val) => {
+              setAmountStr(val);
+              onDraftChange({ ...draft, amount: Number(val.replace(",", ".")) });
+            }}
             min={0}
-            step={0.01}
           />
           <div className="flex gap-2 col-span-full">
             <Button variant="primary" size="sm" onClick={() => onSave(item.id)}>

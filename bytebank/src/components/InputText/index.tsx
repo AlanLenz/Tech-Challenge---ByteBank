@@ -6,6 +6,7 @@ type InputTextProps = {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  onBlur?: () => void;
   id?: string;
   placeholder?: string;
   required?: boolean;
@@ -19,6 +20,7 @@ export default function InputText({
   label,
   value,
   onChange,
+  onBlur,
   id,
   placeholder = "Digite aqui",
   required = false,
@@ -38,6 +40,7 @@ export default function InputText({
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onBlur={onBlur}
         placeholder={placeholder}
         required={required}
         disabled={disabled}

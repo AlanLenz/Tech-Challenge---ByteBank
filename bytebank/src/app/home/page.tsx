@@ -62,7 +62,7 @@ export default function Home() {
               <MobileMenu />
             </div>
             <Hero />
-            <div className="w-[100%] rounded-lg p-8 h-[478px]" style={{ backgroundColor: backgroundCard }}>
+            <div className="w-[100%] rounded-lg p-8" style={{ backgroundColor: backgroundCard }}>
               <TransactionForm onAddTransfer={handleAddTransfer} />
             </div>
             <div className="w-full md:hidden">
