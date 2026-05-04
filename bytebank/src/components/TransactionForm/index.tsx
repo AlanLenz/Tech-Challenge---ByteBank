@@ -4,11 +4,12 @@ import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
 // Assumindo que você tem esses componentes importados corretamente
 import SelectInput from "./SelectInput";
-import TextInput from "./TextInput";
+import InputText from "@/components/InputText";
+import InputNumber from "@/components/InputNumber";
 import Button from "../Button";
-import ValueInput from "./ValueInput"
 import Card from "./Card";
 import FeedbackModal from "../FeedbackModal";
+import { useThemeColors } from "@/hooks/useThemeColors";
 
 type Transfer = {
   id: string;
@@ -29,6 +30,7 @@ export default function TransactionForm({ onAddTransfer }: Props) {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"success" | "error">("success");
   const [modalMessage, setModalMessage] = useState("");
+  const { white } = useThemeColors();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -90,16 +92,19 @@ export default function TransactionForm({ onAddTransfer }: Props) {
           onChange={(value) => setType(value as "Deposit" | "Transfer")}
         />
 
-        <TextInput
+        <InputText
           label="Descrição"
+          placeholder="Descreva aqui"
           value={description}
           onChange={setDescription}
+          bgColor={white}
         />
 
-        <ValueInput
+        <InputNumber
           label="Valor"
           value={value}
           onChange={setValue}
+          bgColor={white}
         />
 
         <Button type="submit" size="lg">

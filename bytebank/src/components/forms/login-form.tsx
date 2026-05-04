@@ -25,9 +25,9 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import Button from "@/components/Button"
+import InputText from "@/components/InputText"
+import InputPassword from "@/components/InputPassword"
 import useMediaQuery from "@/utils/useMediaQuery"
 
 interface LoginModalProps {
@@ -106,29 +106,22 @@ export function LoginForm({ className }: React.ComponentProps<"form">) {
   return (
     <form className={cn("grid items-start gap-6", className)} onSubmit={handleSubmit}>
 
-      <div className="grid gap-3">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          type="email"
-          id="email"
-          placeholder="seu@email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
+      <InputText
+        id="email"
+        label="Email"
+        placeholder="seu@email.com"
+        value={email}
+        onChange={setEmail}
+        required
+      />
 
-      <div className="grid gap-3">
-        <Label htmlFor="password">Senha</Label>
-        <Input
-          type="password"
-          id="password"
-          placeholder="••••••••"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-      </div>
+      <InputPassword
+        id="password"
+        label="Senha"
+        value={password}
+        onChange={setPassword}
+        required
+      />
 
       {/* Exibe a mensagem de erro, se houver */}
       {error && <p className="text-red-500 text-sm font-bold text-center">{error}</p>}

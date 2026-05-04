@@ -30,9 +30,9 @@ import {
     FieldGroup,
     FieldLabel,
 } from "@/components/ui/field"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
 import Button from "@/components/Button"
+import InputText from "@/components/InputText"
+import InputPassword from "@/components/InputPassword"
 import useMediaQuery from "@/utils/useMediaQuery";
 
 interface RegisterModalProps {
@@ -129,39 +129,29 @@ export function RegisterForm({ className }: React.ComponentProps<"form">) {
 
     return (
         <form className={cn("grid items-start gap-6", className)} onSubmit={handleSubmit}>
-            <div className="grid gap-3">
-                <Label htmlFor="nome">Nome</Label>
-                <Input
-                    type="text"
-                    id="nome"
-                    placeholder="Seu nome completo"
-                    value={nome}
-                    onChange={(e) => setNome(e.target.value)}
-                    required
-                />
-            </div>
-            <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                    type="email"
-                    id="email"
-                    placeholder="seu@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-            </div>
-            <div className="grid gap-3">
-                <Label htmlFor="password">Senha</Label>
-                <Input
-                    type="password"
-                    id="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-            </div>
+            <InputText
+                id="nome"
+                label="Nome"
+                placeholder="Seu nome completo"
+                value={nome}
+                onChange={setNome}
+                required
+            />
+            <InputText
+                id="email"
+                label="Email"
+                placeholder="seu@email.com"
+                value={email}
+                onChange={setEmail}
+                required
+            />
+            <InputPassword
+                id="password"
+                label="Senha"
+                value={password}
+                onChange={setPassword}
+                required
+            />
             <FieldGroup className="max-w-sm">
                 <Field orientation="horizontal">
                     <Checkbox
