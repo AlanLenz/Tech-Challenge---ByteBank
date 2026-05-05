@@ -16,12 +16,12 @@ O Fluxo é uma aplicação desenvolvida com foco em simular operações bancári
 ### Criar transações:
 - Depósito
 - Transferência
-- Atualização automática do saldo
+- Atualização do saldo
 
 ### Visualização de extrato:
 - Resumo
 - Lista completa de transações
-- Persistência de dados com localStorage
+- Persistência de dados com transactions.json
 - Interface responsiva
 
 ## Tecnologias
@@ -36,7 +36,9 @@ O Fluxo é uma aplicação desenvolvida com foco em simular operações bancári
 - React Hooks (useState, custom hooks)
 
 **Persistência de dados:**
-- localStorage
+**Persistência de dados:**
+- JSON Server (API fake local)
+- localStorage (armazenamento no cliente)
 
 **UI Library:**
 - shadcn/ui
