@@ -58,6 +58,16 @@ A aplicação segue o princípio de separação de responsabilidades, dividindo 
 - Types → Tipagem centralizada
 - Utils/Lib → Funções auxiliares
 
+## Storybook
+
+Documentação dos componentes isolados da aplicação utilizando Storybook.
+
+Link de acesso:
+https://storybook-static-liart-nine.vercel.app/
+
+Observação:
+O Storybook foi publicado utilizando o Vercel para disponibilização online.
+
 ## Instalação
 
 **Clonar repositório**
