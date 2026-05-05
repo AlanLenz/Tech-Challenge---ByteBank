@@ -15,7 +15,7 @@ const MobileMenu = ({ forceVisible = false }: { forceVisible?: boolean } = {}) =
   const { primary } = useThemeColors();
 
   return (
-    <div className={forceVisible ? 'mb-4' : 'md:hidden mb-4'}>
+    <div className={forceVisible ? 'mb-4' : 'lg:hidden mb-4'}>
       <Drawer direction="left">
         <DrawerTrigger asChild>
           <button className="flex items-center gap-2 bg-white rounded-lg px-4 py-2 font-semibold shadow-sm" style={{ color: primary }}>

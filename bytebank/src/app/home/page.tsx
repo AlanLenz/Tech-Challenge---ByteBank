@@ -47,22 +47,22 @@ export default function Home() {
       <div className="flex flex-col min-h-screen" style={{ backgroundColor: bgGreen }}>
         <Header />
         <div className="container mx-auto flex gap-6 p-6 items-stretch flex-1">
-          <div className="hidden md:flex md:flex-col">
+          <div className="hidden lg:flex lg:flex-col">
             <SideMenu />
           </div>
           <div className="w-[100%] flex flex-col gap-6">
-            <div className="w-full md:hidden">
+            <div className="w-full lg:hidden">
               <MobileMenu />
             </div>
             <Hero />
             <div className="w-[100%] rounded-lg p-8" style={{ backgroundColor: bgGray }}>
               <TransactionForm onAddTransfer={handleAddTransfer} />
             </div>
-            <div className="w-full md:hidden">
+            <div className="w-full lg:hidden">
               <ExtractPreview />
             </div>
           </div>
-          <div className="hidden md:flex md:flex-col">
+          <div className="hidden lg:flex lg:flex-col">
             <ExtractPreview />
           </div>
         </div>
