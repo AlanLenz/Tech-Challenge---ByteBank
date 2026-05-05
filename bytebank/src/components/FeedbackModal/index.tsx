@@ -14,6 +14,11 @@ export default function FeedbackModal({ open, type, message, onClose }: Props) {
 
   if (!open) return null;
 
+  const handleClose = () => {
+    onClose();
+    window.location.reload();
+  };
+
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="p-6 rounded-xl shadow-lg w-[300px] text-center" style={{ backgroundColor: white }}>
@@ -25,7 +30,7 @@ export default function FeedbackModal({ open, type, message, onClose }: Props) {
         <p className="mb-4">{message}</p>
 
         <Button
-          onClick={onClose}>
+          onClick={handleClose}>
           Fechar
         </Button>
       </div>

@@ -35,13 +35,28 @@ export default function InputNumber({
   className,
   bgColor,
 }: InputNumberProps) {
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    // Allow digits with optional comma or dot as decimal separator, max 2 decimal digits
-    if (/^[0-9]*[,.]?[0-9]{0,2}$/.test(raw) || raw === "") {
-      // Normalize dot to comma for display
-      onChange(raw.replace(".", ","));
+    // 1. Remove tudo que não for número (letras, vírgulas, pontos, etc.)
+    const onlyDigits = e.target.value.replace(/\D/g, "");
+
+    // 2. Se o campo ficar vazio, atualiza o estado para vazio
+    if (!onlyDigits) {
+      onChange("");
+      return;
     }
+
+    // 3. Converte os dígitos em número e divide por 100 para criar as casas decimais
+    const numericValue = Number(onlyDigits) / 100;
+
+    // 4. Aplica a formatação no padrão pt-BR (ex: 1.234,56)
+    const formattedValue = new Intl.NumberFormat("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(numericValue);
+
+    // 5. Envia o valor formatado para o componente pai
+    onChange(formattedValue);
   };
 
   return (
@@ -52,7 +67,7 @@ export default function InputNumber({
       </Label>
       <Input
         type="text"
-        inputMode="decimal"
+        inputMode="numeric" // Alterado para numeric para facilitar no celular
         id={id}
         value={value}
         onChange={handleChange}

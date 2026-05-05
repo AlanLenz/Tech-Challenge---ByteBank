@@ -2,7 +2,6 @@
 
 import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
-// Assumindo que você tem esses componentes importados corretamente
 import InputSelect from "@/components/InputSelect";
 import InputText from "@/components/InputText";
 import InputNumber from "@/components/InputNumber";
@@ -33,10 +32,16 @@ export default function TransactionForm({ onAddTransfer }: Props) {
   const [touched, setTouched] = useState({ type: false, value: false, description: false });
   const { white } = useThemeColors();
 
+  // 1. Criamos a variável que converte a string formatada em número puro
+  const numericValue = value ? Number(value.replace(/\./g, "").replace(",", ".")) : 0;
+
+  // 2. Usamos a variável na validação para o código ficar mais limpo
   const errors = {
     type: !type ? "Selecione o tipo de transação." : "",
     description: !description.trim() ? "Informe uma descrição." : "",
-    value: !value || isNaN(Number(value.replace(",", "."))) || Number(value.replace(",", ".")) <= 0 ? "Informe um valor válido maior que zero." : "",
+    value: !value || isNaN(numericValue) || numericValue <= 0
+      ? "Informe um valor válido maior que zero."
+      : "",
   };
 
   const isFormValid = !errors.type && !errors.description && !errors.value;
@@ -52,14 +57,13 @@ export default function TransactionForm({ onAddTransfer }: Props) {
     try {
       const dataFormatadaParaBanco = new Date().toISOString().split('T')[0];
       const newTransfer = {
-        id: uuidv4(), // json-server até gera ID sozinho, mas podemos mandar o nosso
+        id: uuidv4(),
         description: description,
-        amount: Number(value.replace(",", ".")),
+        amount: numericValue, // 3. AQUI ESTÁ A CORREÇÃO! Usamos o número já limpo e convertido.
         date: dataFormatadaParaBanco,
-        type: type,
+        type: type as "Deposit" | "Transfer",
       };
 
-      // 1. Dispara a requisição POST para a nossa Fake API
       const response = await fetch('http://localhost:4000/transfers', {
         method: 'POST',
         headers: {
@@ -72,23 +76,23 @@ export default function TransactionForm({ onAddTransfer }: Props) {
         throw new Error("Erro ao salvar no servidor.");
       }
 
-      const savedTransfer = await response.json(); // O servidor devolve o item salvo
+      const savedTransfer = await response.json(); 
 
-      // 2. Atualiza a tela chamando a prop do componente pai
       onAddTransfer(savedTransfer);
 
       setModalType("success");
       setModalMessage("Transação realizada com sucesso!");
       setModalOpen(true);
 
-      // Limpa o formulário
       setType("");
       setValue("");
       setDescription("");
       setTouched({ type: false, value: false, description: false });
 
     } catch (error: unknown) {
-      // ... seu tratamento de erro continua igual
+      setModalType("error");
+      setModalMessage("Erro ao tentar salvar a transação.");
+      setModalOpen(true);
     }
   }
 
