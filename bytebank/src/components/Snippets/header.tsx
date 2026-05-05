@@ -101,19 +101,18 @@ export default function Header({className}: {className?: string}) {
         <nav className="container mx-auto flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-[#47a138] rounded-sm"></div>
               <Image src="/logo.png" alt="Logomarca" width={150} height={83}/>
             </div>
             <div className="hidden md:flex gap-6">
-              <a href="#sobre" className="text-white hover:text-gray-200 transition">Sobre</a>
-              <a href="#servicos" className="text-white hover:text-gray-200 transition">Serviços</a>
+              <a href="#sobre" className="text-[#004D61] font-bold hover:text-[#47a138] transition">Sobre</a>
+              <a href="#servicos" className="text-[#004D61] font-bold hover:text-[#47a138] transition">Serviços</a>
             </div>
           </div>
 
           <div className="flex gap-4">
             <Drawer direction="right">
               <DrawerTrigger asChild>
-                <Button variant="outline" className="capitalize">
+                <Button variant="outline" className="capitalize border-[#47a138]">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="24" height="24" fill="#000000"><path d="M80 96h352v32H80zm0 144h352v32H80zm0 144h352v32H80z" /></svg>
                 </Button>
               </DrawerTrigger>

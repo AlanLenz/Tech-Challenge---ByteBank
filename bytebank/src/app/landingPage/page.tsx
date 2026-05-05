@@ -28,7 +28,7 @@ export default function BytebankTailwind() {
                 <HeaderCustom></HeaderCustom>
                 <section id="sobre" className="container mx-auto px-6 py-20 flex flex-col md:flex-row items-center">
                     <div className="md:w-1/2">
-                        <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+                        <h1 className="text-4xl lg:text-5xl font-bold text-white leading-tight">
                             Experimente mais liberdade no controle da sua vida financeira.
                             Crie sua conta com a gente!
                         </h1>

@@ -1,4 +1,3 @@
-
 # Fluxo - Gestão Financeira (ByteBank)
 
 Aplicação web para gerenciamento de transações financeiras, permitindo depósitos, transferências e visualização de extrato.
@@ -11,17 +10,20 @@ O Fluxo é uma aplicação desenvolvida com foco em simular operações bancári
 - Gerenciamento de estado com hooks
 - Persistência de dados no cliente
 - Organização escalável de projeto
+
 ## Funcionalidades
 
 ### Criar transações:
 - Depósito
 - Transferência
-- Atualização automática do saldo
+- Atualização do saldo
+
 ### Visualização de extrato:
 - Resumo
 - Lista completa de transações
-- Persistência de dados com localStorage
+- Persistência de dados com transactions.json
 - Interface responsiva
+
 ## Tecnologias
 
 **Frontend:**
@@ -34,8 +36,18 @@ O Fluxo é uma aplicação desenvolvida com foco em simular operações bancári
 - React Hooks (useState, custom hooks)
 
 **Persistência de dados:**
-- localStorage
+**Persistência de dados:**
+- JSON Server (API fake local)
+- localStorage (armazenamento no cliente)
 
+**UI Library:**
+- shadcn/ui
+
+**Autenticação:**
+- Firebase
+
+**Backend simulado:**
+- JSON Server (API fake local baseada em arquivo JSON)
 
 ## Arquitetura
 
@@ -45,19 +57,33 @@ A aplicação segue o princípio de separação de responsabilidades, dividindo 
 - Hooks → Regras de negócio (transações, saldo)
 - Types → Tipagem centralizada
 - Utils/Lib → Funções auxiliares
+
 ## Instalação
 
 **Clonar repositório**
-- git clone https://github.com/AlanLenz/Tech-Challenge---ByteBank.git
-
+```bash
+git clone https://github.com/AlanLenz/Tech-Challenge---ByteBank.git
+```
 **Entrar na pasta**
-- cd bytebank
-
+```bash
+cd bytebank
+```
 **Instalar dependências**
-- npm install
+```bash
+npm install
+```
+## Execução
+
+**Rodar API local**
+```bash
+npx json-server --watch public/data/transactions.json --port 4000
+```
 
 **Rodar o projeto**
-- npm run dev## 📁 Estrutura do projeto
+```bash
+npm run dev
+```
+## Estrutura do projeto
 
 ```bash
 src/
@@ -91,10 +117,22 @@ src/
 ```
 ## Capturas
 
+**Landing Page**
+![Landing page](./bytebank/assets/LandingPage.png)
+
+**Home**
 ![Home](./bytebank/assets/Home.png)
 
-![Landing Page](../Tech-Challenge---ByteBank/bytebank/assets/Home.png)
-![Extrato](../Tech-Challenge---ByteBank/bytebank/assets/Home.png)
+**Extrato**
+![Extrato](./bytebank/assets/Extrato.png)
+
+**Cadastro**
+![Cadastro](./bytebank/assets/Cadastro.png)
+
+**Acessar**
+![Acessar](./bytebank/assets/Acessar.png)
+
+
 
 
 ## Autores

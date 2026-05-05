@@ -64,18 +64,32 @@
       "type": "Deposit"
     },
     {
-      "id": "F3dbpqn-InM",
-      "description": "teste valor",
-      "amount": 32,
-      "date": "2026-05-04",
+      "id": "cjmDQc0o75M",
+      "description": "Conta de luz",
+      "amount": 250,
+      "date": "2026-05-01",
+      "type": "Transfer"
+    },
+    {
+      "id": "8MejqBi2snw",
+      "description": "Conta de água",
+      "amount": 120,
+      "date": "2026-05-01",
+      "type": "Transfer"
+    },
+    {
+      "id": "dvIBUFY6EkA",
+      "description": "Poupança",
+      "amount": 500,
+      "date": "2026-05-01",
       "type": "Deposit"
     },
     {
-      "id": "Klgci_jeYEU",
-      "description": "teste mensagem de erro",
+      "id": "cbMA0ldyYMc",
+      "description": "Investimento",
       "amount": 500,
-      "date": "2026-05-04",
-      "type": "Transfer"
+      "date": "2026-05-01",
+      "type": "Deposit"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
