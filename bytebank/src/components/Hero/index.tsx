@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Eye, EyeClosed } from 'lucide-react';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import { useThemeColors } from "@/hooks/useThemeColors";
 
 // Importamos a sua função de formatação de moeda para manter o padrão
 import { formatCurrency } from "@/utils/format";
@@ -18,6 +19,7 @@ interface Transfer {
 const Hero = () => {
   const [showValue, setShowValue] = useState(false);
   const [nomeUsuario, setNomeUsuario] = useState("Usuário");
+  const { primary, white } = useThemeColors();
 
   // Novo estado para guardar o valor do saldo calculado
   const [saldo, setSaldo] = useState<number>(0);
@@ -68,25 +70,25 @@ const Hero = () => {
   }, []);
 
   return (
-    <div className="relative w-[100%] bg-[#004D61] rounded-lg p-8 h-[400px]">
-      <p className="text-white text-[24px] font-semibold mb-4">Olá, {nomeUsuario}! :)</p>
-      <p className="text-white text-[14px] font-normal capitalize">{dia}, {current}</p>
+    <div className="relative w-[100%]  rounded-lg p-8 h-[400px]" style={{ backgroundColor: primary }}>
+      <p className="text-[24px] font-semibold mb-4" style={{ color: white }}>Olá, {nomeUsuario}! :)</p>
+      <p className="text-[14px] font-normal capitalize" style={{ color: white }}>{dia}, {current}</p>
 
       <div className="w-[100%] flex justify-end pr-20 mobile-balance">
         <div className="w-[190px]">
           <div className="flex gap-6 items-center">
-            <p className="text-white text-[20px] font-semibold">Saldo</p>
+            <p className="text-[20px] font-semibold" style={{ color: white }}>Saldo</p>
             {showValue ? (
-              <Eye className="w-5 h-5 text-white cursor-pointer" onClick={() => setShowValue(false)} />
+              <Eye className="w-5 h-5 cursor-pointer" style={{ color: white }} onClick={() => setShowValue(false)} />
             ) : (
-              <EyeClosed className="w-5 h-5 text-white cursor-pointer" onClick={() => setShowValue(true)} />
+              <EyeClosed className="w-5 h-5 cursor-pointer" style={{ color: white }} onClick={() => setShowValue(true)} />
             )}
           </div>
-          <div className="w-[100%] h-[1px] bg-white my-4" />
-          <p className="text-white text-[14px] font-normal">Conta Corrente</p>
+          <div className="w-[100%] h-[1px] bg-white my-4" style={{ backgroundColor: white }}/>
+          <p className="text-[14px] font-normal" style={{ color: white }}>Conta Corrente</p>
 
           {/* Aqui exibimos o saldo dinâmico usando a sua função de formatação */}
-          <p className="text-white text-[32px] font-normal">
+          <p className="text-[32px] font-normal" style={{ color: white }}>
             {showValue ? formatCurrency(saldo) : '****'}
           </p>
         </div>

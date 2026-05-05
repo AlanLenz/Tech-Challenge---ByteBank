@@ -2,25 +2,25 @@
 
 import { useState, useEffect } from 'react'; // Adicionado useEffect
 import { useRouter } from 'next/navigation'; // Adicionado useRouter para redirecionar no logout
-import { useMediaQuery } from "@custom-react-hooks/use-media-query"
 import RegisterModal from '../forms/register-form';
 import LoginModal from '../forms/login-form';
-import { Button } from "@/components/ui/button";
+import Button from "@/components/Button";
 import Image from 'next/image';
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTrigger,
-} from "@/components/ui/drawer"
+} from "@/components/Drawer"
 
 // --- Importações do Firebase ---
-import { auth } from "@/lib/firebase"; // Ajuste o caminho se necessário
+import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, signOut, User } from "firebase/auth";
+import { useThemeColors } from "@/hooks/useThemeColors";
 
-export default function Header() {
+export default function Header({className}: {className?: string}) {
   const router = useRouter();
-  const isDesktop = useMediaQuery("(min-width: 1023px)")
+  const { primary } = useThemeColors();
   
   // Estados dos modais
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -51,17 +51,17 @@ export default function Header() {
     }
   };
 
-  if (isDesktop) {
-    return (
-      <header>
+  return (
+    <header className={className}>
+      <div className='hidden md:block'>
         <nav className="container mx-auto flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-20">
             <div className="flex items-center gap-2">
               <Image src="/logo.png" alt="Logomarca" width={150} height={83}/>
             </div>
             <div className="hidden md:flex gap-6">
-              <a href="#sobre" className="text-[#004D61] font-bold hover:text-[#47a138] transition">Sobre</a>
-              <a href="#servicos" className="text-[#004D61] font-bold hover:text-[#47a138] transition">Serviços</a>
+              <a href="#sobre" className="font-bold transition" style={{ color: primary }}>Sobre</a>
+              <a href="#servicos" className="font-bold transition" style={{ color: primary }}>Serviços</a>
             </div>
           </div>
 
@@ -76,34 +76,28 @@ export default function Header() {
                  <span className="text-white font-medium hidden lg:block">
                    Olá, {user.displayName || "Usuário"}
                  </span>
-                 <button 
-                   onClick={handleLogout} 
-                   className="cursor-pointer border-2 border-red-500 text-red-500 font-bold px-6 py-2 rounded hover:bg-red-500 hover:text-white transition"
-                 >
+                 <Button variant="destructive" onClick={handleLogout}>
                    Sair
-                 </button>
+                 </Button>
                </div>
             ) : (
                // Se NÃO logado: Mostra botões de Cadastro e Login
                <>
-                 <button onClick={() => setIsRegisterModalOpen(true)} className="cursor-pointer bg-[#47a138] text-black font-bold px-6 py-2 rounded hover:bg-[#004D61] hover:text-white hover:bg-opacity-90 transition">
+                 <Button variant="primary" onClick={() => setIsRegisterModalOpen(true)}>
                    Abrir minha conta
-                 </button>
-                 <button onClick={() => setIsLoginModalOpen(true)} className="cursor-pointer border-2 border-[#004D61] text-[#004D61] font-bold px-6 py-2 rounded hover:bg-[#47a138] hover:border-[#47a138] hover:text-white transition">
+                 </Button>
+                 <Button variant="secondary" onClick={() => setIsLoginModalOpen(true)}>
                    Já tenho conta
-                 </button>
+                 </Button>
                </>
             )}
           </div>
         </nav>
         <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
         <RegisterModal isOpen={isRegisterModalOpen} onClose={() => setIsRegisterModalOpen(false)} />
-      </header>
-    )
-  } else {
-    // VERSÃO MOBILE
-    return (
-      <header>
+      </div>
+    
+      <div className='md:hidden'>
         <nav className="container mx-auto flex items-center justify-between px-6 py-4">
           <div className="flex items-center gap-8">
             <div className="flex items-center gap-2">
@@ -130,12 +124,12 @@ export default function Header() {
                   ) : user ? (
                      <>
                        <p className="text-center font-bold mb-4">Olá, {user.displayName || "Usuário"}</p>
-                       <Button onClick={handleLogout} variant="destructive">Sair da conta</Button>
+                       <Button onClick={handleLogout} variant="destructive" size="lg">Sair da conta</Button>
                      </>
                   ) : (
                      <>
-                       <Button onClick={() => setIsRegisterModalOpen(true)}>Abrir minha conta</Button>
-                       <Button onClick={() => setIsLoginModalOpen(true)} variant="outline">Já tenho conta</Button>
+                       <Button onClick={() => setIsRegisterModalOpen(true)} variant="primary" size="lg">Abrir minha conta</Button>
+                       <Button onClick={() => setIsLoginModalOpen(true)} variant="secondary" size="lg">Já tenho conta</Button>
                      </>
                   )}
                 </DrawerHeader>
@@ -145,7 +139,7 @@ export default function Header() {
         </nav>
         <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
         <RegisterModal isOpen={isRegisterModalOpen} onClose={() => setIsRegisterModalOpen(false)} />
-      </header>
-    )
-  }
+      </div>
+    </header>
+  )
 }

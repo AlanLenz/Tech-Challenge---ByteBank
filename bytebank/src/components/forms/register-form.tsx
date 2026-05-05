@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils"
 import { auth } from "@/lib/firebase";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation'
-import { useMediaQuery } from "@custom-react-hooks/use-media-query"
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 import {
@@ -14,27 +13,27 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components/Dialog"
 import {
     Drawer,
-    DrawerClose,
     DrawerContent,
     DrawerDescription,
     DrawerFooter,
     DrawerHeader,
     DrawerTitle,
-} from "@/components/ui/drawer"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@/components/Drawer"
+import { Checkbox } from "@/components/Checkbox"
 import {
     Field,
     FieldContent,
     FieldDescription,
     FieldGroup,
     FieldLabel,
-} from "@/components/ui/field"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+} from "@/components/Field"
+import Button from "@/components/Button"
+import InputText from "@/components/InputText"
+import InputPassword from "@/components/InputPassword"
+import useMediaQuery from "@/utils/useMediaQuery";
 
 interface RegisterModalProps {
     isOpen: boolean;
@@ -71,20 +70,16 @@ export default function RegisterModal({ isOpen, onClose }: RegisterModalProps) {
                 </DrawerHeader>
                 <RegisterForm className="px-4" />
                 <DrawerFooter className="pt-2">
-                    <DrawerClose asChild>
-                        <button
-                            onClick={onClose}
-                            className="w-full border border-gray-300 font-bold text-gray-700 px-4 py-2 rounded hover:bg-gray-100 transition">
-                            Cancelar
-                        </button>
-                    </DrawerClose>
+                    <Button variant="neutral" size="sm" onClick={onClose}>
+                        Cancelar
+                    </Button>
                 </DrawerFooter>
             </DrawerContent>
         </Drawer>
     )
 }
 
-function RegisterForm({ className }: React.ComponentProps<"form">) {
+export function RegisterForm({ className }: React.ComponentProps<"form">) {
     const router = useRouter();
 
     const [nome, setNome] = useState("");
@@ -134,39 +129,29 @@ function RegisterForm({ className }: React.ComponentProps<"form">) {
 
     return (
         <form className={cn("grid items-start gap-6", className)} onSubmit={handleSubmit}>
-            <div className="grid gap-3">
-                <Label htmlFor="nome">Nome</Label>
-                <Input
-                    type="text"
-                    id="nome"
-                    placeholder="Seu nome completo"
-                    value={nome}
-                    onChange={(e) => setNome(e.target.value)}
-                    required
-                />
-            </div>
-            <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                    type="email"
-                    id="email"
-                    placeholder="seu@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                />
-            </div>
-            <div className="grid gap-3">
-                <Label htmlFor="password">Senha</Label>
-                <Input
-                    type="password"
-                    id="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-            </div>
+            <InputText
+                id="nome"
+                label="Nome"
+                placeholder="Seu nome completo"
+                value={nome}
+                onChange={setNome}
+                required
+            />
+            <InputText
+                id="email"
+                label="Email"
+                placeholder="seu@email.com"
+                value={email}
+                onChange={setEmail}
+                required
+            />
+            <InputPassword
+                id="password"
+                label="Senha"
+                value={password}
+                onChange={setPassword}
+                required
+            />
             <FieldGroup className="max-w-sm">
                 <Field orientation="horizontal">
                     <Checkbox
@@ -189,11 +174,8 @@ function RegisterForm({ className }: React.ComponentProps<"form">) {
             {/* Exibe mensagem de erro se houver */}
             {error && <p className="text-red-500 text-sm font-bold text-center">{error}</p>}
 
-            <Button
-                type="submit"
-                disabled={!aceitouTermos || isLoading}
-                className="cursor-pointer bg-[#47a138] text-black font-bold hover:bg-opacity-90 w-full disabled:bg-gray-400 disabled:cursor-not-allowed transition-all">
-                {isLoading ? "Criando conta..." : "Criar conta"}
+            <Button type="submit" variant="primary" size="sm" loading={isLoading} disabled={!aceitouTermos}>
+                Criar conta
             </Button>
         </form>
     )

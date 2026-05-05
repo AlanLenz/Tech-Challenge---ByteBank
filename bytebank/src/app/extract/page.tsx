@@ -4,6 +4,7 @@ import SideMenu from "@/components/SideMenu";
 import TransferList from "@/components/TransferList";
 import MobileMenu from "@/components/MobileMenu";
 import type { Metadata } from 'next';
+import { useThemeColors } from "@/hooks/useThemeColors";
 
 export const metadata: Metadata = {
   title: 'Extrato | Fluxo - Gestão Financeira',
@@ -11,9 +12,11 @@ export const metadata: Metadata = {
 }
 
 export default function Extract() {
+  const { bgGreen } = useThemeColors();
+
   return (
     <div className="min-h-screen font-sans">
-      <div className="bg-[#E4EDE3] flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen" style={{ backgroundColor: bgGreen }}>
         <Header />
         <div className="container mx-auto flex flex-col md:flex-row gap-6 p-4 md:p-6 items-stretch flex-1">
           <div className="hidden md:flex md:flex-col">

@@ -1,18 +1,27 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useThemeColors } from "@/hooks/useThemeColors";
 
 interface MenuItemProps {
   label: string;
   href: string;
-  isActive: boolean;
   hasDivider?: boolean;
+  isActive?: boolean;
 }
 
-const MenuItem = ({ label, href, isActive, hasDivider = true }: MenuItemProps) => {
+const MenuItem = ({ label, href, hasDivider = true, isActive: isActiveProp }: MenuItemProps) => {
+  const { primary } = useThemeColors();
+  const pathname = usePathname();
+  const isActive = isActiveProp !== undefined ? isActiveProp : pathname === href;
+
   return (
     <li className="text-center">
-      <a href={href} className={`text-[#004D61] font-${isActive ? "bold" : "normal"} text-[16px]`}>
+      <Link href={href} className={`text-[16px] ${isActive ? "font-bold" : "font-normal"}`} style={{ color: primary }}>
         {label}
-      </a>
-      {hasDivider && <div className="w-full h-[1px] bg-[#004D61] my-4" />}
+      </Link>
+      {hasDivider && <div className="w-full h-[1px] my-4" style={{ backgroundColor: primary }} />}
     </li>
   );
 };

@@ -1,7 +1,7 @@
 "use client";
-import Button from "../TransactionForm/Button";
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { useThemeColors } from "@/hooks/useThemeColors";
+import Button from "../Button";
+ 
 type Props = {
   open: boolean;
   type: "success" | "error";
@@ -10,12 +10,14 @@ type Props = {
 };
 
 export default function FeedbackModal({ open, type, message, onClose }: Props) {
+  const { white } = useThemeColors();
+
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-xl shadow-lg w-[300px] text-center">
-        
+      <div className="p-6 rounded-xl shadow-lg w-[300px] text-center" style={{ backgroundColor: white }}>
+
         <h2 className="text-lg font-semibold mb-2">
           {type === "success" ? "Sucesso 🎉" : "Erro ❌"}
         </h2>

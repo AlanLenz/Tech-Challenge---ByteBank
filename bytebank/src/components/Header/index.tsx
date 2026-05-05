@@ -17,9 +17,11 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from "@/components/AlertDialog";
+import { useThemeColors } from "@/hooks/useThemeColors";
 
 const Header = () => {
+  const { primary } = useThemeColors();
   const router = useRouter();
 
   const [user, setUser] = useState<User | null>(null);
@@ -48,7 +50,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-[#004D61] text-white">
+    <header className="text-white" style={{ backgroundColor: primary }}>
       <div className="container mx-auto flex items-center justify-between px-6 h-24">
         <Link href="/home" className="flex items-center gap-2 cursor-pointer">
           <Image className="white-logo" src="/logo.png" alt="Logomarca" width={110} height={61} />
@@ -56,12 +58,12 @@ const Header = () => {
 
         <div className="flex items-center gap-6 md:gap-10">
           {isLoading ? (
-            <div className="h-4 w-32 bg-[#00607a] animate-pulse rounded"></div>
+            <div className="h-4 w-32 animate-pulse rounded" style={{ backgroundColor: primary }}></div>
           ) : (
             <>
               <div className="flex items-center gap-3">
                 <p className="font-semibold text-[13px] hidden sm:block">
-                  {user?.displayName || "Usuário"}
+                  {user?.displayName ?? "Usuário"}
                 </p>
                 <UserCircle className="w-6 h-6" />
               </div>
