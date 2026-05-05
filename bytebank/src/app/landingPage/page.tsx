@@ -3,6 +3,7 @@
 import { Gift, Landmark, Star, Smartphone } from 'lucide-react';
 import HeaderCustom from '@/components/Snippets/header';
 import FooterCustom from '@/components/Footer';
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import { useThemeColors } from "@/hooks/useThemeColors";
 
@@ -10,6 +11,11 @@ interface FeatureProps {
     icon: React.ReactNode;
     title: string;
     desc: string;
+}
+
+export const metadata: Metadata = {
+    title: 'Fluxo - Gestão Financeira',
+    description: '...',
 }
 
 export default function BytebankTailwind() {

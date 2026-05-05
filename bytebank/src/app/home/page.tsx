@@ -9,23 +9,29 @@ import SideMenu from "@/components/SideMenu";
 import MobileMenu from "@/components/MobileMenu";
 import FooterCustom from '@/components/Footer';
 import TransactionForm from "@/components/TransactionForm";
-import type { Transfer } from "@/types/transfer";
-import type { Metadata } from 'next';
 
-const metadata: Metadata = {
-  title: 'Início | Fluxo - Gestão Financeira',
-  description: '...',
-}
+type Transfer = {
+  id: string;
+  description: string;
+  amount: number;
+  date: string;
+  type: "Deposit" | "Transfer";
+};
+
 export default function Home() {
   const { bgGreen, bgGray } = useThemeColors();
   const [transfers, setTransfers] = useState<Transfer[]>([]);
 
-  // Carrega os dados do JSON apenas UMA VEZ na inicialização
+  // 1. Carrega os dados do JSON apenas UMA VEZ na inicialização
   useEffect(() => {
     const fetchTransfers = async () => {
       try {
+        // Certifique-se de estar usando a URL correta (json-server ou arquivo local)
         const response = await fetch('http://localhost:4000/transfers');
         const data = await response.json();
+
+        // Se a resposta for o objeto { transfers: [...] }, pegamos data.transfers
+        // Se a resposta já for o array [...], usamos data direto
         const arrayDeTransferencias = Array.isArray(data) ? data : data.transfers || [];
 
         setTransfers(arrayDeTransferencias);
@@ -37,6 +43,7 @@ export default function Home() {
     fetchTransfers();
   }, []);
 
+  // 2. A função mágica que é passada para o formulário
   const handleAddTransfer = (newTransfer: Transfer) => {
     // Atualiza o estado (a tela) adicionando o novo item no começo da lista
     setTransfers((currentTransfers) => [newTransfer, ...currentTransfers]);
@@ -47,22 +54,22 @@ export default function Home() {
       <div className="flex flex-col min-h-screen" style={{ backgroundColor: bgGreen }}>
         <Header />
         <div className="container mx-auto flex gap-6 p-6 items-stretch flex-1">
-          <div className="hidden lg:flex lg:flex-col">
+          <div className="hidden md:flex md:flex-col">
             <SideMenu />
           </div>
           <div className="w-[100%] flex flex-col gap-6">
-            <div className="w-full lg:hidden">
+            <div className="w-full md:hidden">
               <MobileMenu />
             </div>
             <Hero />
             <div className="w-[100%] rounded-lg p-8" style={{ backgroundColor: bgGray }}>
               <TransactionForm onAddTransfer={handleAddTransfer} />
             </div>
-            <div className="w-full lg:hidden">
+            <div className="w-full md:hidden">
               <ExtractPreview />
             </div>
           </div>
-          <div className="hidden lg:flex lg:flex-col">
+          <div className="hidden md:flex md:flex-col">
             <ExtractPreview />
           </div>
         </div>
