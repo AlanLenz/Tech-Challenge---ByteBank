@@ -1,6 +1,6 @@
 "use client"
 
-import { useState} from 'react';
+import { useState } from 'react';
 import RegisterModal from '../forms/register-form';
 import LoginModal from '../forms/login-form';
 import Button from "@/components/Button";

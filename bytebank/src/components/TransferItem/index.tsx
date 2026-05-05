@@ -33,11 +33,19 @@ const TransferItem = ({
   onDelete,
 }: TransferItemProps) => {
   const { green, red } = useThemeColors();
-  const [amountStr, setAmountStr] = useState(String(draft.amount).replace(".", ","));
+
+  const formatInitialValue = (amount: number) => {
+    return new Intl.NumberFormat("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(amount || 0);
+  };
+
+  const [amountStr, setAmountStr] = useState(formatInitialValue(draft.amount));
 
   useEffect(() => {
     if (isEditing) {
-      setAmountStr(String(draft.amount).replace(".", ","));
+      setAmountStr(formatInitialValue(draft.amount));
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditing]);
@@ -72,7 +80,8 @@ const TransferItem = ({
             value={amountStr}
             onChange={(val) => {
               setAmountStr(val);
-              onDraftChange({ ...draft, amount: Number(val.replace(",", ".")) });
+              const numericValue = val ? Number(val.replace(/\./g, "").replace(",", ".")) : 0;
+              onDraftChange({ ...draft, amount: numericValue });
             }}
             min={0}
           />

@@ -59,7 +59,7 @@ export default function TransactionForm({ onAddTransfer }: Props) {
       const newTransfer = {
         id: uuidv4(),
         description: description,
-        amount: numericValue, // 3. AQUI ESTÁ A CORREÇÃO! Usamos o número já limpo e convertido.
+        amount: numericValue,
         date: dataFormatadaParaBanco,
         type: type as "Deposit" | "Transfer",
       };

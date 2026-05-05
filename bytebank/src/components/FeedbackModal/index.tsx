@@ -29,8 +29,7 @@ export default function FeedbackModal({ open, type, message, onClose }: Props) {
 
         <p className="mb-4">{message}</p>
 
-        <Button
-          onClick={handleClose}>
+        <Button onClick={handleClose}>
           Fechar
         </Button>
       </div>
