@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 import { useThemeColors } from "@/hooks/useThemeColors";
 
 export const metadata: Metadata = {
-  title: 'Extrato | Fluxo - Gestão Financeira',
+  title: 'Extrato',
   description: '...',
 }
 

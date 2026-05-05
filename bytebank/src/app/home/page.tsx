@@ -9,29 +9,23 @@ import SideMenu from "@/components/SideMenu";
 import MobileMenu from "@/components/MobileMenu";
 import FooterCustom from '@/components/Footer';
 import TransactionForm from "@/components/TransactionForm";
+import type { Transfer } from "@/types/transfer";
+import type { Metadata } from 'next';
 
-type Transfer = {
-  id: string;
-  description: string;
-  amount: number;
-  date: string;
-  type: "Deposit" | "Transfer";
-};
-
+const metadata: Metadata = {
+  title: 'Início | Fluxo - Gestão Financeira',
+  description: '...',
+}
 export default function Home() {
   const { bgGreen, bgGray } = useThemeColors();
   const [transfers, setTransfers] = useState<Transfer[]>([]);
 
-  // 1. Carrega os dados do JSON apenas UMA VEZ na inicialização
+  // Carrega os dados do JSON apenas UMA VEZ na inicialização
   useEffect(() => {
     const fetchTransfers = async () => {
       try {
-        // Certifique-se de estar usando a URL correta (json-server ou arquivo local)
         const response = await fetch('http://localhost:4000/transfers');
         const data = await response.json();
-
-        // Se a resposta for o objeto { transfers: [...] }, pegamos data.transfers
-        // Se a resposta já for o array [...], usamos data direto
         const arrayDeTransferencias = Array.isArray(data) ? data : data.transfers || [];
 
         setTransfers(arrayDeTransferencias);
@@ -43,7 +37,6 @@ export default function Home() {
     fetchTransfers();
   }, []);
 
-  // 2. A função mágica que é passada para o formulário
   const handleAddTransfer = (newTransfer: Transfer) => {
     // Atualiza o estado (a tela) adicionando o novo item no começo da lista
     setTransfers((currentTransfers) => [newTransfer, ...currentTransfers]);
