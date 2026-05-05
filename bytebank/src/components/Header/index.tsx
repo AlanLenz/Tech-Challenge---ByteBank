@@ -17,7 +17,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from "@/components/AlertDialog";
 import { useThemeColors } from "@/hooks/useThemeColors";
 
 const Header = () => {

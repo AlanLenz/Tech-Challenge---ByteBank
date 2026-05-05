@@ -4,8 +4,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
+} from "@/components/Select";
+import { Label } from "@/components/Label";
 import { cn } from "@/lib/utils";
 
 export type SelectOption = {

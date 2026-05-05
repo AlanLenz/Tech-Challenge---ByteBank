@@ -4,7 +4,7 @@ import * as React from "react"
 import { AlertDialog as AlertDialogPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import Button, { type ButtonVariant, type ButtonSize } from "@/components/Button"
 
 function AlertDialog({
   ...props
@@ -149,37 +149,39 @@ function AlertDialogDescription({
 
 function AlertDialogAction({
   className,
-  variant = "default",
-  size = "default",
+  variant = "primary",
+  size = "md",
+  children,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Action> &
-  Pick<React.ComponentProps<typeof Button>, "variant" | "size">) {
+}: React.ComponentProps<typeof AlertDialogPrimitive.Action> & {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+}) {
   return (
-    <Button variant={variant} size={size} asChild>
-      <AlertDialogPrimitive.Action
-        data-slot="alert-dialog-action"
-        className={cn(className)}
-        {...props}
-      />
-    </Button>
+    <AlertDialogPrimitive.Action data-slot="alert-dialog-action" asChild {...props}>
+      <Button variant={variant} size={size} className={cn(className)}>
+        {children}
+      </Button>
+    </AlertDialogPrimitive.Action>
   )
 }
 
 function AlertDialogCancel({
   className,
   variant = "outline",
-  size = "default",
+  size = "md",
+  children,
   ...props
-}: React.ComponentProps<typeof AlertDialogPrimitive.Cancel> &
-  Pick<React.ComponentProps<typeof Button>, "variant" | "size">) {
+}: React.ComponentProps<typeof AlertDialogPrimitive.Cancel> & {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+}) {
   return (
-    <Button variant={variant} size={size} asChild>
-      <AlertDialogPrimitive.Cancel
-        data-slot="alert-dialog-cancel"
-        className={cn(className)}
-        {...props}
-      />
-    </Button>
+    <AlertDialogPrimitive.Cancel data-slot="alert-dialog-cancel" asChild {...props}>
+      <Button variant={variant} size={size} className={cn(className)}>
+        {children}
+      </Button>
+    </AlertDialogPrimitive.Cancel>
   )
 }
 

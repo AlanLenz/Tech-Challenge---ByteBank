@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from '@/components/ui/dialog';
+} from '@/components/Dialog';
 import {
   Drawer,
   DrawerContent,
@@ -15,7 +15,7 @@ import {
   DrawerTitle,
   DrawerDescription,
   DrawerFooter,
-} from '@/components/ui/drawer';
+} from '@/components/Drawer';
 import Button from '@/components/Button';
 
 const meta: Meta<typeof LoginModal> = {

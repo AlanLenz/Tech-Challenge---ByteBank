@@ -1,5 +1,5 @@
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Input } from "@/components/Input";
+import { Label } from "@/components/Label";
 import { cn } from "@/lib/utils";
 
 type InputTextProps = {

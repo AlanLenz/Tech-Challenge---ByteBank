@@ -16,7 +16,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components/Dialog"
 import {
   Drawer,
   DrawerContent,
@@ -24,7 +24,7 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from "@/components/ui/drawer"
+} from "@/components/Drawer"
 import Button from "@/components/Button"
 import InputText from "@/components/InputText"
 import InputPassword from "@/components/InputPassword"

@@ -6,7 +6,7 @@ import {
   DrawerTrigger,
   DrawerContent,
   DrawerClose,
-} from "@/components/ui/drawer";
+} from "@/components/Drawer";
 import SideMenu from "@/components/SideMenu";
 import { X } from "lucide-react";
 import { useThemeColors } from "@/hooks/useThemeColors";

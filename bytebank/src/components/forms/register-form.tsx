@@ -13,7 +13,7 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components/Dialog"
 import {
     Drawer,
     DrawerContent,
@@ -21,15 +21,15 @@ import {
     DrawerFooter,
     DrawerHeader,
     DrawerTitle,
-} from "@/components/ui/drawer"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@/components/Drawer"
+import { Checkbox } from "@/components/Checkbox"
 import {
     Field,
     FieldContent,
     FieldDescription,
     FieldGroup,
     FieldLabel,
-} from "@/components/ui/field"
+} from "@/components/Field"
 import Button from "@/components/Button"
 import InputText from "@/components/InputText"
 import InputPassword from "@/components/InputPassword"
