@@ -7,3 +7,14 @@ export type Transfer = {
   date: string;
   type: TransferType;
 };
+
+export type TransferFilters = {
+  description: string;
+  startDate: string;
+  endDate: string;
+  type: TransferType | "all";
+};
+
+export interface TransferListProps {
+  filters?: TransferFilters;
+}

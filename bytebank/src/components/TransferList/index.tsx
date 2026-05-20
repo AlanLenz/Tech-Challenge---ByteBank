@@ -1,13 +1,13 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import type { Transfer } from "@/types/transfer";
+import type { Transfer, TransferListProps } from "@/types/transfer";
 import { formatCurrency } from "@/utils/format";
 import SummaryCard from "../SummaryCard";
 import TransferItem from "../TransferItem";
 import { useThemeColors } from "@/hooks/useThemeColors";
 
-const TransferList = () => {
+const TransferList = ({ filters }: TransferListProps) => {
   const { black, textMuted } = useThemeColors();
   const [transfers, setTransfers] = useState<Transfer[]>([]);
   const [isLoading, setIsLoading] = useState(true); 
@@ -43,8 +43,19 @@ const TransferList = () => {
     fetchTransfers();
   }, []);
 
+  const filteredTransfers = useMemo(() => {
+    if (!filters) return transfers;
+    return transfers.filter((item) => {
+      if (filters.description && !item.description.toLowerCase().includes(filters.description.toLowerCase())) return false;
+      if (filters.type && filters.type !== "all" && item.type !== filters.type) return false;
+      if (filters.startDate && item.date < filters.startDate) return false;
+      if (filters.endDate && item.date > filters.endDate) return false;
+      return true;
+    });
+  }, [transfers, filters]);
+
   const totals = useMemo(() => {
-    return transfers.reduce(
+    return filteredTransfers.reduce(
       (acc, item) => {
         if (item.type === "Deposit") {
           acc.deposits += item.amount;
@@ -55,7 +66,7 @@ const TransferList = () => {
       },
       { deposits: 0, transfers: 0 },
     );
-  }, [transfers]);
+  }, [filteredTransfers]);
 
   const startEdit = (item: Transfer) => {
     setEditingId(item.id);
@@ -151,20 +162,20 @@ const TransferList = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <SummaryCard variant="deposit" label="Depositos" value={formatCurrency(totals.deposits)} />
         <SummaryCard variant="transfer" label="Transferencias" value={formatCurrency(totals.transfers)} />
-        <SummaryCard variant="records" label="Registros" value={transfers.length} />
+        <SummaryCard variant="records" label="Registros" value={filteredTransfers.length} />
       </div>
 
       {isLoading ? (
         <div className="flex justify-center items-center py-10">
            <p className="text-gray-500 font-medium">Carregando dados...</p>
         </div>
-      ) : transfers.length === 0 ? (
+      ) : filteredTransfers.length === 0 ? (
         <div className="flex justify-center items-center py-10">
            <p className="text-gray-500 font-medium">Nenhum lançamento encontrado.</p>
         </div>
       ) : (
         <div className="space-y-3">
-          {transfers.map((item) => (
+          {filteredTransfers.map((item) => (
             <TransferItem
               key={item.id}
               item={item}

@@ -1,18 +1,17 @@
+"use client";
+
 import Header from "@/components/Header";
 import FooterCustom from '@/components/Footer';
 import SideMenu from "@/components/SideMenu";
 import TransferList from "@/components/TransferList";
+import FilterTransferList, { type TransferFilters } from "@/components/FilterTransferList";
 import MobileMenu from "@/components/MobileMenu";
-import type { Metadata } from 'next';
 import { useThemeColors } from "@/hooks/useThemeColors";
-
-export const metadata: Metadata = {
-  title: 'Extrato | Fluxo - Gestão Financeira',
-  description: '...',
-}
+import { useState } from "react";
 
 export default function Extract() {
   const { bgGreen } = useThemeColors();
+  const [filters, setFilters] = useState<TransferFilters | undefined>(undefined);
 
   return (
     <div className="min-h-screen font-sans">
@@ -24,7 +23,10 @@ export default function Extract() {
           </div>
           <div className="w-full">
             <MobileMenu />
-            <TransferList />
+            <div className="flex flex-col gap-6">
+              <FilterTransferList onFilter={setFilters} />
+              <TransferList filters={filters} />
+            </div>
           </div>
         </div>
       </div>
