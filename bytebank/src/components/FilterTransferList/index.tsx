@@ -50,7 +50,7 @@ const FilterTransferList = ({ onFilter }: FilterTransferListProps) => {
       className="w-full rounded-lg p-4 sm:p-6 lg:p-8"
       style={{ backgroundColor: white }}
     >
-      <h2 className="text-[28px] font-bold mb-6" style={{ color: black }}>
+      <h2 className="text-xl sm:text-2xl lg:text-[28px] font-bold mb-6" style={{ color: black }}>
         Filtrar Transferências
       </h2>
 
@@ -91,11 +91,11 @@ const FilterTransferList = ({ onFilter }: FilterTransferListProps) => {
           />
         </div>
 
-        <div className="flex gap-3 mt-6">
-          <Button type="submit" variant="primary" size="md">
+        <div className="flex flex-col sm:flex-row gap-3 mt-6">
+          <Button type="submit" variant="primary" size="md" className="w-full sm:w-auto">
             Filtrar
           </Button>
-          <Button type="button" variant="neutral" size="md" onClick={handleClear}>
+          <Button type="button" variant="neutral" size="md" className="w-full sm:w-auto" onClick={handleClear}>
             Limpar filtros
           </Button>
         </div>
