@@ -6,6 +6,16 @@ import type { Transfer, TransferType } from "@/types/transfer";
 import { formatDate, formatCurrency } from "@/utils/format";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import Button from "@/components/Button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/Dialog";
 import InputText from "@/components/InputText";
 import InputDate from "@/components/InputDate";
 import InputSelect from "@/components/InputSelect";
@@ -117,10 +127,32 @@ const TransferItem = ({
               <Pencil className="w-4 h-4" />
               Editar
             </Button>
-            <Button variant="destructive" size="sm" onClick={() => onDelete(item.id)}>
-              <Trash2 className="w-4 h-4" />
-              Excluir
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="destructive" size="sm">
+                  <Trash2 className="w-4 h-4" />
+                  Excluir
+                </Button>
+              </DialogTrigger>
+              <DialogContent showCloseButton={false} className="max-w-64">
+                <DialogHeader>
+                  <DialogTitle>Excluir lançamento</DialogTitle>
+                  <DialogDescription>
+                    Tem certeza que deseja excluir este lançamento? Esta ação não pode ser desfeita.
+                  </DialogDescription>
+                </DialogHeader>
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant="neutral" size="sm">Cancelar</Button>
+                  </DialogClose>
+                  <DialogClose asChild>
+                    <Button variant="destructive" size="sm" onClick={() => onDelete(item.id)}>
+                      Excluir
+                    </Button>
+                  </DialogClose>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       )}

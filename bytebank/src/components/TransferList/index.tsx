@@ -148,9 +148,6 @@ const TransferList = ({ filters }: TransferListProps) => {
 
   // --- LÓGICA DE EXCLUSÃO ATUALIZADA (DELETE) ---
   const deleteTransfer = async (id: string | number) => {
-    // É uma boa prática pedir confirmação antes de apagar do banco
-    if (!window.confirm("Tem certeza que deseja excluir esta transação?")) return;
-
     try {
       // Faz o DELETE na URL com o ID específico
       const response = await fetch(`http://localhost:4000/transfers/${id}`, {
