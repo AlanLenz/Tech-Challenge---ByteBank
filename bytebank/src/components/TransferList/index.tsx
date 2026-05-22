@@ -6,12 +6,17 @@ import { formatCurrency } from "@/utils/format";
 import SummaryCard from "../SummaryCard";
 import TransferItem from "../TransferItem";
 import { useThemeColors } from "@/hooks/useThemeColors";
+import Pagination from "../Pagination";
+
+const PAGE_SIZE = 10;
 
 const TransferList = ({ filters }: TransferListProps) => {
   const { black, textMuted } = useThemeColors();
   const [transfers, setTransfers] = useState<Transfer[]>([]);
-  const [isLoading, setIsLoading] = useState(true); 
-  
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isChangingPage, setIsChangingPage] = useState(false);
+
   // Como o ID agora pode ser a string gerada pelo uuidv4(), mudamos o tipo aqui
   const [editingId, setEditingId] = useState<string | number | null>(null);
   
@@ -53,6 +58,27 @@ const TransferList = ({ filters }: TransferListProps) => {
       return true;
     });
   }, [transfers, filters]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredTransfers.length / PAGE_SIZE));
+
+  const paginatedTransfers = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return filteredTransfers.slice(start, start + PAGE_SIZE);
+  }, [filteredTransfers, currentPage]);
+
+  // Reseta para a primeira página sempre que os filtros mudarem
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters]);
+
+  const goToPage = (page: number) => {
+    if (page === currentPage || page < 1 || page > totalPages) return;
+    setIsChangingPage(true);
+    setTimeout(() => {
+      setCurrentPage(page);
+      setIsChangingPage(false);
+    }, 200);
+  };
 
   const totals = useMemo(() => {
     return filteredTransfers.reduce(
@@ -174,21 +200,37 @@ const TransferList = ({ filters }: TransferListProps) => {
            <p className="text-gray-500 font-medium">Nenhum lançamento encontrado.</p>
         </div>
       ) : (
-        <div className="space-y-3">
-          {filteredTransfers.map((item) => (
-            <TransferItem
-              key={item.id}
-              item={item}
-              isEditing={editingId === item.id}
-              draft={draft}
-              onDraftChange={setDraft}
-              onSave={saveEdit}
-              onCancel={cancelEdit}
-              onEdit={startEdit}
-              onDelete={deleteTransfer}
+        <>
+          {isChangingPage ? (
+            <div className="flex justify-center items-center py-10">
+              <p className="text-gray-500 font-medium">Carregando...</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {paginatedTransfers.map((item) => (
+                <TransferItem
+                  key={item.id}
+                  item={item}
+                  isEditing={editingId === item.id}
+                  draft={draft}
+                  onDraftChange={setDraft}
+                  onSave={saveEdit}
+                  onCancel={cancelEdit}
+                  onEdit={startEdit}
+                  onDelete={deleteTransfer}
+                />
+              ))}
+            </div>
+          )}
+
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={goToPage}
             />
-          ))}
-        </div>
+          )}
+        </>
       )}
     </section>
   );
