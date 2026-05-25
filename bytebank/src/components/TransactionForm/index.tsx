@@ -2,6 +2,7 @@
 
 import { v4 as uuidv4 } from "uuid";
 import { useState } from "react";
+import InputFile from "@/components/InputFile";
 import InputSelect from "@/components/InputSelect";
 import InputText from "@/components/InputText";
 import InputNumber from "@/components/InputNumber";
@@ -30,7 +31,16 @@ export default function TransactionForm({ onAddTransfer }: Props) {
   const [modalType, setModalType] = useState<"success" | "error">("success");
   const [modalMessage, setModalMessage] = useState("");
   const [touched, setTouched] = useState({ type: false, value: false, description: false });
+  const [receipt, setReceipt] = useState<File | null>(null);
   const { white } = useThemeColors();
+
+  const fileToBase64 = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
 
   // 1. Criamos a variável que converte a string formatada em número puro
   const numericValue = value ? Number(value.replace(/\./g, "").replace(",", ".")) : 0;
@@ -56,13 +66,19 @@ export default function TransactionForm({ onAddTransfer }: Props) {
 
     try {
       const dataFormatadaParaBanco = new Date().toISOString().split('T')[0];
-      const newTransfer = {
+      const newTransfer: Record<string, unknown> = {
         id: uuidv4(),
         description: description,
         amount: numericValue,
         date: dataFormatadaParaBanco,
         type: type as "Deposit" | "Transfer",
       };
+
+      if (receipt) {
+        newTransfer.receiptName = receipt.name;
+        newTransfer.receiptType = receipt.type;
+        newTransfer.receiptData = await fileToBase64(receipt);
+      }
 
       const response = await fetch('http://localhost:4000/transfers', {
         method: 'POST',
@@ -87,9 +103,10 @@ export default function TransactionForm({ onAddTransfer }: Props) {
       setType("");
       setValue("");
       setDescription("");
+      setReceipt(null);
       setTouched({ type: false, value: false, description: false });
 
-    } catch (error: unknown) {
+    } catch {
       setModalType("error");
       setModalMessage("Erro ao tentar salvar a transação.");
       setModalOpen(true);
@@ -135,6 +152,8 @@ export default function TransactionForm({ onAddTransfer }: Props) {
           onBlur={() => handleBlur("value")}
           required
         />
+
+        <InputFile value={receipt} onChange={setReceipt} />
 
         <Button type="submit" size="lg" disabled={!isFormValid}>
           Concluir transação
