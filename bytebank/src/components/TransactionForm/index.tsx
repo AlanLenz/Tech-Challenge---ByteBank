@@ -6,6 +6,7 @@ import InputFile from "@/components/InputFile";
 import InputSelect from "@/components/InputSelect";
 import InputText from "@/components/InputText";
 import InputNumber from "@/components/InputNumber";
+import InputDate from "@/components/InputDate";
 import Button from "../Button";
 import Card from "./Card";
 import FeedbackModal from "../FeedbackModal";
@@ -21,10 +22,11 @@ export default function TransactionForm({ onAddTransfer }: Props) {
   const [type, setType] = useState<"Deposit" | "Transfer" | "">("");
   const [value, setValue] = useState("");
   const [description, setDescription] = useState("");
+  const [date, setDate] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"success" | "error">("success");
   const [modalMessage, setModalMessage] = useState("");
-  const [touched, setTouched] = useState({ type: false, value: false, description: false });
+  const [touched, setTouched] = useState({ type: false, value: false, description: false, date: false });
   const [receipt, setReceipt] = useState<File | null>(null);
   const { white } = useThemeColors();
 
@@ -38,26 +40,26 @@ export default function TransactionForm({ onAddTransfer }: Props) {
     value: !value || isNaN(numericValue) || numericValue <= 0
       ? "Informe um valor válido maior que zero."
       : "",
+    date: !date ? "Selecione uma data." : "",
   };
 
-  const isFormValid = !errors.type && !errors.description && !errors.value;
+  const isFormValid = !errors.type && !errors.description && !errors.value && !errors.date;
 
   const handleBlur = (field: keyof typeof touched) =>
     setTouched((prev) => ({ ...prev, [field]: true }));
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setTouched({ type: true, value: true, description: true });
+    setTouched({ type: true, value: true, description: true, date: true });
     if (!isFormValid) return;
 
     try {
-      const dataFormatadaParaBanco = new Date().toISOString().split('T')[0];
       const transferId = uuidv4();
       const newTransfer: Transfer = {
         id: transferId,
         description: description,
         amount: numericValue,
-        date: dataFormatadaParaBanco,
+        date: date,
         type: type as "Deposit" | "Transfer",
       };
 
@@ -98,8 +100,9 @@ export default function TransactionForm({ onAddTransfer }: Props) {
       setType("");
       setValue("");
       setDescription("");
+      setDate("");
       setReceipt(null);
-      setTouched({ type: false, value: false, description: false });
+      setTouched({ type: false, value: false, description: false, date: false });
 
     } catch {
       setModalType("error");
@@ -145,6 +148,15 @@ export default function TransactionForm({ onAddTransfer }: Props) {
           bgColor={white}
           error={touched.value ? errors.value : ""}
           onBlur={() => handleBlur("value")}
+          required
+        />
+
+        <InputDate
+          label="Data"
+          value={date}
+          onChange={setDate}
+          bgColor={white}
+          error={touched.date ? errors.date : ""}
           required
         />
 

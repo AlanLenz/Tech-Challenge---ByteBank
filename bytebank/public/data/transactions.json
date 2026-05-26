@@ -90,6 +90,24 @@
       "amount": 500,
       "date": "2026-05-01",
       "type": "Deposit"
+    },
+    {
+      "id": "GY8xOUXs9nY",
+      "description": "Teste anexo",
+      "amount": 100,
+      "date": "2026-05-26",
+      "type": "Deposit",
+      "receiptName": "POSTECH - Tech Challenge - Fase 1 (1).pdf",
+      "receiptType": "application/pdf"
+    },
+    {
+      "id": "tU_B8afgcdE",
+      "description": "teste data",
+      "amount": 50,
+      "date": "2026-05-25",
+      "type": "Transfer",
+      "receiptName": "POSTECH - Tech Challenge - Fase 2 (1).pdf",
+      "receiptType": "application/pdf"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
