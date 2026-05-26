@@ -6,6 +6,8 @@ export type Transfer = {
   amount: number;
   date: string;
   type: TransferType;
+  receiptName?: string;
+  receiptType?: string;
 };
 
 export type TransferFilters = {

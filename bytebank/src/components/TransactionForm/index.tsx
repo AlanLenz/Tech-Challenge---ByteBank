@@ -10,14 +10,8 @@ import Button from "../Button";
 import Card from "./Card";
 import FeedbackModal from "../FeedbackModal";
 import { useThemeColors } from "@/hooks/useThemeColors";
-
-type Transfer = {
-  id: string;
-  description: string;
-  amount: number;
-  date: string;
-  type: "Deposit" | "Transfer";
-};
+import type { Transfer } from "@/types/transfer";
+import { fileToBase64, saveReceipt } from "@/utils/receipt";
 
 type Props = {
   onAddTransfer: (transfer: Transfer) => void;
@@ -33,14 +27,6 @@ export default function TransactionForm({ onAddTransfer }: Props) {
   const [touched, setTouched] = useState({ type: false, value: false, description: false });
   const [receipt, setReceipt] = useState<File | null>(null);
   const { white } = useThemeColors();
-
-  const fileToBase64 = (file: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
 
   // 1. Criamos a variável que converte a string formatada em número puro
   const numericValue = value ? Number(value.replace(/\./g, "").replace(",", ".")) : 0;
@@ -66,18 +52,27 @@ export default function TransactionForm({ onAddTransfer }: Props) {
 
     try {
       const dataFormatadaParaBanco = new Date().toISOString().split('T')[0];
-      const newTransfer: Record<string, unknown> = {
-        id: uuidv4(),
+      const transferId = uuidv4();
+      const newTransfer: Transfer = {
+        id: transferId,
         description: description,
         amount: numericValue,
         date: dataFormatadaParaBanco,
         type: type as "Deposit" | "Transfer",
       };
 
+      // Armazena o arquivo localmente se existir
       if (receipt) {
         newTransfer.receiptName = receipt.name;
         newTransfer.receiptType = receipt.type;
-        newTransfer.receiptData = await fileToBase64(receipt);
+        
+        // Armazena o base64 no localStorage separadamente (não envia para o servidor)
+        try {
+          const receiptData = await fileToBase64(receipt);
+          saveReceipt(transferId, receiptData);
+        } catch (error) {
+          console.error("Erro ao armazenar anexo localmente:", error);
+        }
       }
 
       const response = await fetch('http://localhost:4000/transfers', {

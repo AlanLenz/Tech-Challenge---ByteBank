@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Check, Pencil, Trash2, X } from "lucide-react";
+import { Check, Pencil, Trash2, X, Paperclip } from "lucide-react";
 import type { Transfer, TransferType } from "@/types/transfer";
 import { formatDate, formatCurrency } from "@/utils/format";
 import { useThemeColors } from "@/hooks/useThemeColors";
@@ -20,6 +20,8 @@ import InputText from "@/components/InputText";
 import InputDate from "@/components/InputDate";
 import InputSelect from "@/components/InputSelect";
 import InputNumber from "@/components/InputNumber";
+import InputFile from "@/components/InputFile";
+import { fileToBase64, saveReceipt, deleteReceipt } from "@/utils/receipt";
 
 interface TransferItemProps {
   item: Transfer;
@@ -44,6 +46,7 @@ const TransferItem = ({
 }: TransferItemProps) => {
   const { green, red } = useThemeColors();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [receiptFile, setReceiptFile] = useState<File | null>(null);
 
   const formatInitialValue = (amount: number) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -61,19 +64,68 @@ const TransferItem = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditing]);
 
-  // Fecha o dialog quando o pai confirma que a edição terminou
   useEffect(() => {
-    if (!isEditing) setEditDialogOpen(false);
+    if (!isEditing) {
+      setEditDialogOpen(false);
+      setReceiptFile(null);
+    }
   }, [isEditing]);
+
+  const handleRemoveReceipt = () => {
+    // Limpa o arquivo novo se existir
+    setReceiptFile(null);
+    // Remove do draft e do localStorage se for anexo existente
+    if (draft.receiptName) {
+      deleteReceipt(item.id);
+      onDraftChange({
+        ...draft,
+        receiptName: undefined,
+        receiptType: undefined,
+      });
+    }
+  };
+
+  const handleSave = async () => {
+    // Se um novo arquivo foi selecionado, salva no localStorage
+    if (receiptFile) {
+      try {
+        const receiptData = await fileToBase64(receiptFile);
+        saveReceipt(item.id, receiptData);
+        // Atualiza o draft com os metadados do arquivo
+        onDraftChange({
+          ...draft,
+          receiptName: receiptFile.name,
+          receiptType: receiptFile.type,
+        });
+      } catch (error) {
+        console.error("Erro ao salvar anexo:", error);
+      }
+    }
+    onSave(item.id);
+  };
+
+  const currentReceipt = receiptFile ? receiptFile.name : draft.receiptName;
 
   return (
     <article className="border border-gray-200 rounded-lg p-4">
       <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_auto] lg:grid-cols-5 gap-3 items-center">
         <div className="lg:col-span-2">
-          <p className="text-black font-semibold text-[16px]">{item.description}</p>
-          <p className="text-[13px] text-gray-500">
-            {item.type === "Deposit" ? "Deposito" : "Transferencia"}
-          </p>
+          <div className="flex items-center gap-2">
+            <div>
+              <p className="text-black font-semibold text-[16px]">{item.description}</p>
+              <p className="text-[13px] text-gray-500">
+                {item.type === "Deposit" ? "Deposito" : "Transferencia"}
+              </p>
+            </div>
+            {item.receiptName && (
+              <span
+                className="text-xs text-gray-400 flex items-center gap-1"
+                title={`Anexo: ${item.receiptName}`}
+              >
+                <Paperclip className="w-3 h-3" />
+              </span>
+            )}
+          </div>
         </div>
         <p className="text-[14px] text-gray-600">{formatDate(item.date)}</p>
         <p
@@ -105,7 +157,7 @@ const TransferItem = ({
                 Editar
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-lg w-[calc(100%-2rem)] sm:w-full" onOpenAutoFocus={(e) => e.preventDefault()}>
+            <DialogContent className="max-w-2xl w-[calc(100%-2rem)] sm:w-full max-h-[90vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
               <DialogHeader>
                 <DialogTitle>Editar lançamento</DialogTitle>
                 <DialogDescription>
@@ -113,14 +165,14 @@ const TransferItem = ({
                 </DialogDescription>
               </DialogHeader>
 
-              <div className="flex flex-col gap-4 py-2">
+              <div className="flex flex-col gap-4 py-2 overflow-x-hidden">
                 <InputText
                   label="Descrição"
                   value={draft.description}
                   onChange={(val) => onDraftChange({ ...draft, description: val })}
                   autoFocus={false}
                 />
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <InputDate
                     label="Data"
                     value={draft.date}
@@ -151,14 +203,41 @@ const TransferItem = ({
                     min={0}
                   />
                 </div>
+
+                {currentReceipt ? (
+                  <div className="flex flex-col gap-2">
+                    <span className="text-sm font-medium text-gray-700">
+                      Comprovante
+                    </span>
+                    <div className="bg-white flex items-center justify-between gap-2 rounded-lg border-2 border-gray-300 p-3">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Paperclip className="w-4 h-4 shrink-0 text-gray-500" />
+                        <span className="truncate text-sm text-gray-700">{currentReceipt}</span>
+                      </div>
+                      <button
+                        type="button"
+                        aria-label="Remover anexo"
+                        onClick={handleRemoveReceipt}
+                        className="shrink-0 text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <InputFile
+                    value={receiptFile}
+                    onChange={setReceiptFile}
+                  />
+                )}
               </div>
 
               <DialogFooter>
-                <Button variant="neutral" size="sm" onClick={() => { onCancel(); setEditDialogOpen(false); }}>
+                <Button variant="neutral" size="sm" onClick={() => { onCancel(); setEditDialogOpen(false); setReceiptFile(null); }}>
                   <X className="w-4 h-4" />
                   Cancelar
                 </Button>
-                <Button variant="primary" size="sm" onClick={() => onSave(item.id)}>
+                <Button variant="primary" size="sm" onClick={handleSave}>
                   <Check className="w-4 h-4" />
                   Salvar
                 </Button>

@@ -7,6 +7,7 @@ import SummaryCard from "../SummaryCard";
 import TransferItem from "../TransferItem";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import Pagination from "../Pagination";
+import { deleteReceipt } from "@/utils/receipt";
 
 const PAGE_SIZE = 10;
 
@@ -49,13 +50,21 @@ const TransferList = ({ filters }: TransferListProps) => {
   }, []);
 
   const filteredTransfers = useMemo(() => {
-    if (!filters) return transfers;
-    return transfers.filter((item) => {
-      if (filters.description && !item.description.toLowerCase().includes(filters.description.toLowerCase())) return false;
-      if (filters.type && filters.type !== "all" && item.type !== filters.type) return false;
-      if (filters.startDate && item.date < filters.startDate) return false;
-      if (filters.endDate && item.date > filters.endDate) return false;
-      return true;
+    const filtered = filters 
+      ? transfers.filter((item) => {
+          if (filters.description && !item.description.toLowerCase().includes(filters.description.toLowerCase())) return false;
+          if (filters.type && filters.type !== "all" && item.type !== filters.type) return false;
+          if (filters.startDate && item.date < filters.startDate) return false;
+          if (filters.endDate && item.date > filters.endDate) return false;
+          return true;
+        })
+      : transfers;
+    
+    // Ordena por data da mais recente para a mais antiga
+    return filtered.sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return dateB - dateA; // Ordem decrescente (mais recente primeiro)
     });
   }, [transfers, filters]);
 
@@ -101,6 +110,8 @@ const TransferList = ({ filters }: TransferListProps) => {
       amount: item.amount,
       date: item.date,
       type: item.type,
+      receiptName: item.receiptName,
+      receiptType: item.receiptType,
     });
   };
 
@@ -114,12 +125,14 @@ const TransferList = ({ filters }: TransferListProps) => {
       return;
     }
 
-    const updatedTransfer = {
+    const updatedTransfer: Transfer = {
       id: id,
       description: draft.description.trim(),
       amount: draft.amount,
       date: draft.date,
       type: draft.type,
+      receiptName: draft.receiptName,
+      receiptType: draft.receiptType,
     };
 
     try {
@@ -155,6 +168,9 @@ const TransferList = ({ filters }: TransferListProps) => {
       });
 
       if (!response.ok) throw new Error("Erro ao deletar transação no servidor");
+
+      // Remove o anexo do localStorage se existir
+      deleteReceipt(id);
 
       // Se o servidor confirmou a exclusão, removemos da tela
       setTransfers((current) => current.filter((item) => item.id !== id));
