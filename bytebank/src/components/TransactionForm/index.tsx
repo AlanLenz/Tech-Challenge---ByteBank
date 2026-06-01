@@ -11,7 +11,7 @@ import Button from "../Button";
 import Card from "./Card";
 import FeedbackModal from "../FeedbackModal";
 import { useThemeColors } from "@/hooks/useThemeColors";
-import type { Transfer } from "@/types/transfer";
+import type { Transfer, TransferCategory } from "@/types/transfer";
 import { fileToBase64, saveReceipt } from "@/utils/receipt";
 
 type Props = {
@@ -23,10 +23,11 @@ export default function TransactionForm({ onAddTransfer }: Props) {
   const [value, setValue] = useState("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
+  const [category, setCategory] = useState<TransferCategory | "">("");
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"success" | "error">("success");
   const [modalMessage, setModalMessage] = useState("");
-  const [touched, setTouched] = useState({ type: false, value: false, description: false, date: false });
+  const [touched, setTouched] = useState({ type: false, value: false, description: false, date: false, category: false });
   const [receipt, setReceipt] = useState<File | null>(null);
   const { white } = useThemeColors();
 
@@ -41,16 +42,17 @@ export default function TransactionForm({ onAddTransfer }: Props) {
       ? "Informe um valor válido maior que zero."
       : "",
     date: !date ? "Selecione uma data." : "",
+    category: !category ? "Selecione uma categoria." : "",
   };
 
-  const isFormValid = !errors.type && !errors.description && !errors.value && !errors.date;
+  const isFormValid = !errors.type && !errors.description && !errors.value && !errors.date && !errors.category;
 
   const handleBlur = (field: keyof typeof touched) =>
     setTouched((prev) => ({ ...prev, [field]: true }));
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setTouched({ type: true, value: true, description: true, date: true });
+    setTouched({ type: true, value: true, description: true, date: true, category: true });
     if (!isFormValid) return;
 
     try {
@@ -61,6 +63,7 @@ export default function TransactionForm({ onAddTransfer }: Props) {
         amount: numericValue,
         date: date,
         type: type as "Deposit" | "Transfer",
+        category: category as TransferCategory,
       };
 
       // Armazena metadados do arquivo se existir
@@ -88,7 +91,6 @@ export default function TransactionForm({ onAddTransfer }: Props) {
         try {
           const receiptData = await fileToBase64(receipt);
           saveReceipt(savedTransfer.id, receiptData);
-          console.log("Anexo salvo com ID:", savedTransfer.id);
         } catch (error) {
           console.error("Erro ao armazenar anexo localmente:", error);
         }
@@ -104,8 +106,9 @@ export default function TransactionForm({ onAddTransfer }: Props) {
       setValue("");
       setDescription("");
       setDate("");
+      setCategory("");
       setReceipt(null);
-      setTouched({ type: false, value: false, description: false, date: false });
+      setTouched({ type: false, value: false, description: false, date: false, category: false });
 
     } catch {
       setModalType("error");
@@ -160,6 +163,25 @@ export default function TransactionForm({ onAddTransfer }: Props) {
           onChange={setDate}
           bgColor={white}
           error={touched.date ? errors.date : ""}
+          required
+        />
+
+        <InputSelect
+          label="Categoria"
+          value={category}
+          onChange={(value) => { setCategory(value as TransferCategory); handleBlur("category"); }}
+          options={[
+            { value: 'food', label: 'Alimentação' },
+            { value: 'transport', label: 'Transporte' },
+            { value: 'housing', label: 'Moradia' },
+            { value: 'health', label: 'Saúde' },
+            { value: 'education', label: 'Educação' },
+            { value: 'leisure', label: 'Lazer' },
+            { value: 'others', label: 'Outros' },
+          ]}
+          bgColor={white}
+          size="lg"
+          error={touched.category ? errors.category : ""}
           required
         />
 

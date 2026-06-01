@@ -117,6 +117,14 @@
       "type": "Deposit",
       "receiptName": "POSTECH - Tech Challenge - Fase 1 (1).pdf",
       "receiptType": "application/pdf"
+    },
+    {
+      "id": "3R3FHBLrFT0",
+      "description": "Teste Categoria",
+      "amount": 4,
+      "date": "2026-05-31",
+      "type": "Transfer",
+      "category": "food"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

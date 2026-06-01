@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Check, Pencil, Trash2, X, Paperclip } from "lucide-react";
-import type { Transfer, TransferType } from "@/types/transfer";
+import type { Transfer, TransferType, TransferCategory } from "@/types/transfer";
 import { formatDate, formatCurrency } from "@/utils/format";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import Button from "@/components/Button";
@@ -87,7 +87,6 @@ const TransferItem = ({
   // Quando o draft é atualizado com os metadados do anexo, salva
   useEffect(() => {
     if (shouldSaveAfterDraftUpdate && draft.receiptName) {
-      console.log("Salvando após atualização do draft com anexo:", draft.receiptName);
       setShouldSaveAfterDraftUpdate(false);
       onSave(item.id);
     }
@@ -114,7 +113,6 @@ const TransferItem = ({
       try {
         const receiptData = await fileToBase64(receiptFile);
         saveReceipt(item.id, receiptData);
-        console.log("Anexo salvo no localStorage:", receiptFile.name);
         
         // Atualiza o draft com os metadados do arquivo
         onDraftChange({
@@ -122,7 +120,6 @@ const TransferItem = ({
           receiptName: receiptFile.name,
           receiptType: receiptFile.type,
         });
-        console.log("Draft atualizado com metadados do anexo");
 
         // Marca que deve salvar após o draft ser atualizado
         setShouldSaveAfterDraftUpdate(true);
@@ -238,6 +235,22 @@ const TransferItem = ({
                     min={0}
                   />
                 </div>
+
+                <InputSelect
+                  label="Categoria"
+                  value={draft.category || ""}
+                  onChange={(val) => onDraftChange({ ...draft, category: val as TransferCategory })}
+                  options={[
+                    { value: 'food', label: 'Alimentação' },
+                    { value: 'transport', label: 'Transporte' },
+                    { value: 'housing', label: 'Moradia' },
+                    { value: 'health', label: 'Saúde' },
+                    { value: 'education', label: 'Educação' },
+                    { value: 'leisure', label: 'Lazer' },
+                    { value: 'others', label: 'Outros' },
+                  ]}
+                  size="lg"
+                />
 
                 {currentReceipt ? (
                   <div className="flex flex-col gap-2">

@@ -1,11 +1,14 @@
 export type TransferType = "Deposit" | "Transfer";
 
+export type TransferCategory = "food" | "transport" | "housing" | "health" | "education" | "leisure" | "others";
+
 export type Transfer = {
   id: string | number; 
   description: string;
   amount: number;
   date: string;
   type: TransferType;
+  category?: TransferCategory;
   receiptName?: string;
   receiptType?: string;
 };

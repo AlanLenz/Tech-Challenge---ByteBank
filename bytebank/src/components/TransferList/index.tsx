@@ -26,6 +26,9 @@ const TransferList = ({ filters }: TransferListProps) => {
     amount: 0,
     date: "",
     type: "Deposit",
+    category: undefined,
+    receiptName: undefined,
+    receiptType: undefined,
   });
 
   useEffect(() => {
@@ -110,6 +113,7 @@ const TransferList = ({ filters }: TransferListProps) => {
       amount: item.amount,
       date: item.date,
       type: item.type,
+      category: item.category,
       receiptName: item.receiptName,
       receiptType: item.receiptType,
     });
@@ -131,6 +135,7 @@ const TransferList = ({ filters }: TransferListProps) => {
       amount: draft.amount,
       date: draft.date,
       type: draft.type,
+      category: draft.category,
       receiptName: draft.receiptName,
       receiptType: draft.receiptType,
     };
