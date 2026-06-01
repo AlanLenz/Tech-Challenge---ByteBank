@@ -63,18 +63,10 @@ export default function TransactionForm({ onAddTransfer }: Props) {
         type: type as "Deposit" | "Transfer",
       };
 
-      // Armazena o arquivo localmente se existir
+      // Armazena metadados do arquivo se existir
       if (receipt) {
         newTransfer.receiptName = receipt.name;
         newTransfer.receiptType = receipt.type;
-        
-        // Armazena o base64 no localStorage separadamente (não envia para o servidor)
-        try {
-          const receiptData = await fileToBase64(receipt);
-          saveReceipt(transferId, receiptData);
-        } catch (error) {
-          console.error("Erro ao armazenar anexo localmente:", error);
-        }
       }
 
       const response = await fetch('http://localhost:4000/transfers', {
@@ -89,7 +81,18 @@ export default function TransactionForm({ onAddTransfer }: Props) {
         throw new Error("Erro ao salvar no servidor.");
       }
 
-      const savedTransfer = await response.json(); 
+      const savedTransfer = await response.json();
+
+      // Salva o anexo usando o ID retornado pelo servidor
+      if (receipt) {
+        try {
+          const receiptData = await fileToBase64(receipt);
+          saveReceipt(savedTransfer.id, receiptData);
+          console.log("Anexo salvo com ID:", savedTransfer.id);
+        } catch (error) {
+          console.error("Erro ao armazenar anexo localmente:", error);
+        }
+      }
 
       onAddTransfer(savedTransfer);
 

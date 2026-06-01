@@ -21,7 +21,7 @@ import InputDate from "@/components/InputDate";
 import InputSelect from "@/components/InputSelect";
 import InputNumber from "@/components/InputNumber";
 import InputFile from "@/components/InputFile";
-import { fileToBase64, saveReceipt, deleteReceipt } from "@/utils/receipt";
+import { fileToBase64, saveReceipt, deleteReceipt, getReceipt } from "@/utils/receipt";
 
 interface TransferItemProps {
   item: Transfer;
@@ -47,6 +47,8 @@ const TransferItem = ({
   const { green, red } = useThemeColors();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
+  const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
+  const [shouldSaveAfterDraftUpdate, setShouldSaveAfterDraftUpdate] = useState(false);
 
   const formatInitialValue = (amount: number) => {
     return new Intl.NumberFormat("pt-BR", {
@@ -68,12 +70,33 @@ const TransferItem = ({
     if (!isEditing) {
       setEditDialogOpen(false);
       setReceiptFile(null);
+      setReceiptPreview(null);
     }
   }, [isEditing]);
+
+  // Carrega o preview do anexo existente quando o dialog abre
+  useEffect(() => {
+    if (editDialogOpen && draft.receiptName && !receiptFile) {
+      const base64Data = getReceipt(item.id);
+      setReceiptPreview(base64Data);
+    } else if (!editDialogOpen) {
+      setReceiptPreview(null);
+    }
+  }, [editDialogOpen, draft.receiptName, item.id, receiptFile]);
+
+  // Quando o draft é atualizado com os metadados do anexo, salva
+  useEffect(() => {
+    if (shouldSaveAfterDraftUpdate && draft.receiptName) {
+      console.log("Salvando após atualização do draft com anexo:", draft.receiptName);
+      setShouldSaveAfterDraftUpdate(false);
+      onSave(item.id);
+    }
+  }, [shouldSaveAfterDraftUpdate, draft.receiptName, onSave, item.id]);
 
   const handleRemoveReceipt = () => {
     // Limpa o arquivo novo se existir
     setReceiptFile(null);
+    setReceiptPreview(null);
     // Remove do draft e do localStorage se for anexo existente
     if (draft.receiptName) {
       deleteReceipt(item.id);
@@ -91,17 +114,26 @@ const TransferItem = ({
       try {
         const receiptData = await fileToBase64(receiptFile);
         saveReceipt(item.id, receiptData);
+        console.log("Anexo salvo no localStorage:", receiptFile.name);
+        
         // Atualiza o draft com os metadados do arquivo
         onDraftChange({
           ...draft,
           receiptName: receiptFile.name,
           receiptType: receiptFile.type,
         });
+        console.log("Draft atualizado com metadados do anexo");
+
+        // Marca que deve salvar após o draft ser atualizado
+        setShouldSaveAfterDraftUpdate(true);
       } catch (error) {
         console.error("Erro ao salvar anexo:", error);
+        return;
       }
+    } else {
+      // Se não há arquivo novo, salva diretamente
+      onSave(item.id);
     }
-    onSave(item.id);
   };
 
   const currentReceipt = receiptFile ? receiptFile.name : draft.receiptName;
@@ -157,7 +189,10 @@ const TransferItem = ({
                 Editar
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl w-[calc(100%-2rem)] sm:w-full max-h-[90vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
+            <DialogContent 
+              className="max-w-2xl w-[calc(100%-2rem)] sm:w-full max-h-[90vh] flex flex-col" 
+              onOpenAutoFocus={(e) => e.preventDefault()}
+            >
               <DialogHeader>
                 <DialogTitle>Editar lançamento</DialogTitle>
                 <DialogDescription>
@@ -165,7 +200,7 @@ const TransferItem = ({
                 </DialogDescription>
               </DialogHeader>
 
-              <div className="flex flex-col gap-4 py-2 overflow-x-hidden">
+              <div className="flex flex-col gap-4 py-2 overflow-x-hidden overflow-y-auto flex-1">
                 <InputText
                   label="Descrição"
                   value={draft.description}
@@ -206,22 +241,49 @@ const TransferItem = ({
 
                 {currentReceipt ? (
                   <div className="flex flex-col gap-2">
-                    <span className="text-sm font-medium text-gray-700">
-                      Comprovante
-                    </span>
-                    <div className="bg-white flex items-center justify-between gap-2 rounded-lg border-2 border-gray-300 p-3">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <Paperclip className="w-4 h-4 shrink-0 text-gray-500" />
-                        <span className="truncate text-sm text-gray-700">{currentReceipt}</span>
-                      </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium text-gray-700">
+                        Comprovante
+                      </span>
                       <button
                         type="button"
                         aria-label="Remover anexo"
                         onClick={handleRemoveReceipt}
-                        className="shrink-0 text-gray-400 hover:text-red-500 transition-colors cursor-pointer"
+                        className="text-sm text-red-600 hover:text-red-700 transition-colors cursor-pointer flex items-center gap-1"
                       >
                         <X className="w-4 h-4" />
+                        Remover
                       </button>
+                    </div>
+                    
+                    <div className="bg-white rounded-lg border-2 border-gray-300 p-3">
+                      <div className="flex items-center gap-2">
+                        <Paperclip className="w-4 h-4 shrink-0 text-gray-500" />
+                        <span className="truncate text-sm text-gray-700">{currentReceipt}</span>
+                      </div>
+                      
+                      {receiptPreview && (
+                        <div className="mt-3 rounded-lg overflow-hidden bg-gray-50">
+                          {draft.receiptType?.startsWith('image/') ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img 
+                              src={receiptPreview} 
+                              alt={currentReceipt}
+                              className="w-full h-auto max-h-80 object-contain"
+                            />
+                          ) : draft.receiptType === 'application/pdf' ? (
+                            <iframe
+                              src={receiptPreview}
+                              title={currentReceipt}
+                              className="w-full h-80 border-0"
+                            />
+                          ) : (
+                            <div className="p-4 text-center text-gray-500 text-sm">
+                              Preview não disponível para este tipo de arquivo
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
                 ) : (
@@ -232,8 +294,15 @@ const TransferItem = ({
                 )}
               </div>
 
-              <DialogFooter>
-                <Button variant="neutral" size="sm" onClick={() => { onCancel(); setEditDialogOpen(false); setReceiptFile(null); }}>
+              <DialogFooter className="mt-auto pt-4 border-t">
+                <Button variant="neutral" size="sm"
+                  onClick={() => {
+                    onCancel();
+                    setEditDialogOpen(false);
+                    setReceiptFile(null);
+                    setReceiptPreview(null);
+                  }}
+                >
                   <X className="w-4 h-4" />
                   Cancelar
                 </Button>
