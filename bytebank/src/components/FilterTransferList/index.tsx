@@ -20,11 +20,30 @@ const TYPE_OPTIONS = [
   { value: "Transfer", label: "Transferência" },
 ];
 
+const CATEGORY_OPTIONS = [
+  { value: "all", label: "Todas" },
+  { value: "food", label: "Alimentação" },
+  { value: "transport", label: "Transporte" },
+  { value: "housing", label: "Moradia" },
+  { value: "health", label: "Saúde" },
+  { value: "education", label: "Educação" },
+  { value: "leisure", label: "Lazer" },
+  { value: "others", label: "Outros" },
+];
+
+const RECEIPT_OPTIONS = [
+  { value: "all", label: "Todos" },
+  { value: "yes", label: "Com anexo" },
+  { value: "no", label: "Sem anexo" },
+];
+
 const EMPTY_FILTERS: TransferFilters = {
   description: "",
   startDate: "",
   endDate: "",
   type: "all",
+  category: "all",
+  hasReceipt: "all",
 };
 
 const FilterTransferList = ({ onFilter }: FilterTransferListProps) => {
@@ -55,7 +74,7 @@ const FilterTransferList = ({ onFilter }: FilterTransferListProps) => {
       </h2>
 
       <form onSubmit={handleSubmit} noValidate>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-end">
           <InputText
             id="filter-description"
             label="Descrição"
@@ -86,6 +105,26 @@ const FilterTransferList = ({ onFilter }: FilterTransferListProps) => {
             value={filters.type}
             onChange={(val) => handleChange("type", val as TransferFilters["type"])}
             options={TYPE_OPTIONS}
+            placeholder="Todos"
+            size="lg"
+          />
+
+          <InputSelect
+            id="filter-category"
+            label="Categoria"
+            value={filters.category}
+            onChange={(val) => handleChange("category", val as TransferFilters["category"])}
+            options={CATEGORY_OPTIONS}
+            placeholder="Todas"
+            size="lg"
+          />
+
+          <InputSelect
+            id="filter-receipt"
+            label="Anexo"
+            value={filters.hasReceipt}
+            onChange={(val) => handleChange("hasReceipt", val as TransferFilters["hasReceipt"])}
+            options={RECEIPT_OPTIONS}
             placeholder="Todos"
             size="lg"
           />

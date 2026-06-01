@@ -57,6 +57,12 @@ const TransferList = ({ filters }: TransferListProps) => {
       ? transfers.filter((item) => {
           if (filters.description && !item.description.toLowerCase().includes(filters.description.toLowerCase())) return false;
           if (filters.type && filters.type !== "all" && item.type !== filters.type) return false;
+          if (filters.category && filters.category !== "all" && item.category !== filters.category) return false;
+          if (filters.hasReceipt && filters.hasReceipt !== "all") {
+            const hasReceipt = !!(item.receiptName && item.receiptType);
+            if (filters.hasReceipt === "yes" && !hasReceipt) return false;
+            if (filters.hasReceipt === "no" && hasReceipt) return false;
+          }
           if (filters.startDate && item.date < filters.startDate) return false;
           if (filters.endDate && item.date > filters.endDate) return false;
           return true;

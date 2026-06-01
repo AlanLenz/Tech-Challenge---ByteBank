@@ -18,6 +18,8 @@ export type TransferFilters = {
   startDate: string;
   endDate: string;
   type: TransferType | "all";
+  category: TransferCategory | "all";
+  hasReceipt: "all" | "yes" | "no";
 };
 
 export interface TransferListProps {
