@@ -9,14 +9,7 @@ import SideMenu from "@/components/SideMenu";
 import MobileMenu from "@/components/MobileMenu";
 import FooterCustom from '@/components/Footer';
 import TransactionForm from "@/components/TransactionForm";
-
-type Transfer = {
-  id: string;
-  description: string;
-  amount: number;
-  date: string;
-  type: "Deposit" | "Transfer";
-};
+import { Transfer } from "@/types/transfer";
 
 export default function Home() {
   const { bgGreen, bgGray } = useThemeColors();
