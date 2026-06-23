@@ -9,33 +9,21 @@ import SideMenu from "@/components/SideMenu";
 import MobileMenu from "@/components/MobileMenu";
 import FooterCustom from '@/components/Footer';
 import TransactionForm from "@/components/TransactionForm";
+import { Dashboard } from "@/components/Dashboard/Dashboard";
+import { Transfer } from "@/types/Transfer";
 
-type Transfer = {
-  id: string;
-  description: string;
-  amount: number;
-  date: string;
-  type: "Deposit" | "Transfer";
-};
 
 export default function Home() {
   const { bgGreen, bgGray } = useThemeColors();
   const [transfers, setTransfers] = useState<Transfer[]>([]);
 
-  // 1. Carrega os dados do JSON apenas UMA VEZ na inicialização
   useEffect(() => {
     const fetchTransfers = async () => {
       try {
-        // Certifique-se de estar usando a URL correta (json-server ou arquivo local)
         const response = await fetch('http://localhost:4000/transfers');
         const data = await response.json();
-
-        // Se a resposta for o objeto { transfers: [...] }, pegamos data.transfers
-        // Se a resposta já for o array [...], usamos data direto
         const arrayDeTransferencias = Array.isArray(data) ? data : data.transfers || [];
-
         setTransfers(arrayDeTransferencias);
-
       } catch (error) {
         console.error("Erro ao carregar:", error);
       }
@@ -43,9 +31,7 @@ export default function Home() {
     fetchTransfers();
   }, []);
 
-  // 2. A função mágica que é passada para o formulário
   const handleAddTransfer = (newTransfer: Transfer) => {
-    // Atualiza o estado (a tela) adicionando o novo item no começo da lista
     setTransfers((currentTransfers) => [newTransfer, ...currentTransfers]);
   };
 
@@ -62,6 +48,7 @@ export default function Home() {
               <MobileMenu />
             </div>
             <Hero />
+            <Dashboard transfers={transfers} />
             <div className="w-[100%] rounded-lg p-8" style={{ backgroundColor: bgGray }}>
               <TransactionForm onAddTransfer={handleAddTransfer} />
             </div>
