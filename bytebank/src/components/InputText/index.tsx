@@ -14,6 +14,7 @@ type InputTextProps = {
   error?: string;
   className?: string;
   bgColor?: string;
+  autoFocus?: boolean;
 };
 
 export default function InputText({
@@ -28,6 +29,7 @@ export default function InputText({
   error,
   className,
   bgColor,
+  autoFocus = false,
 }: InputTextProps) {
   return (
     <div className={cn("flex flex-col gap-2", className)}>
@@ -44,6 +46,7 @@ export default function InputText({
         placeholder={placeholder}
         required={required}
         disabled={disabled}
+        autoFocus={autoFocus}
         aria-invalid={!!error}
         className="h-10 px-3 py-2 text-sm focus-visible:border-[#004D61] focus-visible:ring-[#004D61]/30"
         style={bgColor ? { backgroundColor: bgColor } : undefined}

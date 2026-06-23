@@ -1,17 +1,23 @@
 "use client";
 
 import { useMemo, useState, useEffect } from "react";
-import type { Transfer } from "@/types/transfer";
+import type { Transfer, TransferListProps } from "@/types/transfer";
 import { formatCurrency } from "@/utils/format";
 import SummaryCard from "../SummaryCard";
 import TransferItem from "../TransferItem";
 import { useThemeColors } from "@/hooks/useThemeColors";
+import Pagination from "../Pagination";
+import { deleteReceipt } from "@/utils/receipt";
 
-const TransferList = () => {
+const PAGE_SIZE = 10;
+
+const TransferList = ({ filters }: TransferListProps) => {
   const { black, textMuted } = useThemeColors();
   const [transfers, setTransfers] = useState<Transfer[]>([]);
-  const [isLoading, setIsLoading] = useState(true); 
-  
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isChangingPage, setIsChangingPage] = useState(false);
+
   // Como o ID agora pode ser a string gerada pelo uuidv4(), mudamos o tipo aqui
   const [editingId, setEditingId] = useState<string | number | null>(null);
   
@@ -20,6 +26,9 @@ const TransferList = () => {
     amount: 0,
     date: "",
     type: "Deposit",
+    category: undefined,
+    receiptName: undefined,
+    receiptType: undefined,
   });
 
   useEffect(() => {
@@ -43,8 +52,54 @@ const TransferList = () => {
     fetchTransfers();
   }, []);
 
+  const filteredTransfers = useMemo(() => {
+    const filtered = filters 
+      ? transfers.filter((item) => {
+          if (filters.description && !item.description.toLowerCase().includes(filters.description.toLowerCase())) return false;
+          if (filters.type && filters.type !== "all" && item.type !== filters.type) return false;
+          if (filters.category && filters.category !== "all" && item.category !== filters.category) return false;
+          if (filters.hasReceipt && filters.hasReceipt !== "all") {
+            const hasReceipt = !!(item.receiptName && item.receiptType);
+            if (filters.hasReceipt === "yes" && !hasReceipt) return false;
+            if (filters.hasReceipt === "no" && hasReceipt) return false;
+          }
+          if (filters.startDate && item.date < filters.startDate) return false;
+          if (filters.endDate && item.date > filters.endDate) return false;
+          return true;
+        })
+      : transfers;
+    
+    // Ordena por data da mais recente para a mais antiga
+    return filtered.sort((a, b) => {
+      const dateA = new Date(a.date).getTime();
+      const dateB = new Date(b.date).getTime();
+      return dateB - dateA; // Ordem decrescente (mais recente primeiro)
+    });
+  }, [transfers, filters]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredTransfers.length / PAGE_SIZE));
+
+  const paginatedTransfers = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    return filteredTransfers.slice(start, start + PAGE_SIZE);
+  }, [filteredTransfers, currentPage]);
+
+  // Reseta para a primeira página sempre que os filtros mudarem
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filters]);
+
+  const goToPage = (page: number) => {
+    if (page === currentPage || page < 1 || page > totalPages) return;
+    setIsChangingPage(true);
+    setTimeout(() => {
+      setCurrentPage(page);
+      setIsChangingPage(false);
+    }, 200);
+  };
+
   const totals = useMemo(() => {
-    return transfers.reduce(
+    return filteredTransfers.reduce(
       (acc, item) => {
         if (item.type === "Deposit") {
           acc.deposits += item.amount;
@@ -55,7 +110,7 @@ const TransferList = () => {
       },
       { deposits: 0, transfers: 0 },
     );
-  }, [transfers]);
+  }, [filteredTransfers]);
 
   const startEdit = (item: Transfer) => {
     setEditingId(item.id);
@@ -64,6 +119,9 @@ const TransferList = () => {
       amount: item.amount,
       date: item.date,
       type: item.type,
+      category: item.category,
+      receiptName: item.receiptName,
+      receiptType: item.receiptType,
     });
   };
 
@@ -77,12 +135,15 @@ const TransferList = () => {
       return;
     }
 
-    const updatedTransfer = {
+    const updatedTransfer: Transfer = {
       id: id,
       description: draft.description.trim(),
       amount: draft.amount,
       date: draft.date,
       type: draft.type,
+      category: draft.category,
+      receiptName: draft.receiptName,
+      receiptType: draft.receiptType,
     };
 
     try {
@@ -111,9 +172,6 @@ const TransferList = () => {
 
   // --- LÓGICA DE EXCLUSÃO ATUALIZADA (DELETE) ---
   const deleteTransfer = async (id: string | number) => {
-    // É uma boa prática pedir confirmação antes de apagar do banco
-    if (!window.confirm("Tem certeza que deseja excluir esta transação?")) return;
-
     try {
       // Faz o DELETE na URL com o ID específico
       const response = await fetch(`http://localhost:4000/transfers/${id}`, {
@@ -121,6 +179,9 @@ const TransferList = () => {
       });
 
       if (!response.ok) throw new Error("Erro ao deletar transação no servidor");
+
+      // Remove o anexo do localStorage se existir
+      deleteReceipt(id);
 
       // Se o servidor confirmou a exclusão, removemos da tela
       setTransfers((current) => current.filter((item) => item.id !== id));
@@ -151,33 +212,49 @@ const TransferList = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         <SummaryCard variant="deposit" label="Depositos" value={formatCurrency(totals.deposits)} />
         <SummaryCard variant="transfer" label="Transferencias" value={formatCurrency(totals.transfers)} />
-        <SummaryCard variant="records" label="Registros" value={transfers.length} />
+        <SummaryCard variant="records" label="Registros" value={filteredTransfers.length} />
       </div>
 
       {isLoading ? (
         <div className="flex justify-center items-center py-10">
            <p className="text-gray-500 font-medium">Carregando dados...</p>
         </div>
-      ) : transfers.length === 0 ? (
+      ) : filteredTransfers.length === 0 ? (
         <div className="flex justify-center items-center py-10">
            <p className="text-gray-500 font-medium">Nenhum lançamento encontrado.</p>
         </div>
       ) : (
-        <div className="space-y-3">
-          {transfers.map((item) => (
-            <TransferItem
-              key={item.id}
-              item={item}
-              isEditing={editingId === item.id}
-              draft={draft}
-              onDraftChange={setDraft}
-              onSave={saveEdit}
-              onCancel={cancelEdit}
-              onEdit={startEdit}
-              onDelete={deleteTransfer}
+        <>
+          {isChangingPage ? (
+            <div className="flex justify-center items-center py-10">
+              <p className="text-gray-500 font-medium">Carregando...</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {paginatedTransfers.map((item) => (
+                <TransferItem
+                  key={item.id}
+                  item={item}
+                  isEditing={editingId === item.id}
+                  draft={draft}
+                  onDraftChange={setDraft}
+                  onSave={saveEdit}
+                  onCancel={cancelEdit}
+                  onEdit={startEdit}
+                  onDelete={deleteTransfer}
+                />
+              ))}
+            </div>
+          )}
+
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={goToPage}
             />
-          ))}
-        </div>
+          )}
+        </>
       )}
     </section>
   );
