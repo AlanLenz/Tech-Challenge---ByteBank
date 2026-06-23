@@ -10,7 +10,7 @@ import MobileMenu from "@/components/MobileMenu";
 import FooterCustom from '@/components/Footer';
 import TransactionForm from "@/components/TransactionForm";
 import { Dashboard } from "@/components/Dashboard/Dashboard";
-import { Transfer } from "@/types/Transfer";
+import { Transfer } from "@/types/transfer";
 
 
 export default function Home() {
