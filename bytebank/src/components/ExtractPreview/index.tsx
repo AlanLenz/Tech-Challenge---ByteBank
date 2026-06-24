@@ -6,20 +6,25 @@ import { formatDate, formatCurrency } from "@/utils/format";
 import Link from "next/link";
 import { useThemeColors } from "@/hooks/useThemeColors";
 
-const ExtractPreview = () => {
+interface ExtractPreviewProps {
+  /** Dados pré-carregados via SSR. Quando fornecidos, o componente não faz fetch próprio. */
+  initialTransfers?: Transfer[];
+}
+
+const ExtractPreview = ({ initialTransfers }: ExtractPreviewProps = {}) => {
   const { green, red, gray, black, white } = useThemeColors();
-  const [transfers, setTransfers] = useState<Transfer[]>([]);
+  const [transfers, setTransfers] = useState<Transfer[]>(initialTransfers ?? []);
   const lastTransfers = [...transfers]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 4);
-  // Estado para controlar o carregamento
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(!initialTransfers);
 
-  // useEffect para buscar os dados do JSON quando o componente montar
   useEffect(() => {
+    // Se os dados já vieram via SSR (prop initialTransfers), não faz fetch no cliente
+    if (initialTransfers) return;
+
     const fetchTransactions = async () => {
       try {
-        // Busca o arquivo na pasta public/data
         const response = await fetch('http://localhost:4000/transfers');
         if (!response.ok) {
           throw new Error('Erro ao carregar os dados');
@@ -29,13 +34,12 @@ const ExtractPreview = () => {
       } catch (error) {
         console.error("Falha ao buscar transações:", error);
       } finally {
-        // Independentemente de dar erro ou sucesso, o carregamento termina
         setIsLoading(false);
       }
     };
 
     fetchTransactions();
-  }, []); // Array de dependências vazio garante que rode apenas uma vez
+  }, [initialTransfers]);
 
   return (
     <section className="w-full rounded-lg p-4 sm:p-4 lg:p-4 min-h-[450px] flex flex-col justify-between gap-4" style={{ backgroundColor: white }}>
