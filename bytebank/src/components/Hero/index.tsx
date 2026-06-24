@@ -9,12 +9,7 @@ import { useThemeColors } from "@/hooks/useThemeColors";
 
 // Importamos a sua função de formatação de moeda para manter o padrão
 import { formatCurrency } from "@/utils/format";
-
-// Definimos o tipo básico que precisamos para o cálculo
-interface Transfer {
-  amount: number;
-  type: "Deposit" | "Transfer";
-}
+import type { Transfer } from "@/types/transfer";
 
 const Hero = () => {
   const [showValue, setShowValue] = useState(false);
