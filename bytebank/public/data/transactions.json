@@ -90,41 +90,6 @@
       "amount": 500,
       "date": "2026-05-01",
       "type": "Deposit"
-    },
-    {
-      "id": "0aNDQ8KP3TE",
-      "description": "teste joão",
-      "amount": 20,
-      "date": "2026-05-31",
-      "type": "Deposit",
-      "receiptName": "joao frango.jpg",
-      "receiptType": "image/jpeg"
-    },
-    {
-      "id": "_h-hSD6-B4A",
-      "description": "Aniversário",
-      "amount": 800,
-      "date": "2026-06-01",
-      "type": "Transfer",
-      "receiptName": "dev.jpg",
-      "receiptType": "image/jpeg"
-    },
-    {
-      "id": "E0pH5mNOiXY",
-      "description": "Teste anexo",
-      "amount": 100,
-      "date": "2026-05-20",
-      "type": "Deposit",
-      "receiptName": "POSTECH - Tech Challenge - Fase 1 (1).pdf",
-      "receiptType": "application/pdf"
-    },
-    {
-      "id": "3R3FHBLrFT0",
-      "description": "Teste Categoria",
-      "amount": 4,
-      "date": "2026-05-31",
-      "type": "Transfer",
-      "category": "food"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
