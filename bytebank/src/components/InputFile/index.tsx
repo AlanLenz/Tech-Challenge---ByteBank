@@ -15,7 +15,7 @@ export default function InputFile({
   label = "Comprovante",
   value,
   onChange,
-  accept = "image/*,application/pdf",
+  accept = "application/pdf, image/jpeg, image/png, image/jpg, image/webp",
   maxSize = 5 * 1024 * 1024, // 5MB padrão
   error,
 }: Props) {

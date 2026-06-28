@@ -7,7 +7,8 @@ import SummaryCard from "../SummaryCard";
 import TransferItem from "../TransferItem";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import Pagination from "../Pagination";
-import { deleteReceipt } from "@/utils/receipt";
+import { transferService } from "@/services/transfers";
+import { auth } from "@/lib/firebase";
 
 const PAGE_SIZE = 10;
 
@@ -18,38 +19,35 @@ const TransferList = ({ filters }: TransferListProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isChangingPage, setIsChangingPage] = useState(false);
 
-  // Como o ID agora pode ser a string gerada pelo uuidv4(), mudamos o tipo aqui
   const [editingId, setEditingId] = useState<string | number | null>(null);
-  
+
+  // 1. Atualizado para as novas chaves do banco de dados
   const [draft, setDraft] = useState<Omit<Transfer, "id">>({
     description: "",
     amount: 0,
     date: "",
     type: "Deposit",
-    category: undefined,
-    receiptName: undefined,
-    receiptType: undefined,
+    categories_id: undefined,
+    receipt_url: undefined,
   });
 
   useEffect(() => {
-    const fetchTransfers = async () => {
-      try {
-        const response = await fetch('http://localhost:4000/transfers');
-        if (!response.ok) throw new Error('Erro ao carregar os dados');
-        
-        const data = await response.json();
-        // Mesma proteção que aplicamos antes para garantir que é um Array
-        const arrayDeTransferencias = Array.isArray(data) ? data : data.transfers || [];
-        setTransfers(arrayDeTransferencias);
-        
-      } catch (error) {
-        console.error("Falha ao buscar transações:", error);
-      } finally {
+    const fetchAllTransfers = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        try {
+          const data = await transferService.getAll();
+          setTransfers(data);
+        } catch (error) {
+          console.error("Falha ao buscar transações:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
         setIsLoading(false);
       }
-    };
+    });
 
-    fetchTransfers();
+    return () => fetchAllTransfers();
   }, []);
 
   const filteredTransfers = useMemo(() => {
@@ -57,9 +55,13 @@ const TransferList = ({ filters }: TransferListProps) => {
       ? transfers.filter((item) => {
           if (filters.description && !item.description.toLowerCase().includes(filters.description.toLowerCase())) return false;
           if (filters.type && filters.type !== "all" && item.type !== filters.type) return false;
-          if (filters.category && filters.category !== "all" && item.category !== filters.category) return false;
+          
+          // 2. Compara o ID numérico da categoria
+          if (filters.category && filters.category !== "all" && item.categories_id !== Number(filters.category)) return false;
+          
+          // 3. Valida a existência do comprovante pela nova string da Vercel
           if (filters.hasReceipt && filters.hasReceipt !== "all") {
-            const hasReceipt = !!(item.receiptName && item.receiptType);
+            const hasReceipt = !!item.receipt_url;
             if (filters.hasReceipt === "yes" && !hasReceipt) return false;
             if (filters.hasReceipt === "no" && hasReceipt) return false;
           }
@@ -69,11 +71,10 @@ const TransferList = ({ filters }: TransferListProps) => {
         })
       : transfers;
     
-    // Ordena por data da mais recente para a mais antiga
     return filtered.sort((a, b) => {
       const dateA = new Date(a.date).getTime();
       const dateB = new Date(b.date).getTime();
-      return dateB - dateA; // Ordem decrescente (mais recente primeiro)
+      return dateB - dateA; 
     });
   }, [transfers, filters]);
 
@@ -84,7 +85,6 @@ const TransferList = ({ filters }: TransferListProps) => {
     return filteredTransfers.slice(start, start + PAGE_SIZE);
   }, [filteredTransfers, currentPage]);
 
-  // Reseta para a primeira página sempre que os filtros mudarem
   useEffect(() => {
     setCurrentPage(1);
   }, [filters]);
@@ -119,9 +119,8 @@ const TransferList = ({ filters }: TransferListProps) => {
       amount: item.amount,
       date: item.date,
       type: item.type,
-      category: item.category,
-      receiptName: item.receiptName,
-      receiptType: item.receiptType,
+      categories_id: item.categories_id,
+      receipt_url: item.receipt_url,
     });
   };
 
@@ -129,7 +128,6 @@ const TransferList = ({ filters }: TransferListProps) => {
     setEditingId(null);
   };
 
-  // --- LÓGICA DE EDIÇÃO ATUALIZADA (PUT) ---
   const saveEdit = async (id: string | number) => {
     if (!draft.description.trim() || !draft.date || draft.amount <= 0) {
       return;
@@ -141,28 +139,17 @@ const TransferList = ({ filters }: TransferListProps) => {
       amount: draft.amount,
       date: draft.date,
       type: draft.type,
-      category: draft.category,
-      receiptName: draft.receiptName,
-      receiptType: draft.receiptType,
+      categories_id: draft.categories_id,
+      receipt_url: draft.receipt_url,
     };
 
     try {
-      // Faz o PUT na URL com o ID específico
-      const response = await fetch(`http://localhost:4000/transfers/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedTransfer),
-      });
+      await transferService.update(id, updatedTransfer);
 
-      if (!response.ok) throw new Error("Erro ao atualizar transação no servidor");
-
-      // Se o servidor confirmou, atualizamos a tela
       setTransfers((current) =>
         current.map((item) => (item.id === id ? updatedTransfer : item))
       );
-      
+
       setEditingId(null);
     } catch (error) {
       console.error(error);
@@ -170,24 +157,14 @@ const TransferList = ({ filters }: TransferListProps) => {
     }
   };
 
-  // --- LÓGICA DE EXCLUSÃO ATUALIZADA (DELETE) ---
   const deleteTransfer = async (id: string | number) => {
+    if (!window.confirm("Tem certeza que deseja excluir esta transação?")) return;
+
     try {
-      // Faz o DELETE na URL com o ID específico
-      const response = await fetch(`http://localhost:4000/transfers/${id}`, {
-        method: 'DELETE',
-      });
+      await transferService.delete(id);
 
-      if (!response.ok) throw new Error("Erro ao deletar transação no servidor");
-
-      // Remove o anexo do localStorage se existir
-      deleteReceipt(id);
-
-      // Se o servidor confirmou a exclusão, removemos da tela
       setTransfers((current) => current.filter((item) => item.id !== id));
-      
       if (editingId === id) setEditingId(null);
-
     } catch (error) {
       console.error(error);
       alert("Não foi possível excluir a transação.");
@@ -217,11 +194,11 @@ const TransferList = ({ filters }: TransferListProps) => {
 
       {isLoading ? (
         <div className="flex justify-center items-center py-10">
-           <p className="text-gray-500 font-medium">Carregando dados...</p>
+          <p className="text-gray-500 font-medium">Carregando dados...</p>
         </div>
       ) : filteredTransfers.length === 0 ? (
         <div className="flex justify-center items-center py-10">
-           <p className="text-gray-500 font-medium">Nenhum lançamento encontrado.</p>
+          <p className="text-gray-500 font-medium">Nenhum lançamento encontrado.</p>
         </div>
       ) : (
         <>

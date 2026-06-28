@@ -1,0 +1,16 @@
+services:
+  bytebank-app:
+    build:
+      context: ./bytebank
+      dockerfile: Dockerfile
+      # This keeps our npm/Google Fonts bypass during the build!
+      network: host
+
+    # We remove network_mode: "host" and use standard port mapping
+    ports:
+      - "3000:3000"
+
+    environment:
+      - NODE_ENV=production
+
+    restart: unless-stopped

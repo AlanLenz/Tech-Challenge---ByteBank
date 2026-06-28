@@ -5,6 +5,8 @@ import type { Transfer } from "@/types/transfer";
 import { formatDate, formatCurrency } from "@/utils/format";
 import Link from "next/link";
 import { useThemeColors } from "@/hooks/useThemeColors";
+import { transferService } from "@/services/transfers";
+import { auth } from "@/lib/firebase";
 
 const ExtractPreview = () => {
   const { green, red, gray, black, white } = useThemeColors();
@@ -17,25 +19,25 @@ const ExtractPreview = () => {
 
   // useEffect para buscar os dados do JSON quando o componente montar
   useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        // Busca o arquivo na pasta public/data
-        const response = await fetch('http://localhost:4000/transfers');
-        if (!response.ok) {
-          throw new Error('Erro ao carregar os dados');
+    const fetchAllTransfers = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        try {
+          const data = await transferService.getAll(4);
+          setTransfers(data);
+        } catch (error) {
+          console.error("Falha ao buscar transações:", error);
+        } finally {
+          setIsLoading(false);
         }
-        const data = await response.json();
-        setTransfers(data);
-      } catch (error) {
-        console.error("Falha ao buscar transações:", error);
-      } finally {
-        // Independentemente de dar erro ou sucesso, o carregamento termina
+      } else {
+        // Se não houver usuário, apenas paramos de carregar (talvez redirecionar pro login)
         setIsLoading(false);
       }
-    };
+    });
 
-    fetchTransactions();
-  }, []); // Array de dependências vazio garante que rode apenas uma vez
+    // 4. Cleanup the listener when the component unmounts
+    return () => fetchAllTransfers();
+  }, []);
 
   return (
     <section className="w-full rounded-lg p-4 sm:p-4 lg:p-4 min-h-[450px] flex flex-col justify-between gap-4" style={{ backgroundColor: white }}>
@@ -65,7 +67,7 @@ const ExtractPreview = () => {
                       {formatCurrency(item.amount)}
                     </p>
                   </div>
-                  <div className="w-full border-t mt-2" style={{ borderColor: gray }}/>
+                  <div className="w-full border-t mt-2" style={{ borderColor: gray }} />
                 </div>
               );
             })}

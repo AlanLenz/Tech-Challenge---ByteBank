@@ -10,30 +10,34 @@ import MobileMenu from "@/components/MobileMenu";
 import FooterCustom from '@/components/Footer';
 import TransactionForm from "@/components/TransactionForm";
 import { Transfer } from "@/types/transfer";
+import { transferService } from "@/services/transfers";
+import { auth } from "@/lib/firebase";
 
 export default function Home() {
   const { bgGreen, bgGray } = useThemeColors();
   const [transfers, setTransfers] = useState<Transfer[]>([]);
+  // Estado para controlar o carregamento
+  const [isLoading, setIsLoading] = useState(true);
 
-  // 1. Carrega os dados do JSON apenas UMA VEZ na inicialização
   useEffect(() => {
-    const fetchTransfers = async () => {
-      try {
-        // Certifique-se de estar usando a URL correta (json-server ou arquivo local)
-        const response = await fetch('http://localhost:4000/transfers');
-        const data = await response.json();
-
-        // Se a resposta for o objeto { transfers: [...] }, pegamos data.transfers
-        // Se a resposta já for o array [...], usamos data direto
-        const arrayDeTransferencias = Array.isArray(data) ? data : data.transfers || [];
-
-        setTransfers(arrayDeTransferencias);
-
-      } catch (error) {
-        console.error("Erro ao carregar:", error);
+    const fetchAllTransfers = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        try {
+          const data = await transferService.getAll();
+          setTransfers(data);
+        } catch (error) {
+          console.error("Falha ao buscar transações:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        // Se não houver usuário, apenas paramos de carregar (talvez redirecionar pro login)
+        setIsLoading(false);
       }
-    };
-    fetchTransfers();
+    });
+
+    // 4. Cleanup the listener when the component unmounts
+    return () => fetchAllTransfers();
   }, []);
 
   // 2. A função mágica que é passada para o formulário

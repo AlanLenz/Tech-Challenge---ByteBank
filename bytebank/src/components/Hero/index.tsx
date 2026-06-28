@@ -6,11 +6,8 @@ import { Eye, EyeClosed } from 'lucide-react';
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useThemeColors } from "@/hooks/useThemeColors";
-
-// Importamos a sua função de formatação de moeda para manter o padrão
 import { formatCurrency } from "@/utils/format";
 
-// Definimos o tipo básico que precisamos para o cálculo
 interface Transfer {
   amount: number;
   type: "Deposit" | "Transfer";
@@ -27,46 +24,51 @@ const Hero = () => {
   const current = new Date().toLocaleDateString('en-GB');
   const dia = new Date().toLocaleDateString('pt-BR', { weekday: 'long' });
 
-  // 1. Efeito para buscar os dados do usuário no Firebase (Mantido)
+  // 1 e 2. Efeito unificado para autenticação, nome do usuário e cálculo de saldo
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user && user.displayName) {
-        const primeiroNome = user.displayName.split(' ')[0];
-        setNomeUsuario(primeiroNome);
+    const fetchAllTransfers = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        // --- PARTE A: Define o nome do usuário ---
+        if (user.displayName) {
+          const primeiroNome = user.displayName.split(' ')[0];
+          setNomeUsuario(primeiroNome);
+        } else {
+          setNomeUsuario("Usuário");
+        }
+
+        // --- PARTE B: Busca as transferências com segurança ---
+        try {
+          const token = await user.getIdToken();
+          const response = await fetch('http://localhost:4000/transfers', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          if (!response.ok) throw new Error('Erro ao buscar dados');
+          const data: Transfer[] = await response.json();
+
+          // Faz o cálculo: soma os depósitos e subtrai as transferências
+          const saldoCalculado = data.reduce((acc, item) => {
+            if (item.type === "Deposit") {
+              return acc + item.amount;
+            } else {
+              return acc - item.amount;
+            }
+          }, 0);
+
+          setSaldo(saldoCalculado);
+        } catch (error) {
+          console.error("Erro ao calcular saldo:", error);
+        }
       } else {
+        // Se o usuário deslogar, resetamos os estados
         setNomeUsuario("Usuário");
+        setSaldo(0);
       }
     });
 
-    return () => unsubscribe();
-  }, []);
-
-  // 2. Novo Efeito para buscar as transferências e calcular o saldo
-  useEffect(() => {
-    const fetchSaldo = async () => {
-      try {
-        // Busca o mesmo arquivo JSON usado na lista
-        const response = await fetch('http://localhost:4000/transfers');
-        if (!response.ok) throw new Error('Erro ao buscar dados');
-
-        const data: Transfer[] = await response.json();
-
-        // Faz o cálculo: soma os depósitos e subtrai as transferências
-        const saldoCalculado = data.reduce((acc, item) => {
-          if (item.type === "Deposit") {
-            return acc + item.amount;
-          } else {
-            return acc - item.amount;
-          }
-        }, 0);
-
-        setSaldo(saldoCalculado);
-      } catch (error) {
-        console.error("Erro ao calcular saldo:", error);
-      }
-    };
-
-    fetchSaldo();
+    return () => fetchAllTransfers();
   }, []);
 
   return (
@@ -84,7 +86,7 @@ const Hero = () => {
               <EyeClosed className="w-5 h-5 cursor-pointer" style={{ color: white }} onClick={() => setShowValue(true)} />
             )}
           </div>
-          <div className="w-[100%] h-[1px] bg-white my-4" style={{ backgroundColor: white }}/>
+          <div className="w-[100%] h-[1px] bg-white my-4" style={{ backgroundColor: white }} />
           <p className="text-[14px] font-normal" style={{ color: white }}>Conta Corrente</p>
 
           {/* Aqui exibimos o saldo dinâmico usando a sua função de formatação */}

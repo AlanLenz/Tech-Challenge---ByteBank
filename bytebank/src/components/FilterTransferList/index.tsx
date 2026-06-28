@@ -20,15 +20,16 @@ const TYPE_OPTIONS = [
   { value: "Transfer", label: "Transferência" },
 ];
 
+// Updated values to strictly match your Postgres 'categories' table IDs
 const CATEGORY_OPTIONS = [
   { value: "all", label: "Todas" },
-  { value: "food", label: "Alimentação" },
-  { value: "transport", label: "Transporte" },
-  { value: "housing", label: "Moradia" },
-  { value: "health", label: "Saúde" },
-  { value: "education", label: "Educação" },
-  { value: "leisure", label: "Lazer" },
-  { value: "others", label: "Outros" },
+  { value: "1", label: "Alimentação" },
+  { value: "2", label: "Transporte" },
+  { value: "3", label: "Moradia" },
+  { value: "4", label: "Saúde" },
+  { value: "5", label: "Educação" },
+  { value: "6", label: "Lazer" },
+  { value: "7", label: "Outros" },
 ];
 
 const RECEIPT_OPTIONS = [
@@ -112,8 +113,12 @@ const FilterTransferList = ({ onFilter }: FilterTransferListProps) => {
           <InputSelect
             id="filter-category"
             label="Categoria"
-            value={filters.category}
-            onChange={(val) => handleChange("category", val as TransferFilters["category"])}
+            value={String(filters.category)}
+            onChange={(val) => {
+              // If they pick "all", pass the string "all". Otherwise, convert "1" to Number(1)
+              const parsedCategory = val === "all" ? "all" : Number(val);
+              handleChange("category", parsedCategory as TransferFilters["category"]);
+            }}
             options={CATEGORY_OPTIONS}
             placeholder="Todas"
             size="lg"

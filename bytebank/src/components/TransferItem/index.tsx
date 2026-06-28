@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Check, Pencil, Trash2, X, Paperclip } from "lucide-react";
-import type { Transfer, TransferType, TransferCategory } from "@/types/transfer";
+import { Check, Pencil, Trash2, X, Paperclip, ExternalLink } from "lucide-react";
+import type { Transfer, TransferType, CategoryId } from "@/types/transfer";
+import { CATEGORIES_MAP } from "@/types/transfer"; 
 import { formatDate, formatCurrency } from "@/utils/format";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import Button from "@/components/Button";
@@ -21,7 +22,6 @@ import InputDate from "@/components/InputDate";
 import InputSelect from "@/components/InputSelect";
 import InputNumber from "@/components/InputNumber";
 import InputFile from "@/components/InputFile";
-import { fileToBase64, saveReceipt, deleteReceipt, getReceipt } from "@/utils/receipt";
 
 interface TransferItemProps {
   item: Transfer;
@@ -47,7 +47,6 @@ const TransferItem = ({
   const { green, red } = useThemeColors();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [receiptFile, setReceiptFile] = useState<File | null>(null);
-  const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
   const [shouldSaveAfterDraftUpdate, setShouldSaveAfterDraftUpdate] = useState(false);
 
   const formatInitialValue = (amount: number) => {
@@ -70,102 +69,116 @@ const TransferItem = ({
     if (!isEditing) {
       setEditDialogOpen(false);
       setReceiptFile(null);
-      setReceiptPreview(null);
     }
   }, [isEditing]);
 
-  // Carrega o preview do anexo existente quando o dialog abre
+  // Quando o draft é atualizado com a nova URL do Vercel Blob, dispara o salvamento
   useEffect(() => {
-    if (editDialogOpen && draft.receiptName && !receiptFile) {
-      const base64Data = getReceipt(item.id);
-      setReceiptPreview(base64Data);
-    } else if (!editDialogOpen) {
-      setReceiptPreview(null);
-    }
-  }, [editDialogOpen, draft.receiptName, item.id, receiptFile]);
-
-  // Quando o draft é atualizado com os metadados do anexo, salva
-  useEffect(() => {
-    if (shouldSaveAfterDraftUpdate && draft.receiptName) {
+    if (shouldSaveAfterDraftUpdate) {
       setShouldSaveAfterDraftUpdate(false);
       onSave(item.id);
     }
-  }, [shouldSaveAfterDraftUpdate, draft.receiptName, onSave, item.id]);
+  }, [shouldSaveAfterDraftUpdate, onSave, item.id]);
 
   const handleRemoveReceipt = () => {
-    // Limpa o arquivo novo se existir
     setReceiptFile(null);
-    setReceiptPreview(null);
-    // Remove do draft e do localStorage se for anexo existente
-    if (draft.receiptName) {
-      deleteReceipt(item.id);
+    if (draft.receipt_url) {
       onDraftChange({
         ...draft,
-        receiptName: undefined,
-        receiptType: undefined,
+        receipt_url: undefined,
       });
     }
   };
 
   const handleSave = async () => {
-    // Se um novo arquivo foi selecionado, salva no localStorage
+    // Se o usuário selecionou um arquivo novo no input de edição
     if (receiptFile) {
       try {
-        const receiptData = await fileToBase64(receiptFile);
-        saveReceipt(item.id, receiptData);
-        
-        // Atualiza o draft com os metadados do arquivo
+        const uploadResponse = await fetch(
+          `/api/upload?filename=${encodeURIComponent(receiptFile.name)}`,
+          {
+            method: 'POST',
+            body: receiptFile,
+          }
+        );
+
+        if (!uploadResponse.ok) {
+          throw new Error("Falha ao fazer o upload do anexo para a Vercel");
+        }
+
+        const blobResult = await uploadResponse.json();
+
+        // Atualiza o draft com a URL pública gerada na nuvem
         onDraftChange({
           ...draft,
-          receiptName: receiptFile.name,
-          receiptType: receiptFile.type,
+          receipt_url: blobResult.url,
         });
 
-        // Marca que deve salvar após o draft ser atualizado
         setShouldSaveAfterDraftUpdate(true);
       } catch (error) {
-        console.error("Erro ao salvar anexo:", error);
+        console.error("Erro ao fazer upload do anexo:", error);
+        alert("Não foi possível fazer o upload do novo comprovante.");
         return;
       }
     } else {
-      // Se não há arquivo novo, salva diretamente
+      // Se não mudou o anexo, salva as alterações de texto diretamente
       onSave(item.id);
     }
   };
 
-  const currentReceipt = receiptFile ? receiptFile.name : draft.receiptName;
+  // Define a URL de visualização (arquivo local recém-escolhido ou URL pública do Blob)
+  const previewUrl = draft.receipt_url ? `/api/receipt?url=${encodeURIComponent(draft.receipt_url)}` : undefined;
+  const isPdf = receiptFile ? receiptFile.type === 'application/pdf' : draft.receipt_url?.toLowerCase().endsWith('.pdf');
 
   return (
-    <article className="border border-gray-200 rounded-lg p-4">
+    <article className="border border-gray-200 rounded-lg p-4 bg-white hover:shadow-sm transition-shadow">
       <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr_auto] lg:grid-cols-5 gap-3 items-center">
         <div className="lg:col-span-2">
           <div className="flex items-center gap-2">
             <div>
               <p className="text-black font-semibold text-[16px]">{item.description}</p>
-              <p className="text-[13px] text-gray-500">
-                {item.type === "Deposit" ? "Deposito" : "Transferencia"}
-              </p>
+              <div className="flex items-center gap-2 mt-0.5">
+                <p className="text-[13px] text-gray-500 font-medium">
+                  {item.type === "Deposit" ? "Depósito" : "Transferência"}
+                </p>
+                {item.categories_id && (
+                  <>
+                    <span className="text-gray-300">•</span>
+                    <span className="text-[11px] bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full font-medium">
+                      {CATEGORIES_MAP[item.categories_id]}
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
-            {item.receiptName && (
-              <span
-                className="text-xs text-gray-400 flex items-center gap-1"
-                title={`Anexo: ${item.receiptName}`}
+
+            {/* Link direto para abrir o comprovante da Vercel */}
+            {item.receipt_url && (
+              <a
+                href={item.receipt_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="ml-2 text-xs text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 p-2 rounded-full transition-colors flex items-center gap-1 shrink-0"
+                title="Ver comprovante anexado"
               >
-                <Paperclip className="w-3 h-3" />
-              </span>
+                <Paperclip className="w-3.5 h-3.5" />
+              </a>
             )}
           </div>
         </div>
-        <p className="text-[14px] text-gray-600">{formatDate(item.date)}</p>
+
+        <p className="text-[14px] text-gray-600 font-medium">{formatDate(item.date)}</p>
+        
         <p
-          className="text-[15px] font-semibold"
+          className="text-[15px] font-bold"
           style={{ color: item.type === "Deposit" ? green : red }}
         >
           {item.type === "Transfer" ? "- " : ""}
           {formatCurrency(item.amount)}
         </p>
+
         <div className="flex md:justify-end gap-2">
-          {/* Dialog de edição */}
+          {/* Dialog de Edição */}
           <Dialog
             open={editDialogOpen}
             onOpenChange={(open) => {
@@ -238,72 +251,81 @@ const TransferItem = ({
 
                 <InputSelect
                   label="Categoria"
-                  value={draft.category || ""}
-                  onChange={(val) => onDraftChange({ ...draft, category: val as TransferCategory })}
+                  value={draft.categories_id ? String(draft.categories_id) : ""}
+                  onChange={(val) => onDraftChange({ ...draft, categories_id: Number(val) as CategoryId })}
                   options={[
-                    { value: 'food', label: 'Alimentação' },
-                    { value: 'transport', label: 'Transporte' },
-                    { value: 'housing', label: 'Moradia' },
-                    { value: 'health', label: 'Saúde' },
-                    { value: 'education', label: 'Educação' },
-                    { value: 'leisure', label: 'Lazer' },
-                    { value: 'others', label: 'Outros' },
+                    { value: '1', label: 'Alimentação' },
+                    { value: '2', label: 'Transporte' },
+                    { value: '3', label: 'Moradia' },
+                    { value: '4', label: 'Saúde' },
+                    { value: '5', label: 'Educação' },
+                    { value: '6', label: 'Lazer' },
+                    { value: '7', label: 'Outros' },
                   ]}
                   size="lg"
                 />
 
-                {currentReceipt ? (
-                  <div className="flex flex-col gap-2">
+                {/* Seção de Gestão do Comprovante na Nuvem */}
+                {(previewUrl || receiptFile) ? (
+                  <div className="flex flex-col gap-2 mt-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-700">
-                        Comprovante
-                      </span>
+                      <span className="text-sm font-semibold text-gray-700">Comprovante Anexado</span>
                       <button
                         type="button"
-                        aria-label="Remover anexo"
                         onClick={handleRemoveReceipt}
-                        className="text-sm text-red-600 hover:text-red-700 transition-colors cursor-pointer flex items-center gap-1"
+                        className="text-sm text-red-600 hover:text-red-700 font-medium transition-colors cursor-pointer flex items-center gap-1"
                       >
                         <X className="w-4 h-4" />
-                        Remover
+                        Remover anexo
                       </button>
                     </div>
-                    
-                    <div className="bg-white rounded-lg border-2 border-gray-300 p-3">
-                      <div className="flex items-center gap-2">
-                        <Paperclip className="w-4 h-4 shrink-0 text-gray-500" />
-                        <span className="truncate text-sm text-gray-700">{currentReceipt}</span>
+
+                    <div className="bg-gray-50 rounded-lg border border-gray-200 p-3 flex flex-col gap-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 truncate">
+                          <Paperclip className="w-4 h-4 shrink-0 text-blue-600" />
+                          <span className="truncate text-sm text-gray-700 font-medium">
+                            {receiptFile ? receiptFile.name : "Documento armazenado no Vercel Blob"}
+                          </span>
+                        </div>
+                        {draft.receipt_url && !receiptFile && (
+                          <a
+                            href={`/api/receipt?url=${encodeURIComponent(draft.receipt_url)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-blue-600 hover:underline flex items-center gap-1 shrink-0 font-semibold"
+                          >
+                            <ExternalLink className="w-3 h-3" />
+                            Abrir original
+                          </a>
+                        )}
                       </div>
-                      
-                      {receiptPreview && (
-                        <div className="mt-3 rounded-lg overflow-hidden bg-gray-50">
-                          {draft.receiptType?.startsWith('image/') ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img 
-                              src={receiptPreview} 
-                              alt={currentReceipt}
-                              className="w-full h-auto max-h-80 object-contain"
-                            />
-                          ) : draft.receiptType === 'application/pdf' ? (
+
+                      {previewUrl && (
+                        <div className="rounded-lg overflow-hidden bg-white border border-gray-200 flex justify-center items-center p-2">
+                          {isPdf ? (
                             <iframe
-                              src={receiptPreview}
-                              title={currentReceipt}
-                              className="w-full h-80 border-0"
+                              src={previewUrl}
+                              title="Comprovante PDF"
+                              className="w-full h-64 border-0"
                             />
                           ) : (
-                            <div className="p-4 text-center text-gray-500 text-sm">
-                              Preview não disponível para este tipo de arquivo
-                            </div>
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={previewUrl}
+                              alt="Comprovante"
+                              className="max-h-64 w-auto object-contain rounded"
+                            />
                           )}
                         </div>
                       )}
                     </div>
                   </div>
                 ) : (
-                  <InputFile
-                    value={receiptFile}
-                    onChange={setReceiptFile}
-                  />
+                  <div className="mt-2">
+                    <span className="text-sm font-semibold text-gray-700 block mb-1">Anexar Comprovante</span>
+                    <InputFile value={receiptFile} onChange={setReceiptFile} />
+                  </div>
                 )}
               </div>
 
@@ -313,7 +335,6 @@ const TransferItem = ({
                     onCancel();
                     setEditDialogOpen(false);
                     setReceiptFile(null);
-                    setReceiptPreview(null);
                   }}
                 >
                   <X className="w-4 h-4" />
@@ -327,7 +348,7 @@ const TransferItem = ({
             </DialogContent>
           </Dialog>
 
-          {/* Dialog de exclusão */}
+          {/* Dialog de Exclusão */}
           <Dialog>
             <DialogTrigger asChild>
               <Button variant="destructive" size="sm">
@@ -335,7 +356,7 @@ const TransferItem = ({
                 Excluir
               </Button>
             </DialogTrigger>
-            <DialogContent showCloseButton={false} className="max-w-64">
+            <DialogContent showCloseButton={false} className="max-w-xs">
               <DialogHeader>
                 <DialogTitle>Excluir lançamento</DialogTitle>
                 <DialogDescription>

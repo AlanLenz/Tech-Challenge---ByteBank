@@ -85,21 +85,36 @@ export function LoginForm({ className }: React.ComponentProps<"form">) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(""); // Limpa erros antigos ao tentar novamente
-    setIsLoading(true); // Desabilita o botão enquanto carrega
+    setError("");
+    setIsLoading(true);
 
     try {
-      // Chama a autenticação do Firebase
-      await signInWithEmailAndPassword(auth, email, password);
+      // 1. Capture the returned UserCredential object
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
-      console.log("Login validado com Firebase!");
-      router.push('/home'); // Redireciona em caso de sucesso
+      // 2. Extract the guaranteed user from that object
+      const user = userCredential.user;
+
+      // 3. Get the token safely (TypeScript knows 'user' exists here!)
+      const token = await user.getIdToken();
+
+      // 4. Sync the user with your PostgreSQL database
+      await fetch('http://localhost:4000/sync-user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      console.log("Login validado com Firebase e sincronizado com o banco!");
+      router.push('/home');
+
     } catch (err: any) {
       console.error(err);
-      // Tratamento básico de erro (você pode customizar a mensagem baseada no err.code)
       setError("Email ou senha inválidos. Tente novamente.");
     } finally {
-      setIsLoading(false); // Reabilita o botão
+      setIsLoading(false);
     }
   };
 
