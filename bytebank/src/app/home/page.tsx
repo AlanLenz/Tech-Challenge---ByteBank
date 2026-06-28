@@ -9,9 +9,11 @@ import SideMenu from "@/components/SideMenu";
 import MobileMenu from "@/components/MobileMenu";
 import FooterCustom from '@/components/Footer';
 import TransactionForm from "@/components/TransactionForm";
+import { Dashboard } from "@/components/Dashboard/Dashboard";
 import { Transfer } from "@/types/transfer";
 import { transferService } from "@/services/transfers";
 import { auth } from "@/lib/firebase";
+
 
 export default function Home() {
   const { bgGreen, bgGray } = useThemeColors();
@@ -40,9 +42,7 @@ export default function Home() {
     return () => fetchAllTransfers();
   }, []);
 
-  // 2. A função mágica que é passada para o formulário
   const handleAddTransfer = (newTransfer: Transfer) => {
-    // Atualiza o estado (a tela) adicionando o novo item no começo da lista
     setTransfers((currentTransfers) => [newTransfer, ...currentTransfers]);
   };
 
@@ -59,6 +59,7 @@ export default function Home() {
               <MobileMenu />
             </div>
             <Hero />
+            <Dashboard transfers={transfers} />
             <div className="w-[100%] rounded-lg p-8" style={{ backgroundColor: bgGray }}>
               <TransactionForm onAddTransfer={handleAddTransfer} />
             </div>
