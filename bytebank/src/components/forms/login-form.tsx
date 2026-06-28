@@ -31,8 +31,6 @@ import InputPassword from "@/components/InputPassword"
 import useMediaQuery from "@/utils/useMediaQuery"
 import { authService } from "@/services/transfers";
 
-await authService.syncUser();
-
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
