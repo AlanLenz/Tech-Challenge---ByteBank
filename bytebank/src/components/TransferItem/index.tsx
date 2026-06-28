@@ -155,7 +155,7 @@ const TransferItem = ({
             {/* Link direto para abrir o comprovante da Vercel */}
             {item.receipt_url && (
               <a
-                href={item.receipt_url}
+                href={`/api/receipt?url=${encodeURIComponent(item.receipt_url)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="ml-2 text-xs text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 p-2 rounded-full transition-colors flex items-center gap-1 shrink-0"

@@ -1,6 +1,15 @@
 import { apiFetch } from './api';
 import type { Transfer } from '@/types/transfer';
 
+export const authService = {
+  syncUser: async () => {
+    // O apiFetch já injeta o Token do Firebase e usa a BASE_URL da Vercel automaticamente!
+    return await apiFetch('/sync-user', {
+      method: 'POST',
+    });
+  }
+};
+
 export const transferService = {
 
     // GET: Load transfers (optionally limited)

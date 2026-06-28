@@ -7,6 +7,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import { formatCurrency } from "@/utils/format";
+import { transferService } from "@/services/transfers";
 
 interface Transfer {
   amount: number;
@@ -26,7 +27,7 @@ const Hero = () => {
 
   // 1 e 2. Efeito unificado para autenticação, nome do usuário e cálculo de saldo
   useEffect(() => {
-    const fetchAllTransfers = onAuthStateChanged(auth, async (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         // --- PARTE A: Define o nome do usuário ---
         if (user.displayName) {
@@ -36,39 +37,28 @@ const Hero = () => {
           setNomeUsuario("Usuário");
         }
 
-        // --- PARTE B: Busca as transferências com segurança ---
+        // --- PARTE B: Busca via Service (Automático, Dinâmico e Blindado) ---
         try {
-          const token = await user.getIdToken();
-          const response = await fetch('http://localhost:4000/transfers', {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          });
-
-          if (!response.ok) throw new Error('Erro ao buscar dados');
-          const data: Transfer[] = await response.json();
-
-          // Faz o cálculo: soma os depósitos e subtrai as transferências
-          const saldoCalculado = data.reduce((acc, item) => {
-            if (item.type === "Deposit") {
-              return acc + item.amount;
-            } else {
-              return acc - item.amount;
-            }
+          const data = await transferService.getAll();
+          
+          // Calcula o saldo líquido: (Soma dos Depósitos) - (Soma das Transferências)
+          const saldoCalculado = data.reduce((acc: number, item: Transfer) => {
+            const valor = Number(item.amount) || 0;
+            return item.type === "Deposit" ? acc + valor : acc - valor;
           }, 0);
 
           setSaldo(saldoCalculado);
         } catch (error) {
-          console.error("Erro ao calcular saldo:", error);
+          console.error("Falha ao calcular o saldo:", error);
         }
       } else {
-        // Se o usuário deslogar, resetamos os estados
+        // Se deslogar, zera a tela
         setNomeUsuario("Usuário");
         setSaldo(0);
       }
     });
 
-    return () => fetchAllTransfers();
+    return () => unsubscribe();
   }, []);
 
   return (

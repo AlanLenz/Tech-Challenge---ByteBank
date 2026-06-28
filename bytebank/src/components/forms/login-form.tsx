@@ -29,6 +29,9 @@ import Button from "@/components/Button"
 import InputText from "@/components/InputText"
 import InputPassword from "@/components/InputPassword"
 import useMediaQuery from "@/utils/useMediaQuery"
+import { authService } from "@/services/transfers";
+
+await authService.syncUser();
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -99,13 +102,7 @@ export function LoginForm({ className }: React.ComponentProps<"form">) {
       const token = await user.getIdToken();
 
       // 4. Sync the user with your PostgreSQL database
-      await fetch('http://localhost:4000/sync-user', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      await authService.syncUser();
 
       console.log("Login validado com Firebase e sincronizado com o banco!");
       router.push('/home');
