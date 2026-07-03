@@ -10,6 +10,10 @@ services:
     ports:
       - "3000:3000"
 
+    # 👇 A INJEÇÃO DE VARIÁVEIS COM O CAMINHO CORRETO:
+    env_file:
+      - ./bytebank/.env.local
+
     environment:
       - NODE_ENV=production
 
