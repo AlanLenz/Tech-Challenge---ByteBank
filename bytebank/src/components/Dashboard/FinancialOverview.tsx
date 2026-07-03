@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { MetricCard } from "./MetricCard";
 import { Transfer } from "@/types/transfer";
+import { formatCurrency } from "@/utils/format";
 
 import ArrowDown from "../../../assets/icons/arrow-sm-down-svgrepo-com.svg";
 import ArrowUp from "../../../assets/icons/arrow-sm-up-svgrepo-com.svg";
@@ -11,63 +12,36 @@ interface FinancialOverviewProps {
   transfers: Transfer[];
 }
 
-export function FinancialOverview({
-  transfers,
-}: FinancialOverviewProps) {
+export function FinancialOverview({ transfers }: FinancialOverviewProps) {
+  // 2. Garanta que estamos somando números, não concatenando strings
   const totalEntradas = transfers
     .filter((t) => t.type === "Deposit")
-    .reduce((acc, t) => acc + t.amount, 0);
+    .reduce((acc, t) => acc + Number(t.amount), 0);
 
   const totalSaidas = transfers
     .filter((t) => t.type === "Transfer")
-    .reduce((acc, t) => acc + t.amount, 0);
+    .reduce((acc, t) => acc + Number(t.amount), 0);
 
   const maiorDespesa = Math.max(
-  ...transfers
-    .filter((t) => t.type === "Transfer")
-    .map((t) => t.amount),
-  0
-);
+    ...transfers
+      .filter((t) => t.type === "Transfer")
+      .map((t) => Number(t.amount)),
+    0
+  );
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
       <MetricCard
         title="Entradas"
-        value={`R$ ${totalEntradas.toFixed(2)}`}
-        icon={
-          <Image
-            src={ArrowUp}
-            alt="Entradas"
-            width={20}
-            height={20}
-          />
-        }
+        value={formatCurrency(totalEntradas)} // 3. USO DA FUNÇÃO SEGURA
       />
-
       <MetricCard
         title="Saídas"
-        value={`R$ ${totalSaidas.toFixed(2)}`}
-        icon={
-          <Image
-            src={ArrowDown}
-            alt="Saídas"
-            width={20}
-            height={20}
-          />
-        }
+        value={formatCurrency(totalSaidas)} // 3. USO DA FUNÇÃO SEGURA
       />
-
       <MetricCard
         title="Maior Despesa"
-        value={`R$ ${maiorDespesa.toFixed(2)}`}
-        icon={
-          <Image
-            src={GraphUp}
-            alt="maiorDespesa"
-            width={20}
-            height={20}
-          />
-        }
+        value={formatCurrency(maiorDespesa)} // 3. USO DA FUNÇÃO SEGURA
       />
 
       <MetricCard

@@ -59,7 +59,7 @@ export default function Home() {
               <MobileMenu />
             </div>
             <Hero />
-            <Dashboard transfers={transfers} />
+            <Dashboard />
             <div className="w-[100%] rounded-lg p-8" style={{ backgroundColor: bgGray }}>
               <TransactionForm onAddTransfer={handleAddTransfer} />
             </div>
