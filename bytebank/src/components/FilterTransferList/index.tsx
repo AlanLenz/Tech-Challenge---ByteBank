@@ -71,7 +71,7 @@ const FilterTransferList = ({ onFilter }: FilterTransferListProps) => {
       style={{ backgroundColor: white }}
     >
       <h2 className="text-xl sm:text-2xl lg:text-[28px] font-bold mb-6" style={{ color: black }}>
-        Filtrar Transferências
+        Filtrar Transações
       </h2>
 
       <form onSubmit={handleSubmit} noValidate>

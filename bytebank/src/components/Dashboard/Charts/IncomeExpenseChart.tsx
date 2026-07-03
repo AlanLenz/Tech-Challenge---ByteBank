@@ -1,6 +1,5 @@
 "use client";
 
-import { Transfer } from "@/types/transfer";
 import {
   BarChart,
   Bar,
@@ -10,31 +9,30 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { formatCurrency } from "@/utils/format";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
-interface IncomeExpenseChartProps {
-  transfers: Transfer[];
-}
+export function IncomeExpenseChart() {
+  const transfers = useSelector((state: RootState) => state.transfers.list);
 
-export function IncomeExpenseChart({
-  transfers,
-}: IncomeExpenseChartProps) {
   const totalEntradas = transfers
     .filter((t) => t.type === "Deposit")
-    .reduce((acc, t) => acc + t.amount, 0);
+    .reduce((acc, t) => acc + Number(t.amount || 0), 0);
 
   const totalSaidas = transfers
     .filter((t) => t.type === "Transfer")
-    .reduce((acc, t) => acc + t.amount, 0);
+    .reduce((acc, t) => acc + Number(t.amount || 0), 0);
 
   const data = [
     {
       name: "Entradas",
-      valor: totalEntradas,
+      valor: Number(totalEntradas.toFixed(2)),
       fill: "var(--chart-income)",
     },
     {
       name: "Saídas",
-      valor: totalSaidas,
+      valor: Number(totalSaidas.toFixed(2)),
       fill: "var(--chart-expense)",
     },
   ];
@@ -50,19 +48,22 @@ export function IncomeExpenseChart({
           <BarChart data={data}>
             <XAxis dataKey="name" />
             <YAxis />
-            <Tooltip />
+            <Tooltip 
+              formatter={(value: any) => [formatCurrency(value), "Valor"]}
+              contentStyle={{ backgroundColor: "#fff", borderRadius: "8px", border: "1px solid #e2e8f0" }}
+            />
 
             <Bar
-  dataKey="valor"
-  radius={[8, 8, 0, 0]}
->
-  {data.map((entry, index) => (
-    <Cell
-      key={index}
-      fill={entry.fill}
-    />
-  ))}
-</Bar>
+              dataKey="valor"
+              radius={[8, 8, 0, 0]}
+            >
+              {data.map((entry, index) => (
+                <Cell
+                  key={index}
+                  fill={entry.fill}
+                />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>

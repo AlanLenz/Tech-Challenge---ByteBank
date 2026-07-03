@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Check, Pencil, Trash2, X, Paperclip, ExternalLink } from "lucide-react";
 import type { Transfer, TransferType, CategoryId } from "@/types/transfer";
-import { CATEGORIES_MAP } from "@/types/transfer"; 
+import { CATEGORIES_MAP } from "@/types/transfer";
 import { formatDate, formatCurrency } from "@/utils/format";
 import { useThemeColors } from "@/hooks/useThemeColors";
 import Button from "@/components/Button";
@@ -62,7 +62,7 @@ const TransferItem = ({
     if (isEditing) {
       setAmountStr(formatInitialValue(draft.amount));
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditing]);
 
   useEffect(() => {
@@ -168,7 +168,7 @@ const TransferItem = ({
         </div>
 
         <p className="text-[14px] text-gray-600 font-medium">{formatDate(item.date)}</p>
-        
+
         <p
           className="text-[15px] font-bold"
           style={{ color: item.type === "Deposit" ? green : red }}
@@ -199,8 +199,8 @@ const TransferItem = ({
                 Editar
               </Button>
             </DialogTrigger>
-            <DialogContent 
-              className="max-w-2xl w-[calc(100%-2rem)] sm:w-full max-h-[90vh] flex flex-col" 
+            <DialogContent
+              className="max-w-2xl w-[calc(100%-2rem)] sm:w-full max-h-[90vh] flex flex-col"
               onOpenAutoFocus={(e) => e.preventDefault()}
             >
               <DialogHeader>
@@ -220,7 +220,7 @@ const TransferItem = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <InputDate
                     label="Data"
-                    value={draft.date}
+                    value={draft.date ? draft.date.split("T")[0] : ""}
                     onChange={(val) => onDraftChange({ ...draft, date: val })}
                   />
                   <InputSelect
