@@ -1,6 +1,6 @@
 import { auth } from "@/lib/firebase";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+export const API_BASE_URL = '/api';
 
 // This wrapper intercepts every request to attach the Firebase token
 export async function apiFetch(endpoint: string, options: RequestInit = {}) {
