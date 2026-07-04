@@ -4,10 +4,10 @@ import { Transfer } from "@/types/transfer";
 import {
   BarChart,
   Bar,
-  Cell,
   XAxis,
   YAxis,
   Tooltip,
+  Legend,
   ResponsiveContainer,
 } from "recharts";
 
@@ -28,41 +28,48 @@ export function IncomeExpenseChart({
 
   const data = [
     {
-      name: "Entradas",
-      valor: totalEntradas,
-      fill: "var(--chart-income)",
-    },
-    {
-      name: "Saídas",
-      valor: totalSaidas,
-      fill: "var(--chart-expense)",
+      categoria: "Financeiro",
+      entradas: totalEntradas,
+      saidas: totalSaidas,
     },
   ];
 
   return (
-    <div className="bg-white rounded-lg p-6">
-      <h2 className="font-semibold mb-4">
+    <div className="bg-white rounded-lg p-6 shadow-sm">
+      <h2 className="text-lg font-semibold mb-4">
         Entradas x Saídas
       </h2>
 
-      <div className="h-72">
+      <div className="h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data}>
-            <XAxis dataKey="name" />
+            <XAxis dataKey="categoria" />
             <YAxis />
-            <Tooltip />
+
+            <Tooltip
+              formatter={(value) =>
+                Number(value ?? 0).toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })
+              }
+            />
+
+            <Legend />
 
             <Bar
-  dataKey="valor"
-  radius={[8, 8, 0, 0]}
->
-  {data.map((entry, index) => (
-    <Cell
-      key={index}
-      fill={entry.fill}
-    />
-  ))}
-</Bar>
+              dataKey="entradas"
+              name="Entradas"
+              fill="#47A138"
+              radius={[8, 8, 0, 0]}
+            />
+
+            <Bar
+              dataKey="saidas"
+              name="Saídas"
+              fill="#FF5031"
+              radius={[8, 8, 0, 0]}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>

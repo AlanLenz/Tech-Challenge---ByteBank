@@ -14,7 +14,7 @@ export function Dashboard({ transfers }: DashboardProps) {
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <IncomeExpenseChart transfers={transfers} />
-        <ExpenseCategoryChart/>
+        <ExpenseCategoryChart transfers={transfers} />
       </div>
     </section>
   );
