@@ -4,7 +4,7 @@ COPY mfe-transactions/package*.json ./
 RUN npm config set fetch-retry-maxtimeout 600000 -g
 RUN npm config set fetch-retries 5 -g
 RUN rm -f package-lock.json && npm install --legacy-peer-deps
-COPY bytebank/ .
+COPY mfe-transactions/ .
 COPY shared/ ../shared/
 RUN npm run build
 

@@ -1,20 +1,47 @@
 services:
-  bytebank-app:
+  shell:
     build:
-      context: ./bytebank
-      dockerfile: Dockerfile
-      # This keeps our npm/Google Fonts bypass during the build!
-      network: host
-
-    # We remove network_mode: "host" and use standard port mapping
+      context: .
+      dockerfile: bytebank/Dockerfile
+    container_name: bytebank-shell
     ports:
       - "3000:3000"
-
-    # 👇 A INJEÇÃO DE VARIÁVEIS COM O CAMINHO CORRETO:
-    env_file:
-      - ./bytebank/.env.local
-
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
+      - PORT=3000
+      - NEXT_PUBLIC_MFE_DASHBOARD_URL=http://localhost:3001
+      - NEXT_PUBLIC_MFE_TRANSACTIONS_URL=http://localhost:3002
+      - NEXT_PUBLIC_SELF_URL=http://localhost:3000
+    env_file:
+      - .env
+    depends_on:
+      - mfe-dashboard
+      - mfe-transactions
 
-    restart: unless-stopped
+  mfe-dashboard:
+    build:
+      context: .
+      dockerfile: mfe-dashboard/Dockerfile
+    container_name: bytebank-mfe-dashboard
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - NEXT_PUBLIC_SELF_URL=http://localhost:3001
+    env_file:
+      - .env
+
+  mfe-transactions:
+    build:
+      context: .
+      dockerfile: mfe-transactions/Dockerfile
+    container_name: bytebank-mfe-transactions
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+      - PORT=3002
+      - NEXT_PUBLIC_SELF_URL=http://localhost:3002
+    env_file:
+      - .env
