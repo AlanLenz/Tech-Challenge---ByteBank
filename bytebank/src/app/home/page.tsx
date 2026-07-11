@@ -9,17 +9,22 @@ import SideMenu from "@/components/SideMenu";
 import MobileMenu from "@/components/MobileMenu";
 import FooterCustom from '@/components/Footer';
 import TransactionForm from "@/components/TransactionForm";
-import { Dashboard } from "@/components/Dashboard/Dashboard";
+import { useFederatedMount } from "@/hooks/useFederatedMount";
 import { Transfer } from "@/types/transfer";
 import { transferService } from "@/services/transfers";
 import { auth } from "@/lib/firebase";
-
 
 export default function Home() {
   const { bgGreen, bgGray } = useThemeColors();
   const [transfers, setTransfers] = useState<Transfer[]>([]);
   // Estado para controlar o carregamento
   const [isLoading, setIsLoading] = useState(true);
+  const dashboardRef = useFederatedMount(
+    "mfe_dashboard",
+    "./mount",
+    `${process.env.NEXT_PUBLIC_MFE_DASHBOARD_URL}/_next/static/chunks/remoteEntry.js`,
+    { transfers }
+  );
 
   useEffect(() => {
     const fetchAllTransfers = auth.onAuthStateChanged(async (user) => {
@@ -59,7 +64,7 @@ export default function Home() {
               <MobileMenu />
             </div>
             <Hero />
-            <Dashboard />
+            <div ref={dashboardRef} className="w-full min-h-[388px]" />
             <div className="w-[100%] rounded-lg p-8" style={{ backgroundColor: bgGray }}>
               <TransactionForm onAddTransfer={handleAddTransfer} />
             </div>
