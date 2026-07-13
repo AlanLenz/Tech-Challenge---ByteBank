@@ -1,157 +1,282 @@
-# Fluxo - Gestão Financeira (ByteBank)
+# Fluxo - Gestão Financeira | ByteBank
 
-Aplicação web para gerenciamento de transações financeiras, permitindo depósitos, transferências e visualização de extrato.
+Aplicação web para gerenciamento de transações financeiras, permitindo depósitos, transferências, visualização de extrato e acompanhamento da movimentação financeira através de dashboard.
 
 ## Sobre o projeto
 
-O Fluxo é uma aplicação desenvolvida com foco em simular operações bancárias básicas no frontend, aplicando conceitos modernos de desenvolvimento como:
+O Fluxo é uma aplicação desenvolvida para simular operações bancárias básicas, aplicando conceitos modernos de desenvolvimento frontend e arquitetura escalável.
+
+O projeto tem como objetivo proporcionar uma experiência completa de gestão financeira, permitindo que usuários realizem movimentações, acompanhem seus dados financeiros e visualizem indicadores através de uma interface moderna e responsiva.
+
+Principais conceitos aplicados:
 
 - Componentização
-- Gerenciamento de estado com hooks
-- Persistência de dados no cliente
+- Gerenciamento de estado
+- Integração com banco de dados
 - Organização escalável de projeto
+- Separação de responsabilidades
+- Design System
+- Arquitetura baseada em Microfrontends
 
-## Funcionalidades
+---
 
-### Criar transações:
-- Depósito
-- Transferência
-- Atualização do saldo
+# Funcionalidades
 
-### Visualização de extrato:
-- Resumo
-- Lista completa de transações
-- Persistência de dados com transactions.json
-- Interface responsiva
+## Autenticação
 
-## Tecnologias
+- Cadastro de usuários
+- Login de usuários
+- Controle de acesso às funcionalidades da aplicação
+- Gerenciamento de sessão utilizando Firebase Authentication
 
-**Frontend:**
+## Gestão de transações financeiras
+
+- Criação de novas transações
+- Realização de depósitos
+- Realização de transferências
+- Atualização do saldo do usuário
+- Validação dos dados informados nos formulários
+- Registro das movimentações financeiras no banco de dados
+
+## Extrato financeiro
+
+- Consulta do histórico completo de transações
+- Visualização detalhada das movimentações financeiras
+- Organização das transações por data e tipo
+- Consulta das operações realizadas pelo usuário
+
+## Dashboard financeiro
+
+- Visualização do resumo financeiro
+- Análise de entradas e saídas
+- Gráfico comparativo de receitas e despesas
+- Gráfico de gastos por categoria
+- Indicadores para acompanhamento da movimentação financeira
+
+## Categorias financeiras
+
+- Classificação das despesas por categoria
+- Associação de categorias às transações
+- Visualização dos gastos agrupados para análise financeira
+
+## Interface e experiência do usuário
+
+- Componentes reutilizáveis seguindo princípios de Design System
+- Interface responsiva para diferentes dispositivos
+- Feedback visual para ações realizadas pelo usuário
+- Documentação dos componentes utilizando Storybook
+
+---
+
+# Tecnologias
+
+## Frontend
+
 - Next.js
 - React
 - TypeScript
 - Tailwind CSS
 
-**Gerenciamento de estado:**
-- React Hooks (useState, custom hooks)
+## Banco de dados
 
-**Persistência de dados:**
-**Persistência de dados:**
-- JSON Server (API fake local)
-- localStorage (armazenamento no cliente)
+- PostgreSQL
 
-**UI Library:**
+## Autenticação
+
+- Firebase Authentication
+
+## UI Library
+
 - shadcn/ui
 
-**Autenticação:**
-- Firebase
+## Gerenciamento de estado
 
-**Backend simulado:**
-- JSON Server (API fake local baseada em arquivo JSON)
+- React Hooks
+- Store global da aplicação
 
-## Arquitetura
+## Persistência de dados
 
-A aplicação segue o princípio de separação de responsabilidades, dividindo a lógica em camadas bem definidas:
+- Dados financeiros armazenados em banco de dados PostgreSQL
+- Comunicação com banco através da camada de serviços da aplicação
 
-- UI (components) → Interface e reaproveitamento
-- Hooks → Regras de negócio (transações, saldo)
-- Types → Tipagem centralizada
-- Utils/Lib → Funções auxiliares
+---
 
-## Storybook
+# Arquitetura
+
+A aplicação foi estruturada seguindo princípios de separação de responsabilidades, componentização e escalabilidade.
+
+Organização das principais camadas:
+
+- **App Router** → gerenciamento de páginas e rotas utilizando Next.js
+
+- **Components** → componentes reutilizáveis da aplicação e implementação do Design System
+
+- **Hooks** → regras de negócio reutilizáveis e controle de estados específicos
+
+- **Services** → comunicação com APIs e camada responsável pelo acesso aos dados
+
+- **Store** → gerenciamento de estado global da aplicação
+
+- **Providers** → gerenciamento de contextos compartilhados
+
+- **Types** → centralização das tipagens TypeScript
+
+- **Utils** → funções auxiliares reutilizáveis
+
+- **Lib** → configurações e integrações externas como Firebase e helpers
+
+- **Database** → armazenamento persistente das informações financeiras utilizando PostgreSQL
+
+---
+
+# Microfrontends
+
+O projeto possui uma estrutura preparada para utilização de Microfrontends, permitindo maior escalabilidade, organização e evolução independente dos módulos.
+
+Estrutura:
+
+- **mfe-dashboard**
+  - Responsável pela visualização dos dados financeiros, indicadores e gráficos.
+
+- **mfe-transactions**
+  - Responsável pelo gerenciamento das transações financeiras.
+
+- **shared**
+  - Compartilhamento de componentes, tipos e recursos utilizados entre os módulos.
+
+---
+
+# Storybook
 
 Documentação dos componentes isolados da aplicação utilizando Storybook.
 
 Link de acesso:
+
 https://storybook-static-liart-nine.vercel.app/
 
-Observação:
-O Storybook foi publicado utilizando o Vercel para disponibilização online.
+O Storybook foi publicado utilizando Vercel para disponibilização online dos componentes desenvolvidos.
 
-## Instalação
+---
 
-**Clonar repositório**
+# Instalação
+
+## Clonar repositório
+
 ```bash
 git clone https://github.com/AlanLenz/Tech-Challenge---ByteBank.git
 ```
-**Entrar na pasta**
-```bash
-cd bytebank
-```
-**Instalar dependências**
-```bash
-npm install
-```
-## Execução
+# Executando com Docker
 
-**Rodar API local**
-```bash
-npx json-server --watch public/data/transactions.json --port 4000
-```
+A aplicação pode ser executada utilizando Docker e Docker Compose, responsáveis pela criação e gerenciamento dos containers necessários para o funcionamento do projeto.
 
-**Rodar o projeto**
-```bash
-npm run dev
-```
-## Estrutura do projeto
+## Pré-requisitos
+
+Certifique-se de possuir instalado:
+
+- Docker
+- Docker Compose
+
+## Subir aplicação
+
+Na raiz do projeto execute:
 
 ```bash
-src/
-├── app/                # Rotas (Next.js App Router)
-│   ├── extract/        # Página de extrato
-│   ├── home/           # Página inicial
-│   ├── landingPage/    # Landing page
-│   ├── layout.tsx      # Layout global
-│   ├── page.tsx        # Página principal
-│   └── globals.css     # Estilos globais
+docker-compose up --build
+```
+
+Após a inicialização, a aplicação estará disponível em:
+
+```bash
+http://localhost:3000
+```
+
+## Executar em segundo plano
+
+```bash
+docker-compose up -d --build
+```
+
+## Parar containers
+
+```bash
+docker-compose down
+```
+
+---
+
+# Estrutura do projeto
+
+```text
+Tech-Challenge---ByteBank/
+
+├── bytebank/
+│   └── .next/                         # Build do Next.js
 │
-├── components/         # Componentes reutilizáveis
-│   ├── ExtractPreview
-│   ├── FeedbackModal
-│   ├── Footer
-│   ├── forms/
-│   ├── Header
-│   ├── Hero
-│   ├── MenuItem
-│   ├── MobileMenu
-│   ├── SideMenu
-│   ├── Snippets
-│   ├── TransactionForm
-│   ├── TransferList
-│   └── ui/             # Design system
+├── .storybook/                        # Configuração do Storybook
 │
-├── hooks/              # Hooks customizados
-├── lib/                # Configurações e helpers
-├── types/              # Tipagens TypeScript
-└── utils/              # Funções auxiliares
+├── public/                            # Arquivos estáticos
+│
+├── src/
+│   ├── app/                           # App Router do Next.js
+│   ├── components/                    # Componentes reutilizáveis
+│   ├── hooks/                         # Hooks customizados
+│   ├── lib/                           # Configurações e integrações
+│   ├── providers/                     # Providers da aplicação
+│   ├── services/                      # Comunicação com dados
+│   ├── store/                         # Estado global
+│   ├── styles/                        # Estilos globais
+│   ├── types/                         # Tipagens TypeScript
+│   └── utils/                         # Funções auxiliares
+│
+├── mfe-dashboard/                     # Microfrontend dashboard
+│
+├── mfe-transactions/                  # Microfrontend transações
+│
+├── shared/                            # Recursos compartilhados
+│
+├── Dockerfile                         # Configuração do container
+├── docker-compose.yml                 # Orquestração dos serviços
+├── package.json
+├── tsconfig.json
+├── tailwind.config.ts
+├── next.config.mjs
+└── README.md
 ```
-## Capturas
 
-**Landing Page**
+---
+
+# Capturas
+
+## Landing Page
+
 ![Landing page](./bytebank/assets/LandingPage.png)
 
-**Home**
+## Home
+
 ![Home](./bytebank/assets/Home.png)
 
-**Extrato**
+## Extrato
+
 ![Extrato](./bytebank/assets/Extrato.png)
 
-**Cadastro**
+## Cadastro
+
 ![Cadastro](./bytebank/assets/Cadastro.png)
 
-**Acessar**
+## Acessar
+
 ![Acessar](./bytebank/assets/Acessar.png)
 
+---
 
-
-
-## Autores
+# Autores
 
 - [@AlanLenz](https://github.com/AlanLenz)
 - [@amandaSribeiro](https://github.com/amandaSribeiro)
 - [@victorgodoi](https://github.com/victorgodoi)
 
+---
 
-## Licença
+# Licença
 
 Projeto desenvolvido para fins educacionais.
