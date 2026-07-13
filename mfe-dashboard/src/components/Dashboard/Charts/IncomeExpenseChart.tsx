@@ -26,7 +26,7 @@ export function IncomeExpenseChart({ transfers }: IncomeExpenseChartProps) {
 
   return (
     <div className="bg-white rounded-lg p-6">
-      <h2 className="font-semibold mb-4">Entradas x Saídas</h2>
+      <h2 className="font-semibold mb-4 text-gray-900">Entradas x Saídas</h2>
       <div className="h-72">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data}>
