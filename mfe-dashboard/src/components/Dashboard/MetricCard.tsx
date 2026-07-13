@@ -13,10 +13,10 @@ export function MetricCard({
     <div className="bg-white rounded-lg p-6 shadow-sm">
       <div className="flex items-center gap-2">
         {icon}
-        <p className="text-sm">{title}</p>
+        <p className="text-sm text-gray-900">{title}</p>
       </div>
 
-      <h3 className="text-2xl font-bold mt-2">
+      <h3 className="text-2xl font-bold mt-2 text-gray-900">
         {value}
       </h3>
     </div>

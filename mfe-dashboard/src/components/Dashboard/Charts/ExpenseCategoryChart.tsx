@@ -44,7 +44,7 @@ export function ExpenseCategoryChart({ transfers }: ExpenseCategoryChartProps) {
   if (chartData.length === 0) {
     return (
       <div className="bg-white rounded-lg p-6 shadow-sm flex flex-col justify-center items-center h-[388px]">
-        <h2 className="text-lg font-semibold mb-4">Gastos por Categoria</h2>
+        <h2 className="text-lg font-semibold mb-4 text-gray-900">Gastos por Categoria</h2>
         <p className="text-gray-400 text-sm font-medium">Nenhum gasto registrado neste período.</p>
       </div>
     );
@@ -52,7 +52,7 @@ export function ExpenseCategoryChart({ transfers }: ExpenseCategoryChartProps) {
 
   return (
     <div className="bg-white rounded-lg p-6 shadow-sm">
-      <h2 className="text-lg font-semibold mb-4">Gastos por Categoria</h2>
+      <h2 className="text-lg font-semibold mb-4 text-gray-900">Gastos por Categoria</h2>
       <div className="h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
