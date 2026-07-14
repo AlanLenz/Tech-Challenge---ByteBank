@@ -8,7 +8,7 @@ const FooterCustom = () => {
 
     return (
         <footer className="py-16" style={{ backgroundColor: primary, color: white }}>
-            <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12"> 
+            <div className="container mx-auto px-6 grid md:grid-cols-3 gap-12"> 
                 <div>
                     <h4 className="font-bold mb-4">Serviços</h4>
                     <ul className="space-y-2 text-sm" style={{ color: lightGray }}>

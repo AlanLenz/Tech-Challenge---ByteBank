@@ -15,6 +15,13 @@ function loadScript(url: string, id: string): Promise<void> {
   });
 }
 
+function cleanupRemoteAssets(scope: string, remoteOrigin: string) {
+  document.getElementById(`federation-${scope}`)?.remove();
+  document
+    .querySelectorAll(`link[rel="stylesheet"][href^="${remoteOrigin}"]`)
+    .forEach((link) => link.remove());
+}
+
 export function useFederatedMount<P extends object>(
   scope: string,
   module: string,
@@ -26,9 +33,9 @@ export function useFederatedMount<P extends object>(
   const latestProps = useRef(props);
   latestProps.current = props;
 
-  // Mount once
   useEffect(() => {
     let cancelled = false;
+    const remoteOrigin = new URL(url).origin;
 
     async function run() {
       try {
@@ -52,12 +59,11 @@ export function useFederatedMount<P extends object>(
       cancelled = true;
       controllerRef.current?.unmount();
       controllerRef.current = null;
+      cleanupRemoteAssets(scope, remoteOrigin);
     };
   }, [scope, module, url]);
 
-  // Push prop updates to the already-mounted remote
   useEffect(() => {
-    console.log(`[useFederatedMount] props updated, controller ready:`, !!controllerRef.current, props);
     controllerRef.current?.update(props);
   }, [props]);
 
