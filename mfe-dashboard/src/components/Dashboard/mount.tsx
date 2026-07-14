@@ -1,5 +1,6 @@
 "use client";
 
+import "@/app/globals.css";
 import { createRoot, type Root } from "react-dom/client";
 import { Dashboard } from "./Dashboard";
 import type { Transfer } from "@/types/transfer";
