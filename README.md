@@ -165,45 +165,37 @@ O Storybook foi publicado utilizando Vercel para disponibilização online dos c
 ```bash
 git clone https://github.com/AlanLenz/Tech-Challenge---ByteBank.git
 ```
-# Executando com Docker
+## Executando com Docker
 
-A aplicação pode ser executada utilizando Docker e Docker Compose, responsáveis pela criação e gerenciamento dos containers necessários para o funcionamento do projeto.
+### Pré-requisitos
 
-## Pré-requisitos
-
-Certifique-se de possuir instalado:
-
-- Docker
+- Docker Desktop
 - Docker Compose
 
-## Subir aplicação
-
-Na raiz do projeto execute:
+### Construir as imagens
 
 ```bash
-docker-compose up --build
+docker-compose build
 ```
 
-Após a inicialização, a aplicação estará disponível em:
+### Iniciar os containers
 
 ```bash
-http://localhost:3000
+docker-compose up
 ```
 
-## Executar em segundo plano
+Ou em segundo plano:
 
 ```bash
-docker-compose up -d --build
+docker-compose up -d
 ```
 
-## Parar containers
+### Encerrar a aplicação
 
 ```bash
 docker-compose down
 ```
-
 ---
-
 # Estrutura do projeto
 
 ```text
