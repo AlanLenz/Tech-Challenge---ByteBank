@@ -189,7 +189,10 @@ Ou em segundo plano:
 ```bash
 docker-compose up -d
 ```
-
+### Link Web
+```bash
+https://tech-challenge-byte-bank.vercel.app/
+```
 ### Encerrar a aplicação
 
 ```bash
