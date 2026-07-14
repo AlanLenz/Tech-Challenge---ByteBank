@@ -42,11 +42,17 @@ export const updateTransfer = createAsyncThunk(
 );
 
 // Action Assíncrona para deletar
-export const deleteTransfer = createAsyncThunk('transfers/delete', async (id: string | number) => {
-  const response = await fetch(`/api/transfers/${id}`, { method: 'DELETE' });
-  if (!response.ok) throw new Error('Erro ao deletar transação');
-  return id;
-});
+export const deleteTransfer = createAsyncThunk(
+  'transfers/delete',
+  async (id: string | number, { rejectWithValue }) => {
+    try {
+      await transferService.delete(id);
+      return id;
+    } catch (error: any) {
+      return rejectWithValue(error.message || 'Erro ao deletar transação');
+    }
+  }
+);
 
 const transfersSlice = createSlice({
   name: 'transfers',
