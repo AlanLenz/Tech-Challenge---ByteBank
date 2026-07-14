@@ -152,7 +152,7 @@ Documentação dos componentes isolados da aplicação utilizando Storybook.
 
 Link de acesso:
 
-https://storybook-static-liart-nine.vercel.app/
+https://mfe-dashboard-storybook.vercel.app/
 
 O Storybook foi publicado utilizando Vercel para disponibilização online dos componentes desenvolvidos.
 
